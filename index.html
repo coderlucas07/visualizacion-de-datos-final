@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tu cerebro no te cuenta toda la verdad</title>
+  <meta name="description" content="Scrollytelling sobre cómo el cerebro construye la realidad: percepción, decisión y sesgos. Trabajo de Visualización de Datos, UTDT." />
+  <meta name="color-scheme" content="dark" />
+
+  <!-- Tipografías: grotesca de alto contraste para títulos + legible para cuerpo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- ECharts vía CDN (barras, líneas, curva de valor). El waffle y el motivo ruido→señal van en Canvas. -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js" defer></script>
+
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+  <!-- Barra de progreso de lectura (sutil, arriba) -->
+  <div class="progress" aria-hidden="true"><span class="progress__bar" id="progressBar"></span></div>
+
+  <!-- Aviso si el JSON no carga (p. ej. abierto con file:// sin server) -->
+  <div class="data-error" id="dataError" hidden>
+    <p>No se pudieron cargar los datos. Serví el sitio con un server estático
+      (por ejemplo <code>python -m http.server</code>) y abrí <code>http://localhost:8000</code>.</p>
+  </div>
+
+  <main id="historia">
+
+    <!-- ============================ PORTADA ============================ -->
+    <section class="cover" id="portada" data-act="perception">
+      <div class="cover__sticky">
+        <!-- Motivo recurrente: ruido que cuaja en la figura pato-conejo al bajar -->
+        <canvas class="noise-canvas" data-noise="image" data-src="./assets/840_560.jpg" aria-hidden="true"></canvas>
+        <div class="cover__vignette" aria-hidden="true"></div>
+
+        <div class="cover__content">
+          <p class="kicker">Visualización de Datos · UTDT</p>
+          <h1 class="cover__title">Tu cerebro no te cuenta<br />toda la verdad.</h1>
+          <p class="cover__lede">
+            Estás convencido de que ves lo que hay, elegís lo que te conviene y creés lo que es cierto.
+            Las próximas pantallas muestran, una por una, que las tres cosas son una construcción de tu cerebro.
+          </p>
+          <div class="scroll-cue">
+            <span>Bajá para empezar</span>
+            <span class="scroll-cue__arrow" aria-hidden="true"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== APERTURA ACTO 1 ====================== -->
+    <section class="scene act-opener" data-act="perception" aria-labelledby="a1-title">
+      <div class="act-opener__inner">
+        <p class="kicker" data-reveal>Acto 1</p>
+        <h2 class="act-opener__title" id="a1-title" data-reveal>Percepción</h2>
+        <p class="act-opener__sub lede" data-reveal>No ves lo que creés que ves.</p>
+      </div>
+    </section>
+
+    <!-- ====================== E1 · Pato o conejo (INTERACCIÓN 1) ====================== -->
+    <section class="scene" id="e1" data-act="perception" aria-labelledby="e1-title">
+      <div class="scene__inner">
+        <div class="scene__text">
+          <p class="kicker" data-reveal>E1 · Percepción</p>
+          <h2 id="e1-title" data-reveal>Mirá esta imagen.<br />¿Qué ves primero?</h2>
+          <p class="lede" data-reveal>Elegí sin pensarlo. No hay respuesta correcta —y no estamos midiendo nada.</p>
+          <div class="choices" role="group" aria-label="¿Qué ves primero?">
+            <button class="choice" data-choice="pato" aria-pressed="false">Pato</button>
+            <button class="choice" data-choice="conejo" aria-pressed="false">Conejo</button>
+          </div>
+          <p class="aside js-after">
+            Lo que elegiste tiñe todo lo que mires después. Por eso empezamos por acá.
+          </p>
+        </div>
+
+        <figure class="scene__figure" data-reveal>
+          <div class="dr-figure figure-card">
+            <img src="./assets/840_560.jpg"
+                 alt="Figura ambigua pato-conejo de Jastrow: el mismo trazo se puede leer como un pato mirando a la izquierda o como un conejo mirando a la derecha." />
+            <div class="annot-layer" aria-hidden="true">
+              <span class="annot annot--conejo" style="left:3%;  top:5%;">las orejas</span>
+              <span class="annot annot--conejo" style="left:66%; top:63%;">el hocico</span>
+              <span class="annot annot--pato"   style="left:1%;  top:33%;">el pico</span>
+              <span class="annot annot--pato"   style="left:40%; top:4%;">mira a la izquierda</span>
+            </div>
+          </div>
+          <figcaption class="js-after">Elegí una opción y te muestro <em>el otro animal</em> sobre el mismo trazo.</figcaption>
+        </figure>
+      </div>
+
+      <div class="scene__inner">
+        <div class="scene__text">
+          <h3 data-reveal>No había una respuesta correcta.</h3>
+          <p class="lede" data-reveal>La imagen nunca cambió: cambió tu cerebro.</p>
+        </div>
+        <figure class="scene__figure" data-reveal>
+          <div class="chart" data-chart="01_pato_conejo"
+               role="img"
+               aria-label="Gráfico de barras: 57,5% de las personas vio primero un pato y 42,5% un conejo."></div>
+          <figcaption>Qué vio la gente al mirar por primera vez (n=80). Pasá el cursor por las barras.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ====================== E2 · El contexto reescribe lo que ves ====================== -->
+    <section class="scene" id="e2" data-act="perception" aria-labelledby="e2-title">
+      <div class="scene__inner">
+        <div class="scene__text">
+          <p class="kicker" data-reveal>E2 · Percepción</p>
+          <h2 id="e2-title" data-reveal>El contexto reescribe lo que ves.</h2>
+          <div class="context-cues" data-reveal aria-hidden="true">
+            <span class="cue cue--accent">Pascua</span>
+            <span class="cue">orejas largas</span>
+            <span class="cue">zanahoria</span>
+          </div>
+          <p class="lede" data-reveal>
+            Le dimos una sola pista a tu cerebro. Con eso alcanzó.
+            <strong>7 de cada 10 personas cambian lo que ven cuando aparece el contexto.</strong>
+            El dato no estaba en la imagen: lo puso el contexto.
+          </p>
+        </div>
+
+        <figure class="scene__figure" data-reveal>
+          <div class="dr-figure dr-figure--rot figure-card">
+            <img src="./assets/840_560.jpg"
+                 alt="La misma figura rotada 90 grados, con las orejas hacia arriba: ahora casi todos leen un conejo." />
+          </div>
+          <figcaption>La misma figura, rotada y cebada con el contexto de Pascua: ahora domina el conejo.</figcaption>
+        </figure>
+      </div>
+
+      <div class="scene__inner">
+        <div class="scene__figure" data-reveal>
+          <div class="stat" data-chart="02b_resumen_cambio"
+               role="img" aria-label="El 70% cambió su interpretación cuando apareció el contexto."></div>
+        </div>
+        <figure class="scene__figure" data-reveal>
+          <div class="chart" data-chart="02_contexto_cambio"
+               role="img" aria-label="Antes del contexto, 42% veía un conejo; después, 74%."></div>
+          <figcaption>Porcentaje que ve conejo, antes y después de la pista de contexto.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ====================== E3 · Ilusiones que se mueven (sin moverse) ====================== -->
+    <section class="scene" id="e3" data-act="perception" aria-labelledby="e3-title">
+      <div class="scene__inner">
+        <div class="scene__text">
+          <p class="kicker" data-reveal>E3 · Percepción</p>
+          <h2 id="e3-title" data-reveal>Ilusiones que se mueven<br />(sin moverse).</h2>
+          <p class="lede" data-reveal>
+            No todas las ilusiones son ambiguas. Algunas te muestran movimiento donde no hay ninguno.
+            Esta imagen está completamente quieta. Y sin embargo…
+          </p>
+        </div>
+        <figure class="scene__figure" data-reveal>
+          <img class="snakes" src="./assets/rotsnake-grayscale_custom-4b8924c1c70b79314017cd1200b900fc7d067758.gif"
+               alt="Ilusión Rotating Snakes (Kitaoka): anillos concéntricos que parecen girar, aunque la imagen es totalmente estática." />
+          <figcaption>Rotating Snakes (Kitaoka). No hay un solo píxel en movimiento.</figcaption>
+        </figure>
+      </div>
+
+      <div class="scene__inner scene__inner--waffle">
+        <div class="scene__text">
+          <p class="stat-line" data-chart="03_count" data-reveal></p>
+          <p data-reveal>
+            El cerebro <em>agrega</em> una información —el movimiento— que no existe en la imagen.
+            Es el mismo mecanismo que más adelante va a ver fantasmas en el ruido.
+          </p>
+        </div>
+        <figure class="scene__figure" data-reveal>
+          <div class="chart chart--bare" data-chart="03_ilusiones_movimiento_waffle"></div>
+          <figcaption>Cada figurita es una persona. Las que “ven” movimiento se encienden.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ====================== E4 · También el oído (INTERACCIÓN 2) ====================== -->
+    <section class="scene" id="e4" data-act="perception" aria-labelledby="e4-title">
+      <div class="scene__inner">
+        <div class="scene__text">
+          <p class="kicker" data-reveal>E4 · Percepción</p>
+          <h2 id="e4-title" data-reveal>No es solo la vista:<br />también el oído.</h2>
+          <p class="lede" data-reveal>
+            La percepción no es un problema de los ojos. Es un problema del cerebro.
+            Y si el cerebro interpreta lo que ve… también interpreta lo que <strong>oye</strong>.
+          </p>
+
+          <div class="audio">
+            <button class="audio__play" id="audioPlay" aria-label="Reproducir audio">
+              <span class="audio__icon" aria-hidden="true">▶</span>
+            </button>
+            <span class="audio__hint">Escuchá una vez y elegí qué oíste.</span>
+          </div>
+          <audio id="audioEl" src="./assets/download.mp3" preload="auto"></audio>
+
+          <div class="choices" role="group" aria-label="¿Qué escuchaste?">
+            <button class="choice" data-choice="bicicleta" aria-pressed="false">Bicicleta</button>
+            <button class="choice" data-choice="alquiler" aria-pressed="false">Alquiler</button>
+          </div>
+
+          <p class="aside js-after">Es exactamente el mismo audio para todos.</p>
+        </div>
+
+        <figure class="scene__figure" data-reveal>
+          <div class="chart" data-chart="04_ilusion_auditiva"
+               role="img" aria-label="Qué escucha la gente: 47% bicicleta, 44% alquiler, 9% otra."></div>
+          <figcaption>Lo que oís depende de lo que tu cerebro esperaba oír.</figcaption>
+        </figure>
+      </div>
+
+      <div class="scene__inner">
+        <div class="scene__text">
+          <h3 data-reveal>Y si te muestro la palabra antes…</h3>
+          <p class="lede" data-reveal>
+            …el mismo audio cambia. Leer “BICICLETA” en pantalla hace que 8 de cada 10 oigan bicicleta.
+            El mismo truco del contexto que viste con el pato-conejo, ahora en tus oídos.
+          </p>
+        </div>
+        <figure class="scene__figure" data-reveal>
+          <div class="chart" data-chart="04b_auditiva_con_pista"
+               role="img" aria-label="Leer una palabra antes de escuchar fuerza esa interpretación del audio."></div>
+          <figcaption>Qué se oye según la palabra que aparece en pantalla.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ====================== E5 · Confianza ≠ acierto (cierre Acto 1) ====================== -->
+    <section class="scene" id="e5" data-act="perception" aria-labelledby="e5-title">
+      <div class="scene__inner">
+        <div class="scene__text">
+          <p class="kicker" data-reveal>E5 · Percepción · cierre</p>
+          <h2 id="e5-title" data-reveal>Cuanto más seguro estás,<br />peor ves.</h2>
+          <p class="lede" data-reveal>
+            Hasta acá viste que tu cerebro se equivoca. Lo inquietante es lo otro:
+            mirá qué pasó con las personas que respondieron con <strong>máxima confianza</strong>.
+          </p>
+          <p data-reveal>
+            Esa seguridad que no garantiza nada va a volver. Porque el cerebro que interpreta lo que ve
+            es el mismo que va a interpretar <em>qué le conviene</em>.
+          </p>
+        </div>
+        <figure class="scene__figure" data-reveal>
+          <div class="chart" data-chart="05_confianza_precision"
+               role="img" aria-label="El acierto sube hasta la confianza media (48%) y cae en la confianza máxima (35,8%)."></div>
+          <figcaption>Nivel de confianza declarado (1 a 5) frente al porcentaje de acierto.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ====================== INTERLUDIO A ====================== -->
+    <section class="interlude" id="interludioA" data-act="decision">
+      <div class="interlude__sticky">
+        <canvas class="noise-canvas" data-noise="text" data-glyph="$" aria-hidden="true"></canvas>
+        <div class="cover__vignette" aria-hidden="true"></div>
+        <div class="interlude__content">
+          <p class="interlude__text">
+            Si el cerebro tiene que decidir qué es lo que ve…
+            <em>¿cómo decide qué le conviene?</em>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Espaciador provisional (los Actos 2 y 3 llegan en las próximas fases) -->
+    <section class="scene scene--end" aria-hidden="true">
+      <p class="muted">Fin del Acto 1. Los Actos 2 y 3 se construyen en las próximas fases.</p>
+    </section>
+
+  </main>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,482 @@
+/* =====================================================================
+   Tu cerebro no te cuenta toda la verdad — scrollytelling UTDT
+   Estética: oscura, editorial, inmersiva. Texto protagonista.
+   ===================================================================== */
+
+/* ----------------------------- Tokens ----------------------------- */
+:root {
+  /* Fondos y texto */
+  --bg:        #0B0C10;   /* casi negro */
+  --bg-2:      #0E0F14;   /* alterno para separar escenas */
+  --ink:       #E8E6E0;   /* hueso (texto) */
+  --ink-dim:   #A7A59E;   /* texto secundario */
+  --ink-faint: #6E6C66;   /* notas, captions */
+  --line:      rgba(232, 230, 224, 0.12); /* divisores sutiles */
+
+  /* Acentos por acto */
+  --cyan:   #3AA0FF;  /* Acto 1 · Percepción */
+  --amber:  #FF8A3D;  /* Acto 2 · Decisión */
+  --violet: #9B6BFF;  /* Acto 3 · Sesgos */
+
+  /* Pérdidas / ganancias (curva de valor) */
+  --loss: #E24B4A;
+  --gain: #1D9E75;
+
+  /* Acento activo (lo setea cada acto). Por defecto, cian. */
+  --accent: var(--cyan);
+  --accent-soft: rgba(58, 160, 255, 0.14);
+
+  /* Tipografías */
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body:    "Inter", system-ui, -apple-system, sans-serif;
+
+  /* Ritmo / medidas */
+  --measure: 38rem;          /* ancho de lectura cómodo */
+  --pad-x: clamp(1.25rem, 5vw, 6rem);
+  --radius: 14px;
+
+  /* Curva de animación */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Acento por acto: se aplica con data-act en la sección */
+[data-act="perception"] { --accent: var(--cyan);   --accent-soft: rgba(58,160,255,0.14); }
+[data-act="decision"]   { --accent: var(--amber);  --accent-soft: rgba(255,138,61,0.14); }
+[data-act="bias"]       { --accent: var(--violet); --accent-soft: rgba(155,107,255,0.14); }
+
+/* ----------------------------- Reset ----------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.15rem);
+  line-height: 1.65;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+img, canvas, svg { max-width: 100%; display: block; }
+button { font-family: inherit; }
+
+::selection { background: var(--accent); color: #08090c; }
+
+/* Foco visible y accesible */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ----------------------------- Tipografía ----------------------------- */
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5em;
+  text-wrap: balance;
+}
+
+h1 { font-size: clamp(2.4rem, 1.6rem + 5.5vw, 6rem); }
+h2 { font-size: clamp(1.9rem, 1.3rem + 3vw, 3.6rem); }
+h3 { font-size: clamp(1.3rem, 1.1rem + 1.2vw, 2rem); }
+
+p { margin: 0 0 1.1em; max-width: var(--measure); }
+
+.kicker {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+}
+
+.lede { font-size: clamp(1.15rem, 1.05rem + 0.5vw, 1.5rem); color: var(--ink); }
+.muted { color: var(--ink-dim); }
+strong { color: #fff; font-weight: 600; }
+code {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: 0.9em;
+  background: rgba(232,230,224,0.08);
+  padding: 0.1em 0.4em;
+  border-radius: 5px;
+}
+
+/* ----------------------------- Layout de escenas ----------------------------- */
+.scene {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: clamp(4rem, 12vh, 9rem) var(--pad-x);
+}
+
+/* Escenas alternas con fondo apenas distinto para dar ritmo */
+.scene:nth-of-type(even) { background: var(--bg-2); }
+
+.scene__inner {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+}
+
+.scene__text { max-width: 46ch; }
+.scene__figure { margin: 0; width: 100%; }
+
+figcaption {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: var(--ink-faint);
+  max-width: 46ch;
+}
+
+/* Contenedor de gráfico (ECharts/Canvas se montan acá) */
+.chart {
+  width: 100%;
+  min-height: clamp(300px, 46vh, 460px);
+  position: relative;
+}
+
+/* Escena final provisional del scaffold */
+.scene--end {
+  min-height: 60vh;
+  justify-content: center;
+  text-align: center;
+  border-top: 1px solid var(--line);
+}
+
+/* ----------------------------- Portada ----------------------------- */
+.cover {
+  position: relative;
+  height: 185vh;            /* alto extra: habilita el progreso ruido→señal */
+}
+.cover__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.noise-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+/* Viñeta para que el texto respire por encima del ruido */
+.cover__vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(120% 90% at 50% 45%, rgba(11,12,16,0) 30%, rgba(11,12,16,0.75) 100%),
+    linear-gradient(180deg, rgba(11,12,16,0.55) 0%, rgba(11,12,16,0) 35%, rgba(11,12,16,0.85) 100%);
+}
+
+.cover__content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 var(--pad-x);
+  max-width: 60rem;
+}
+.cover__title { margin-bottom: 1.5rem; }
+.cover__lede {
+  font-size: clamp(1.1rem, 1rem + 0.6vw, 1.5rem);
+  color: var(--ink);
+  max-width: 44rem;
+  margin-inline: auto;
+  text-wrap: pretty;
+}
+
+/* Indicador de scroll */
+.scroll-cue {
+  margin-top: 3rem;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--ink-dim);
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.scroll-cue__arrow {
+  width: 1px;
+  height: 42px;
+  background: linear-gradient(var(--accent), transparent);
+  position: relative;
+  animation: cue 2.2s var(--ease) infinite;
+}
+@keyframes cue {
+  0%, 100% { opacity: 0.3; transform: translateY(-6px); }
+  50%      { opacity: 1;   transform: translateY(2px); }
+}
+
+/* ----------------------------- Progreso de lectura ----------------------------- */
+.progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  z-index: 100;
+  background: rgba(232,230,224,0.06);
+}
+.progress__bar {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  transition: width 0.1s linear, background-color 0.6s var(--ease);
+}
+
+/* ----------------------------- Aviso de error de datos ----------------------------- */
+.data-error {
+  position: fixed;
+  inset: auto 1rem 1rem 1rem;
+  z-index: 200;
+  background: #1a1410;
+  border: 1px solid var(--amber);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  max-width: 40rem;
+  margin-inline: auto;
+}
+.data-error p { margin: 0; color: var(--ink); }
+
+/* ----------------------------- Animación de revelado ----------------------------- */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+  will-change: opacity, transform;
+}
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ----------------------------- Botones (interacciones E1/E4) ----------------------------- */
+.choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.7rem 1.6rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.3s var(--ease), background-color 0.3s var(--ease), transform 0.15s var(--ease);
+}
+.choice:hover { border-color: var(--accent); background: var(--accent-soft); }
+.choice:active { transform: scale(0.97); }
+.choice[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: #fff; }
+
+/* ----------------------------- Responsive ----------------------------- */
+@media (max-width: 820px) {
+  .scene__inner { grid-template-columns: 1fr; gap: 2.5rem; }
+  .scene__text { max-width: none; }
+  .scene { padding-top: clamp(3rem, 9vh, 6rem); padding-bottom: clamp(3rem, 9vh, 6rem); }
+  .chart { min-height: 320px; }
+  .cover { height: 160vh; }
+}
+
+/* ----------------------------- Bloques apilados dentro de una escena ----------------------------- */
+.scene__inner + .scene__inner { margin-top: clamp(3rem, 8vh, 7rem); }
+.chart--bare { min-height: 0; }
+
+/* ----------------------------- Apertura de acto ----------------------------- */
+.act-opener { text-align: center; justify-content: center; }
+.act-opener__inner { max-width: 50rem; margin-inline: auto; }
+.act-opener__title {
+  font-size: clamp(3rem, 2rem + 7vw, 7rem);
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+.act-opener__sub { color: var(--ink-dim); margin-inline: auto; }
+
+/* ----------------------------- Figuras ----------------------------- */
+.figure-card { background: #f4f1ea; border-radius: var(--radius); overflow: hidden; }
+.dr-figure { position: relative; }
+.dr-figure img { width: 100%; display: block; }
+
+.snakes {
+  width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+}
+
+/* Anotaciones que revelan "el otro animal" (E1) */
+.annot-layer { position: absolute; inset: 0; pointer-events: none; }
+.annot {
+  position: absolute;
+  background: rgba(11, 12, 16, 0.9);
+  color: var(--ink);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+}
+#e1.show-conejo .annot--conejo,
+#e1.show-pato   .annot--pato { opacity: 1; transform: none; }
+
+/* Contenido que aparece tras responder (no gatea el contenido principal) */
+.js-after { opacity: 0; transition: opacity 0.5s var(--ease); }
+.is-answered .js-after { opacity: 1; }
+.aside { color: var(--ink-dim); font-size: 0.98rem; }
+
+/* Figura rotada 90° con orejas hacia arriba (E2) */
+.dr-figure--rot {
+  width: clamp(220px, 55vw, 300px);
+  aspect-ratio: 2 / 3;
+  margin-inline: auto;
+  position: relative;
+  overflow: hidden;
+}
+.dr-figure--rot img {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 150%;
+  height: auto;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+/* Pistas de contexto (priming "conejo") */
+.context-cues { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.3rem; }
+.cue {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.85rem;
+  color: var(--ink-dim);
+}
+.cue--accent { border-color: var(--accent); color: var(--accent); }
+
+/* ----------------------------- Waffle 100 personas (E3) ----------------------------- */
+.waffle {
+  --accent-on: var(--accent);
+  --person: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3Cpath d='M3 22c0-5 4-8 9-8s9 3 9 8z'/%3E%3C/svg%3E");
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: clamp(4px, 1vw, 9px);
+  max-width: 440px;
+}
+.waffle__cell {
+  aspect-ratio: 1;
+  background: currentColor;
+  color: rgba(232, 230, 224, 0.13);
+  -webkit-mask: var(--person) center / contain no-repeat;
+  mask: var(--person) center / contain no-repeat;
+  transition: color 0.4s var(--ease), transform 0.4s var(--ease);
+}
+.waffle.is-on .waffle__cell.on {
+  color: var(--accent-on);
+  transition-delay: var(--d, 0ms);
+}
+
+/* ----------------------------- Número grande (titulares de dato) ----------------------------- */
+.bignum { display: flex; flex-direction: column; justify-content: center; }
+.bignum__value {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(3.2rem, 1.8rem + 9vw, 7.5rem);
+  line-height: 0.95;
+  color: var(--accent);
+  letter-spacing: -0.03em;
+}
+.bignum__label { color: var(--ink-dim); max-width: 24ch; margin-top: 0.7rem; font-size: 1.05rem; }
+.stat-line {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 1.1rem + 1.4vw, 2.2rem);
+  color: var(--ink);
+  font-weight: 600;
+  line-height: 1.15;
+  margin-bottom: 0.6rem;
+}
+.stat-line__num { color: var(--accent); }
+
+/* ----------------------------- Reproductor de audio (E4) ----------------------------- */
+.audio { display: flex; align-items: center; gap: 1rem; margin: 1.6rem 0 1rem; }
+.audio__play {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--ink);
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: grid; place-items: center;
+  transition: transform 0.15s var(--ease), background-color 0.3s var(--ease);
+  flex: 0 0 auto;
+}
+.audio__play:hover { transform: scale(1.05); }
+.audio__play.is-playing { background: var(--accent); color: #08090c; }
+.audio__hint { color: var(--ink-dim); font-size: 0.92rem; }
+
+/* ----------------------------- Interludio (ruido → señal) ----------------------------- */
+.interlude { position: relative; height: 170vh; }
+.interlude__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+.interlude__content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 var(--pad-x);
+  max-width: 52rem;
+}
+.interlude__text {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 1rem + 3.5vw, 3.4rem);
+  line-height: 1.15;
+  color: var(--ink);
+  margin: 0;
+}
+.interlude__text em { color: var(--accent); font-style: normal; }
+
+@media (max-width: 820px) {
+  .interlude { height: 150vh; }
+  .bignum__value { font-size: clamp(3rem, 2rem + 10vw, 5rem); }
+}
+
+/* ----------------------------- Reduce motion ----------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  /* Mostrar estados finales sin animación */
+  [data-reveal] { opacity: 1; transform: none; }
+  .scroll-cue__arrow { animation: none; }
+}
