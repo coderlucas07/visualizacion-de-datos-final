@@ -255,6 +255,129 @@ export class NoiseToSignal {
   }
 }
 
+/* =====================================================================
+   SpiralPortal — transición de entrada a cada módulo.
+   Un espiral hipnótico (bandas claro/oscuro) que GIRA todo el tiempo y,
+   a medida que se scrollea (progress 0→1), hace ZOOM hacia el centro como
+   si uno se metiera dentro, hasta que el punto central se traga la pantalla
+   y queda en negro. Después, sobre el negro, aparece el título del módulo.
+   ===================================================================== */
+export class SpiralPortal {
+  constructor(canvas, opts = {}) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.opts = { reduced: false, ink: '#0B0C10', paper: '#ECE9E2', turns: 13, ...opts };
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2);
+    this.w = 0; this.h = 0;
+    this.progress = 0;
+    this.targetProgress = 0;
+    this.running = false;
+    this.raf = null;
+    this.t0 = performance.now();
+    this._render = this._render.bind(this);
+    this._onResize = debounce(() => this._resize(), 150);
+    window.addEventListener('resize', this._onResize);
+    this._resize();
+  }
+
+  _resize() {
+    const rect = this.canvas.getBoundingClientRect();
+    this.w = Math.max(1, Math.round(rect.width));
+    this.h = Math.max(1, Math.round(rect.height));
+    this.canvas.width = Math.round(this.w * this.dpr);
+    this.canvas.height = Math.round(this.h * this.dpr);
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this._draw(performance.now());
+  }
+
+  setProgress(p) {
+    this.targetProgress = clamp(p);
+    if (!this.running && !this.opts.reduced) this.start();
+  }
+
+  start() {
+    if (this.running) return;
+    this.running = true;
+    this.raf = requestAnimationFrame(this._render);
+  }
+  stop() {
+    this.running = false;
+    if (this.raf) cancelAnimationFrame(this.raf);
+    this.raf = null;
+  }
+
+  _render(now) {
+    if (!this.running) return;
+    this.progress += (this.targetProgress - this.progress) * 0.12;
+    this._draw(now || 0);
+    this.raf = requestAnimationFrame(this._render);
+  }
+
+  _draw(now) {
+    const { ctx, w, h } = this;
+    const cx = w / 2, cy = h / 2;
+    const p = this.opts.reduced ? this.targetProgress : this.progress;
+    const ink = this.opts.ink;
+
+    ctx.clearRect(0, 0, w, h);
+    // Base del sitio (para que los bordes se fundan con el fondo oscuro)
+    ctx.fillStyle = ink;
+    ctx.fillRect(0, 0, w, h);
+
+    // Zoom acelerado: "te metés" en el espiral. Giro continuo + empuje por scroll.
+    const zoom = 1 + Math.pow(p, 1.6) * 9;
+    const spin = (this.opts.reduced ? 0 : (now - this.t0) * 0.00020) + p * Math.PI * 3;
+    const R = Math.hypot(w, h) / 2 + 2;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(spin);
+    ctx.scale(zoom, zoom);
+
+    // Disco de "papel" (claro) sobre el que vive el espiral oscuro
+    ctx.beginPath();
+    ctx.arc(0, 0, R, 0, Math.PI * 2);
+    ctx.fillStyle = this.opts.paper;
+    ctx.fill();
+
+    // Brazo del espiral (Arquímedes): estela oscura con huecos claros del mismo ancho
+    const turns = this.opts.turns;
+    const pitch = R / turns;
+    const steps = turns * 64;
+    ctx.beginPath();
+    for (let i = 0; i <= steps; i++) {
+      const th = (i / steps) * turns * Math.PI * 2;
+      const r = (pitch * th) / (Math.PI * 2);
+      const x = Math.cos(th) * r, y = Math.sin(th) * r;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.lineWidth = pitch * 0.5;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = ink;
+    ctx.stroke();
+    ctx.restore();
+
+    // El centro se va volviendo negro y se traga todo a medida que entrás
+    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * 0.72);
+    g.addColorStop(0, `rgba(11,12,16,${clamp(0.25 + p * 1.1)})`);
+    g.addColorStop(clamp(0.55 - p * 0.45), `rgba(11,12,16,${clamp(p * 0.85)})`);
+    g.addColorStop(1, 'rgba(11,12,16,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+
+    // Tramo final: a negro pleno (acá aparece el título del módulo, por HTML)
+    if (p > 0.8) {
+      ctx.fillStyle = `rgba(11,12,16,${clamp((p - 0.8) / 0.2)})`;
+      ctx.fillRect(0, 0, w, h);
+    }
+  }
+
+  destroy() {
+    this.stop();
+    window.removeEventListener('resize', this._onResize);
+  }
+}
+
 /* ---------- utilidades ---------- */
 function debounce(fn, ms) {
   let id;

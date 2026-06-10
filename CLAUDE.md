@@ -3,6 +3,17 @@
 > Este archivo lo lee Claude Code automáticamente al abrir el proyecto.
 > Resume TODO el contexto para poder seguir el trabajo en otra máquina sin perder nada.
 
+## ⚠️ REGLA DE EQUIPO — mantener este archivo actualizado (leer siempre)
+Este `CLAUDE.md` es el **cerebro compartido** del grupo: es lo que mantiene a todos (personas y sus Claude Code)
+en la misma página. **Si cambiás algo que mueve el estado del proyecto, actualizalo acá en el MISMO commit.**
+- **Para Claude Code:** cuando termines una tarea que cambia el estado (sumás/cambiás una escena o un gráfico,
+  tomás una decisión de diseño, tocás la arquitectura), **antes de cerrar** actualizá las secciones
+  **"Progreso por fases"** y/o **"Decisiones ya tomadas"** (y el bloque "Estado actual" del `README.md`),
+  y avisale al usuario que lo commitee y pushee junto con el código.
+- **Para las personas:** `git pull` **antes** de empezar y `git push` **al terminar**. Si actualizaste el
+  código pero no este archivo, el contexto del resto queda desactualizado → siempre van juntos.
+- Si algo de acá ya no es cierto, corregilo (no agregues notas sueltas que se contradigan).
+
 ## Qué es
 Sitio de **scrollytelling** (una sola historia, scroll nativo) para **Visualización de Datos (UTDT)**.
 **Tesis:** el cerebro no registra la realidad, la construye; rellenar lo ambiguo aparece cuando vemos
@@ -41,16 +52,20 @@ assets/               imágenes y audio (ver "Mapa de assets")
   `<section class="scrolly">` con un **gráfico fijo** (`.scrolly__graphic`, `position:sticky`) y una columna
   de **pasos de texto** (`.step`) que scrollean. Cada `.step` lleva `data-layer="N"` que apunta a una capa del
   gráfico (`.viz__layer[data-layer="N"]`). `setupScrolly()` (main.js) usa un IntersectionObserver con franja
-  central (`rootMargin:-45% 0 -45%`): cuando un paso cruza el centro, intercambia la capa visible y hace
-  **lazy-init del gráfico de esa capa** (anima al entrar). Varios pasos pueden compartir capa (cambia el texto,
-  el gráfico queda). Desktop = 2 columnas (texto izq / gráfico der). Mobile = gráfico sticky arriba, pasos debajo.
-  **Patrón para sumar escenas del Acto 2/3: copiar esta estructura, NO volver a las viejas `.scene`.**
+  central (`rootMargin:-45% 0 -45%`): cuando un paso cruza el centro, intercambia la capa visible. **Layout
+  FULL-BLEED:** el `.scrolly__graphic` ocupa toda la pantalla (sticky) y los `.step` van **superpuestos** encima
+  (`margin-top:-100vh`), con texto abajo + scrim suave (NADA de dos columnas: el texto va sobre el visual).
+  Los gráficos se **pre-inicializan** al cargar el JSON (scroll fluido, sin lag). Varios pasos comparten capa
+  (cambia el texto, el gráfico queda). **Patrón para sumar escenas: copiar esta estructura full-bleed.**
+- **Portales de espiral entre módulos:** `<section class="portal">` con `<canvas data-spiral>` (clase
+  `SpiralPortal` en noise.js): el espiral gira y hace zoom al scrollear hasta tragar la pantalla en negro, y
+  ahí aparece el **título del módulo** (`.portal__title`, lo revela `tick()` cuando el progreso pasa 0,8).
 - **Gráficos:** `<div class="chart" data-chart="CLAVE_DEL_JSON">` dentro de una `.viz__layer`. En `js/charts.js`,
   `CHARTS['CLAVE'](container, data, opts)` lo construye; se inicializa cuando su capa se activa. Usar
   `rowsToObjects(sheet)` para pasar `{headers, rows}` a objetos y `accentOf(container)` para el acento.
-- **Acento por tramo (IMPLÍCITO, sin rótulos):** `data-act="perception|decision|bias"` setea `--accent`
-  (cian/ámbar/violeta) y tiñe la barra de progreso. **NO se muestran títulos de "Acto" ni kickers de acto en
-  pantalla** — la división en actos es organización interna nuestra, el lector ve una sola historia continua.
+- **Acento por tramo:** `data-act="perception|decision|bias"` setea `--accent` (cian/ámbar/violeta) y tiñe la
+  barra de progreso. Los **módulos SÍ se nombran** (Percepción / Decisión / Sesgos) pero **solo tras el espiral**
+  (no hay kickers "E1 · Percepción" sueltos en cada escena). Es decir: el portal del espiral hace de apertura de módulo.
 - **Waffle por scroll (E3):** el handler arma 100 celdas apagadas y expone `container.__setWaffle(p)`; `main.js`
   lo llama en `tick()` con el progreso del paso (`stepFill`) y las 96 personitas se pintan de a poco; el número
   (`#e3Count`) cuenta en vivo. Mismo recurso reutilizable si otra escena necesita "pintar con el scroll".
@@ -111,11 +126,14 @@ Usar la conexión con las víboras de E3:
 ## Decisiones ya tomadas (no volver a preguntar salvo bloqueo real)
 - **El scroll es el protagonista:** cada idea entra de a una con el scroll (motor sticky de pasos). NO volcar
   toda la info de una escena junta; NO usar las viejas `.scene` de dos bloques apilados.
-- **Nada de actos explícitos en pantalla:** sin "Acto 1 / Percepción", sin kickers de acto. El color de acento
-  cambia solo y los interludios hacen de puente. La división en actos es interna.
-- **E1 → E2 personalizado:** E1 muestra la imagen y pregunta (sin "no hay respuesta correcta"). La respuesta se
-  guarda en memoria (no se persiste) y E2 le da la pista del animal que le falta y re-pregunta (Sí/No). Si no
-  respondió E1, E2 cae por default en pato→conejo. (Esto suma micro-interacción a las 2 originales; es a propósito.)
-- **E3 waffle se pinta con el scroll** (no animación de un solo tiro).
-- **Interludio A va en ámbar** (teaser del tramo siguiente). Estética oscura/editorial, scroll nativo (sin hijack),
-  lazy-init por capa, sin login ni storage del usuario.
+- **Layout full-bleed, NO dos columnas:** el visual ocupa toda la pantalla y el texto va superpuesto (scrim).
+  Los gráficos van a pantalla completa, con su **título + subtítulo** adentro (como un gráfico normal).
+- **Módulos CON título, tras el espiral** (revierte la vieja regla de "sin actos"): cada módulo abre con el portal
+  de espiral → negro → nombre del módulo (Percepción / Decisión / Sesgos). El espiral reemplaza a los interludios ($/ojo).
+- **Portada SIN partículas** (era mucha intro): título + una **pregunta disparadora** (sin spoilear la tesis).
+- **E1 → E2 personalizado y scrubeado:** E1 muestra la imagen y pregunta; al elegir **auto-avanza**. E2 gira la
+  figura **con el scroll** (no aparece ya invertida) y marca el rasgo **sobre la imagen** (sin chips Pascua/zanahoria),
+  hacia el animal que no viste. E4 también auto-avanza al elegir; el play del audio va **separado** de los botones.
+- **E3:** primero el texto, después la ilusión a pantalla completa, después el waffle que se pinta con el scroll.
+- **G7 (aversión):** curva roja/verde **sin sombras** bajo la curva (areaStyle sacado), cruz en el origen, λ en el texto.
+- Sin métricas tipo "n=80" en el copy. Estética oscura/editorial, scroll nativo (sin hijack), sin login ni storage.

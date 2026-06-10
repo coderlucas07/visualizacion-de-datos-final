@@ -4,24 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tu cerebro no te cuenta toda la verdad</title>
-  <meta name="description" content="Scrollytelling sobre cómo el cerebro construye la realidad: percepción, decisión y sesgos. Trabajo de Visualización de Datos, UTDT." />
+  <meta name="description" content="Scrollytelling sobre cómo el cerebro construye la realidad: percepción, decisión y sesgos. Visualización de Datos, UTDT." />
   <meta name="color-scheme" content="dark" />
 
-  <!-- Tipografías: grotesca de alto contraste para títulos + legible para cuerpo -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-
-  <!-- ECharts vía CDN (barras, líneas, curva de valor). El waffle y el motivo ruido→señal van en Canvas. -->
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js" defer></script>
-
   <link rel="stylesheet" href="./css/styles.css" />
 </head>
 <body>
-  <!-- Barra de progreso de lectura (sutil, arriba) -->
   <div class="progress" aria-hidden="true"><span class="progress__bar" id="progressBar"></span></div>
 
-  <!-- Aviso si el JSON no carga (p. ej. abierto con file:// sin server) -->
   <div class="data-error" id="dataError" hidden>
     <p>No se pudieron cargar los datos. Serví el sitio con un server estático
       (por ejemplo <code>python -m http.server</code>) y abrí <code>http://localhost:8000</code>.</p>
@@ -29,49 +23,48 @@
 
   <main id="historia">
 
-    <!-- ============================ PORTADA ============================ -->
+    <!-- ============================ PORTADA (limpia, sin partículas) ============================ -->
     <section class="cover" id="portada" data-act="perception">
-      <div class="cover__sticky">
-        <!-- Motivo recurrente: ruido que cuaja en la figura pato-conejo al bajar -->
-        <canvas class="noise-canvas" data-noise="image" data-src="./assets/840_560.jpg" aria-hidden="true"></canvas>
-        <div class="cover__vignette" aria-hidden="true"></div>
+      <div class="cover__content">
+        <p class="kicker">Visualización de Datos · UTDT</p>
+        <h1 class="cover__title">Tu cerebro no te cuenta<br />toda la verdad.</h1>
+        <p class="cover__lede">
+          Estás convencido de que ves lo que hay, elegís lo que te conviene y creés lo que es cierto.
+        </p>
+        <p class="cover__q">¿Y si ninguna de las tres fuera tan tuya como creés?</p>
+        <div class="scroll-cue"><span>Bajá para entrar</span><span class="scroll-cue__arrow" aria-hidden="true"></span></div>
+      </div>
+    </section>
 
-        <div class="cover__content">
-          <p class="kicker">Visualización de Datos · UTDT</p>
-          <h1 class="cover__title">Tu cerebro no te cuenta<br />toda la verdad.</h1>
-          <p class="cover__lede">
-          </p>
-          <div class="scroll-cue">
-            <span>Bajá para empezar</span>
-            <span class="scroll-cue__arrow" aria-hidden="true"></span>
-          </div>
+    <!-- ====================== PORTAL 1 · espiral → Percepción ====================== -->
+    <section class="portal" id="portal1" data-act="perception">
+      <div class="portal__sticky">
+        <canvas class="portal__canvas" data-spiral aria-hidden="true"></canvas>
+        <div class="portal__title">
+          <p class="portal__kicker">Módulo uno</p>
+          <h2 class="portal__name">Percepción</h2>
+          <p class="portal__sub">No ves lo que creés que ves.</p>
         </div>
       </div>
     </section>
 
     <!-- ====================== E1 · ¿Qué ves? (INTERACCIÓN 1) ====================== -->
-    <!-- Primero la imagen y la respuesta; recién al seguir scrolleando aparece el gráfico. -->
     <section class="scrolly" id="e1" data-act="perception" aria-labelledby="e1-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
-            <figure class="flip-figure">
+            <figure class="flip-figure viz__media">
               <div class="figure-card">
                 <img src="./assets/840_560.jpg"
-                     alt="Figura ambigua de Jastrow: el mismo trazo puede leerse como un pato mirando a la izquierda o como un conejo con las orejas hacia la izquierda." />
+                     alt="Figura ambigua de Jastrow: el mismo trazo puede leerse como un pato mirando a la izquierda o como un conejo." />
               </div>
             </figure>
           </div>
           <div class="viz__layer" data-layer="1">
-            <div class="viz__chart">
-              <div class="chart" data-chart="01_pato_conejo"
-                   role="img" aria-label="De 80 personas, 57,5% vio primero un pato y 42,5% un conejo."></div>
-              <p class="viz__cap">Qué vio la gente al mirar por primera vez .</p>
-            </div>
+            <div class="viz__chart"><div class="chart" data-chart="01_pato_conejo" role="img" aria-label="La gente se reparte casi por la mitad entre pato y conejo."></div></div>
           </div>
         </div>
       </div>
-
       <div class="scrolly__steps">
         <div class="step is-active" data-layer="0">
           <div class="step__card">
@@ -85,143 +78,126 @@
         </div>
         <div class="step" data-layer="1">
           <div class="step__card">
-            <h3>No fuiste el único en verlo así.</h3>
-            <p>Le preguntamos a 80 personas qué veían primero. Se repartieron casi por la mitad
-              —y cada una estaba convencida de lo suyo.</p>
+            <p class="lede">La mitad jura que es un pato; la otra mitad, que es un conejo.</p>
             <p class="muted">La imagen es siempre la misma. Lo que cambia es el cerebro que la mira.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ====================== E2 · La pista (personalizada según tu respuesta) ====================== -->
+    <!-- ====================== E2 · La pista (gira con el scroll, sin chips) ====================== -->
     <section class="scrolly" id="e2" data-act="perception" aria-labelledby="e2-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
-            <figure class="flip-figure" id="e2Fig">
+            <figure class="flip-figure viz__media" id="e2Fig">
               <div class="figure-card">
-                <img id="e2Img" src="./assets/840_560.jpg"
-                     alt="La misma figura, acompañada ahora de pistas de contexto para ver el otro animal." />
+                <img src="./assets/840_560.jpg" alt="La misma figura; al girar y marcar sus rasgos aparece el otro animal." />
               </div>
-              <figcaption class="cue-row" id="e2Cues" aria-hidden="true"></figcaption>
             </figure>
+            <div class="annot-layer">
+              <span class="annot" id="e2Annot1"></span>
+              <span class="annot" id="e2Annot2"></span>
+            </div>
           </div>
           <div class="viz__layer" data-layer="1">
-            <div class="viz__chart">
-              <div class="chart" data-chart="02_contexto_cambio"
-                   role="img" aria-label="Antes del contexto, 42% veía un conejo; con la pista, 74%."></div>
-              <p class="viz__cap">Porcentaje que ve el conejo, antes y después de la pista.</p>
-            </div>
+            <div class="viz__chart"><div class="chart" data-chart="02_contexto_cambio" role="img" aria-label="Con una pista de contexto, la mayoría pasa a ver el otro animal."></div></div>
           </div>
         </div>
       </div>
-
       <div class="scrolly__steps">
         <div class="step is-active" data-layer="0">
           <div class="step__card">
-            <h2 id="e2-h" data-e2-title>Ahora te doy una pista.</h2>
-            <p class="lede" data-e2-lede>Mirá de nuevo, con otra idea en la cabeza.</p>
-            <div class="choices" role="group" aria-label="¿Lo ves ahora?">
-              <button class="choice" data-choice="si" aria-pressed="false">Sí, lo veo</button>
-              <button class="choice" data-choice="no" aria-pressed="false">No me sale</button>
-            </div>
+            <h2 id="e2-h" data-e2-title>Dale vuelta la cabeza.</h2>
+            <p class="lede" data-e2-lede>Seguí bajando: la figura gira y aparece el otro animal.</p>
           </div>
         </div>
         <div class="step" data-layer="1">
           <div class="step__card">
-            <h3>Te alcanzó con una sola pista.</h3>
-            <p><strong>7 de cada 10 personas cambian lo que ven cuando aparece el contexto.</strong>
-              El dato nuevo no estaba en la imagen: lo puso el contexto.</p>
-            <p class="muted">El mismo truco vuelve más adelante —en tus oídos, y en tus decisiones.</p>
+            <p class="lede"><strong>7 de cada 10 personas cambian lo que ven cuando aparece el contexto.</strong></p>
+            <p class="muted">El dato nuevo no estaba en la imagen: lo puso el contexto. El mismo truco vuelve con tus oídos y con tus decisiones.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ====================== E3 · Movimiento donde no hay (waffle que se pinta con el scroll) ====================== -->
+    <!-- ====================== E3 · Movimiento donde no hay (texto → ilusión → waffle) ====================== -->
     <section class="scrolly" id="e3" data-act="perception" aria-labelledby="e3-h">
       <div class="scrolly__graphic">
         <div class="viz">
-          <div class="viz__layer is-active" data-layer="0">
-            <figure class="snakes-fig">
+          <div class="viz__layer is-active" data-layer="0"></div>
+          <div class="viz__layer" data-layer="1">
+            <figure class="viz__media viz__media--snakes">
               <img class="snakes" src="./assets/rotsnake-grayscale_custom-4b8924c1c70b79314017cd1200b900fc7d067758.gif"
-                   alt="Ilusión Rotating Snakes (Kitaoka): anillos concéntricos que parecen girar, aunque la imagen es totalmente estática." />
+                   alt="Ilusión Rotating Snakes (Kitaoka): anillos que parecen girar aunque la imagen está totalmente quieta." />
             </figure>
           </div>
-          <div class="viz__layer" data-layer="1">
-            <div class="viz__chart viz__chart--waffle">
-              <div class="chart chart--bare waffle" id="e3Waffle" data-chart="03_ilusiones_movimiento_waffle"></div>
-            </div>
+          <div class="viz__layer" data-layer="2">
+            <div class="chart waffle" id="e3Waffle" data-chart="03_ilusiones_movimiento_waffle"></div>
           </div>
         </div>
       </div>
-
       <div class="scrolly__steps">
-        <div class="step is-active" data-layer="0">
+        <div class="step is-active step--center" data-layer="0">
           <div class="step__card">
             <h2 id="e3-h">No todas las ilusiones<br />son ambiguas.</h2>
-            <p class="lede">Algunas te muestran movimiento donde no hay ninguno.
-              Esta imagen está completamente quieta.</p>
-            <p>Ni un solo píxel se mueve. Y, sin embargo, gira.</p>
+            <p class="lede">Algunas te muestran movimiento donde no hay ninguno. Seguí bajando.</p>
           </div>
         </div>
         <div class="step" data-layer="1">
           <div class="step__card">
+            <p class="lede">Esta imagen está <strong>completamente quieta</strong>. Ni un solo píxel se mueve.</p>
+            <p class="muted">Y, sin embargo, gira.</p>
+          </div>
+        </div>
+        <div class="step" data-layer="2">
+          <div class="step__card">
             <p class="stat-line"><span class="stat-line__num" id="e3Count">0</span> de cada 100 personas
-              ven movimiento en una imagen estática.</p>
-            <p>Tu cerebro <em>agrega</em> una información —el movimiento— que no existe.
-              Es el mismo mecanismo que, más adelante, va a encontrar caras y fantasmas donde solo hay ruido.</p>
+              ven movimiento donde no lo hay.</p>
+            <p>Tu cerebro <em>agrega</em> una información que no existe. El mismo mecanismo que más adelante
+              va a encontrar caras y fantasmas donde solo hay ruido.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ====================== E4 · También el oído (INTERACCIÓN 2) ====================== -->
+    <!-- ====================== E4 · También el oído (INTERACCIÓN 2 · botones separados) ====================== -->
     <section class="scrolly" id="e4" data-act="perception" aria-labelledby="e4-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
             <div class="wave" id="e4Wave" aria-hidden="true">
-              <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span>
-              <span style="--i:3"></span><span style="--i:4"></span><span style="--i:5"></span>
-              <span style="--i:6"></span><span style="--i:7"></span><span style="--i:8"></span>
-              <span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
-              <span style="--i:12"></span><span style="--i:13"></span><span style="--i:14"></span>
-              <span style="--i:15"></span><span style="--i:16"></span><span style="--i:17"></span>
+              <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span><span style="--i:3"></span>
+              <span style="--i:4"></span><span style="--i:5"></span><span style="--i:6"></span><span style="--i:7"></span>
+              <span style="--i:8"></span><span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
+              <span style="--i:12"></span><span style="--i:13"></span><span style="--i:14"></span><span style="--i:15"></span>
+              <span style="--i:16"></span><span style="--i:17"></span><span style="--i:18"></span><span style="--i:19"></span>
             </div>
           </div>
           <div class="viz__layer" data-layer="1">
-            <div class="viz__chart">
-              <div class="chart" data-chart="04_ilusion_auditiva"
-                   role="img" aria-label="Con el mismo audio: 47% oye bicicleta, 44% alquiler, 9% otra."></div>
-              <p class="viz__cap">Qué escucha la gente con exactamente el mismo audio.</p>
-            </div>
+            <div class="viz__chart"><div class="chart" data-chart="04_ilusion_auditiva" role="img" aria-label="Con el mismo audio, la gente se reparte entre bicicleta y alquiler."></div></div>
           </div>
           <div class="viz__layer" data-layer="2">
-            <div class="viz__chart viz__chart--wide">
-              <div class="chart" data-chart="04b_auditiva_con_pista"
-                   role="img" aria-label="Leer una palabra antes de escuchar fuerza esa interpretación del audio."></div>
-              <p class="viz__cap">Qué se oye según la palabra que aparece antes en pantalla.</p>
-            </div>
+            <div class="viz__chart"><div class="chart" data-chart="04b_auditiva_con_pista" role="img" aria-label="Leer una palabra antes fuerza esa interpretación del audio."></div></div>
           </div>
         </div>
       </div>
-
       <div class="scrolly__steps">
-        <div class="step is-active" data-layer="0">
-          <div class="step__card">
+        <div class="step is-active step--center" data-layer="0">
+          <div class="step__card" style="text-align:center; max-width:34rem;">
             <h2 id="e4-h">No es solo la vista.<br />También el oído.</h2>
-            <p class="lede">La percepción no es un problema de los ojos. Es del cerebro.
-              Y si interpreta lo que ve… también interpreta lo que <strong>oye</strong>.</p>
+            <p class="lede">Si el cerebro interpreta lo que ve, también interpreta lo que oye. Escuchá una vez.</p>
             <div class="audio">
-              <button class="audio__play" id="audioPlay" aria-label="Reproducir audio">
-                <span class="audio__icon" aria-hidden="true">▶</span>
-              </button>
-              <span class="audio__hint">Escuchá una vez. ¿Qué palabra oís?</span>
+              <button class="audio__play" id="audioPlay" aria-label="Reproducir audio"><span class="audio__icon" aria-hidden="true">▶</span></button>
+              <span class="audio__hint">Un audio, para todos el mismo.</span>
             </div>
             <audio id="audioEl" src="./assets/download.mp3" preload="auto"></audio>
-            <div class="choices" role="group" aria-label="¿Qué escuchaste?">
+          </div>
+        </div>
+        <div class="step step--center" data-layer="0">
+          <div class="step__card" style="text-align:center; max-width:46rem;">
+            <h3>¿Qué palabra oíste?</h3>
+            <div class="choices choices--spread" role="group" aria-label="¿Qué escuchaste?">
               <button class="choice" data-choice="bicicleta" aria-pressed="false">Bicicleta</button>
               <button class="choice" data-choice="alquiler" aria-pressed="false">Alquiler</button>
             </div>
@@ -229,254 +205,184 @@
         </div>
         <div class="step" data-layer="1">
           <div class="step__card">
-            <h3>Es el mismo audio para todos.</h3>
-            <p>Casi mitad y mitad. Lo que oís no depende del sonido:
-              depende de lo que tu cerebro esperaba oír.</p>
+            <p class="lede">Es el mismo audio para todos.</p>
+            <p class="muted">Lo que oís no depende del sonido: depende de lo que tu cerebro esperaba oír.</p>
           </div>
         </div>
         <div class="step" data-layer="2">
           <div class="step__card">
-            <h3>Y si te muestro la palabra antes…</h3>
-            <p>…el mismo audio cambia. Leer <strong>“bicicleta”</strong> hace que 8 de cada 10 oigan bicicleta.
-              Es el mismo truco del contexto que viste con el pato —ahora en tus oídos.</p>
+            <p class="lede">Y si te muestro la palabra antes, el mismo audio cambia.</p>
+            <p class="muted">Leer “bicicleta” hace que 8 de cada 10 oigan bicicleta. El mismo truco del contexto —ahora en tus oídos.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ====================== E5 · Confianza ≠ acierto (cierre + puente) ====================== -->
+    <!-- ====================== E5 · Confianza ≠ acierto (cierre del módulo) ====================== -->
     <section class="scrolly" id="e5" data-act="perception" aria-labelledby="e5-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
-            <div class="viz__chart viz__chart--wide">
-              <div class="chart" data-chart="05_confianza_precision"
-                   role="img" aria-label="El acierto sube hasta la confianza media (48%) y cae en la confianza máxima (35,8%)."></div>
-              <p class="viz__cap">Confianza declarada (1 a 5) frente al porcentaje de acierto.</p>
-            </div>
+            <div class="viz__chart"><div class="chart" data-chart="05_confianza_precision" role="img" aria-label="El acierto sube hasta la confianza media y cae en la confianza máxima."></div></div>
           </div>
         </div>
       </div>
-
       <div class="scrolly__steps">
         <div class="step is-active" data-layer="0">
           <div class="step__card">
             <h2 id="e5-h">Cuanto más seguro estás,<br />peor ves.</h2>
-            <p class="lede">Hasta acá viste que tu cerebro se equivoca. Lo inquietante es lo otro:
-              mirá qué pasó con las personas que respondieron con <strong>máxima confianza</strong>.</p>
+            <p class="lede">Mirá qué pasó con quienes respondieron con <strong>máxima confianza</strong>.</p>
           </div>
         </div>
         <div class="step" data-layer="0">
           <div class="step__card">
-            <h3>El acierto se desploma justo donde más sobra la seguridad.</h3>
-            <p>Esa seguridad que no garantiza nada va a volver. Porque el cerebro que interpreta lo que ve
-              es el mismo que va a interpretar <em>qué le conviene</em>.</p>
+            <p class="lede">El acierto se desploma justo donde más sobra la seguridad.</p>
+            <p class="muted">Esa seguridad que no garantiza nada va a volver: el cerebro que interpreta lo que ve es el mismo que va a interpretar <em>qué le conviene</em>.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ====================== INTERLUDIO (puente) ====================== -->
-    <section class="interlude" id="interludioA" data-act="decision">
-      <div class="interlude__sticky">
-        <canvas class="noise-canvas" data-noise="text" data-glyph="$" aria-hidden="true"></canvas>
-        <div class="cover__vignette" aria-hidden="true"></div>
-        <div class="interlude__content">
-          <p class="interlude__text">
-            Si el cerebro tiene que decidir qué es lo que ve…
-            <em>¿cómo decide qué le conviene?</em>
-          </p>
+    <!-- ====================== PORTAL 2 · espiral → Decisión ====================== -->
+    <section class="portal" id="portal2" data-act="decision">
+      <div class="portal__sticky">
+        <canvas class="portal__canvas" data-spiral aria-hidden="true"></canvas>
+        <div class="portal__title">
+          <p class="portal__kicker">Módulo dos</p>
+          <h2 class="portal__name">Decisión</h2>
+          <p class="portal__sub">Tampoco elegís lo que creés que elegís.</p>
         </div>
       </div>
     </section>
 
-    <!-- ====================== E6 · El atajo (bate y pelota) ====================== -->
+    <!-- ====================== E6 · Bate y pelota ====================== -->
     <section class="scrolly" id="e6" data-act="decision" aria-labelledby="e6-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
             <div class="statement">
-              <p class="statement__eyebrow">Resolvé de cabeza</p>
-              <p class="statement__big">$1,10</p>
-              <p class="statement__line">cuestan un bate y una pelota, juntos.</p>
+              <p class="statement__eyebrow" id="e6-h">Un atajo que casi nunca falla</p>
+              <div class="batball" aria-hidden="true">
+                <svg viewBox="0 0 260 150" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                  <g transform="rotate(-36 165 75)">
+                    <path d="M120 75 H232" stroke-width="26" />
+                    <path d="M120 75 H232" stroke="#0B0C10" stroke-width="2" opacity="0.25" />
+                    <circle cx="110" cy="75" r="9" stroke-width="6" />
+                  </g>
+                  <circle cx="64" cy="92" r="30" stroke-width="5" />
+                  <path d="M42 78 q22 14 44 0 M42 106 q22 -14 44 0" stroke-width="3" opacity="0.85" />
+                </svg>
+              </div>
+              <p class="statement__line">Un bate y una pelota cuestan <strong>$1,10</strong>.</p>
               <p class="statement__line">El bate cuesta <strong>$1 más</strong> que la pelota.</p>
               <p class="statement__q">¿Cuánto cuesta la pelota?</p>
             </div>
           </div>
           <div class="viz__layer" data-layer="1">
-            <div class="viz__chart viz__chart--wide">
-              <div class="chart" data-chart="06_bate_pelota"
-                   role="img" aria-label="Respuestas más elegidas: $0,10 (intuitiva incorrecta) 58%, $0,05 (correcta) 33%, $1,00 5%, $0,01 4%."></div>
-              <p class="viz__cap">Las cuatro respuestas más elegidas. La correcta es $0,05.</p>
-            </div>
+            <div class="viz__chart"><div class="chart" data-chart="06_bate_pelota" role="img" aria-label="La respuesta intuitiva $0,10 es la más elegida pero está mal; la correcta es $0,05."></div></div>
           </div>
         </div>
       </div>
-
       <div class="scrolly__steps">
-        <div class="step is-active" data-layer="0">
-          <div class="step__card">
-            <h2 id="e6-h">Un atajo que casi nunca falla.<br />Acá falla.</h2>
-            <p class="lede">Tomate un segundo con el problema de al lado antes de seguir.</p>
-          </div>
-        </div>
+        <div class="step is-active" data-layer="0"></div>
         <div class="step" data-layer="1">
           <div class="step__card">
-            <h3>Si pensaste $0,10, te pasó lo mismo que a la mayoría.</h3>
-            <p>Está mal: la pelota cuesta <strong>$0,05</strong> (y el bate, $1,05). La respuesta de “10 centavos”
-              salta sola porque $1,10 se parte fácil en $1 + $0,10.</p>
-            <p class="muted">Tu cabeza tiene un sistema rápido y barato —casi siempre alcanza— y uno lento y costoso,
-              que casi nunca encendés.</p>
+            <p class="lede">Si pensaste $0,10, te pasó lo mismo que a la mayoría. Está mal.</p>
+            <p class="muted">La pelota cuesta <strong>$0,05</strong> (y el bate, $1,05). Tu cabeza tiene un sistema rápido —casi siempre alcanza— y uno lento, que casi nunca encendés.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ====================== E7 · Perder duele más que ganar (aversión a las pérdidas) ====================== -->
+    <!-- ====================== E7 · Aversión a las pérdidas ====================== -->
     <section class="scrolly" id="e7" data-act="decision" aria-labelledby="e7-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
             <div class="statement gamble">
-              <p class="statement__eyebrow">Tiro una moneda</p>
+              <p class="statement__eyebrow" id="e7-h">Tiro una moneda</p>
               <p class="gamble__row gamble__row--win">Sale cara <span>+$50</span></p>
               <p class="gamble__row gamble__row--lose">Sale ceca <span>−$50</span></p>
               <p class="statement__q">¿Aceptás el juego?</p>
             </div>
           </div>
           <div class="viz__layer" data-layer="1">
-            <div class="viz__chart viz__chart--wide">
-              <div class="chart" data-chart="07_aversion_perdidas"
-                   role="img" aria-label="Función de valor: la curva de pérdidas (roja) cae más rápido de lo que sube la de ganancias (verde). Perder pesa 2,25 veces más que ganar lo mismo."></div>
-              <p class="viz__cap">Valor psicológico de cada resultado. La rama roja cae más de lo que sube la verde.</p>
-            </div>
+            <div class="viz__chart"><div class="chart" data-chart="07_aversion_perdidas" role="img" aria-label="La rama de pérdidas cae más rápido de lo que sube la de ganancias: perder pesa 2,25 veces más."></div></div>
           </div>
         </div>
       </div>
-
       <div class="scrolly__steps">
-        <div class="step is-active" data-layer="0">
+        <div class="step is-active" data-layer="0"></div>
+        <div class="step" data-layer="1">
           <div class="step__card">
-            <h2 id="e7-h">Perder duele más<br />de lo que ganar alegra.</h2>
-            <p class="lede">El juego de al lado es matemáticamente “justo”: ganás y perdés lo mismo, con igual probabilidad.
-              Y, sin embargo, casi nadie acepta.</p>
+            <p class="lede">El juego es “justo”: ganás y perdés lo mismo, y casi nadie acepta. Para tu cerebro no lo es.</p>
+            <p class="muted">La rama de las pérdidas se hunde más rápido de lo que sube la de las ganancias.</p>
           </div>
         </div>
         <div class="step" data-layer="1">
           <div class="step__card">
-            <h3>Para tu cerebro, el juego no es justo.</h3>
-            <p>La rama de las pérdidas se hunde mucho más rápido de lo que sube la de las ganancias.
-              El mismo monto, perdido, pesa más que ganado.</p>
-          </div>
-        </div>
-        <div class="step" data-layer="1">
-          <div class="step__card">
-            <h3><span class="stat-line__num">λ = 2,25×</span></h3>
-            <p>Perder $50 duele <strong>2,25 veces más</strong> de lo que alegra ganarlos. El sistema que grita ante la
-              pérdida (amígdala, ínsula) le gana al de la recompensa (estriado, núcleo accumbens).</p>
+            <p class="stat-line"><span class="stat-line__num">λ = 2,25×</span></p>
+            <p class="muted">Perder $50 duele 2,25 veces más de lo que alegra ganarlos. El sistema que grita ante la pérdida (amígdala, ínsula) le gana al de la recompensa.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ====================== E8 · El mismo problema, dos respuestas (encuadre) ====================== -->
+    <!-- ====================== E8 · Encuadre (framing) ====================== -->
     <section class="scrolly" id="e8" data-act="decision" aria-labelledby="e8-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
             <div class="statement">
+              <p class="statement__eyebrow" id="e8-h">El mismo problema, dos respuestas</p>
               <p class="statement__big">600</p>
               <p class="statement__line">personas en riesgo por una enfermedad.</p>
-              <p class="statement__line">Dos programas posibles. <strong>El mismo resultado</strong>,
-                contado de dos maneras.</p>
+              <p class="statement__line">Dos programas. <strong>El mismo resultado</strong>, contado de dos maneras.</p>
             </div>
           </div>
           <div class="viz__layer" data-layer="1">
-            <div class="viz__chart viz__chart--wide">
-              <div class="chart" data-chart="08_framing_enfermedad"
-                   role="img" aria-label="Encuadre en vidas salvadas: 72% elige lo seguro. Encuadre en muertes: solo 22% elige lo seguro."></div>
-              <p class="viz__cap">% que elige la opción segura, según cómo se enuncia el mismo resultado.</p>
-            </div>
+            <div class="viz__chart"><div class="chart" data-chart="08_framing_enfermedad" role="img" aria-label="En vidas salvadas 72% elige lo seguro; en muertes, solo 22%."></div></div>
           </div>
         </div>
       </div>
-
       <div class="scrolly__steps">
-        <div class="step is-active" data-layer="0">
-          <div class="step__card">
-            <h2 id="e8-h">El mismo problema,<br />dos respuestas.</h2>
-            <p class="lede">Hay que elegir entre un programa seguro y uno arriesgado.
-              Lo único que cambia es la palabra con la que te lo cuentan.</p>
-          </div>
-        </div>
+        <div class="step is-active" data-layer="0"></div>
         <div class="step" data-layer="1">
           <div class="step__card">
-            <h3>Misma cuenta, decisión opuesta.</h3>
-            <p>Contado en <strong>vidas salvadas</strong>, la gente elige lo seguro (72%).
-              Contado en <strong>muertes</strong> —el mismo resultado— se arriesga, y lo seguro cae al 22%.</p>
-          </div>
-        </div>
-        <div class="step" data-layer="1">
-          <div class="step__card">
-            <h3>Es el pato-conejo, otra vez.</h3>
-            <p>El mismo estímulo, leído distinto según el contexto. La percepción y la decisión
-              usan la misma maquinaria: rellenar lo ambiguo con la interpretación que el marco sugiere.</p>
+            <p class="lede">Contado en <strong>vidas salvadas</strong>, elegís lo seguro. En <strong>muertes</strong> —lo mismo— te arriesgás.</p>
+            <p class="muted">Es el pato-conejo otra vez: el mismo estímulo, leído distinto según el contexto.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ====================== E9 · Los que menos saben, más seguros (Dunning-Kruger) ====================== -->
+    <!-- ====================== E9 · Dunning-Kruger (cierre del módulo) ====================== -->
     <section class="scrolly" id="e9" data-act="decision" aria-labelledby="e9-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
-            <div class="viz__chart viz__chart--wide">
-              <div class="chart" data-chart="09_dunning_kruger"
-                   role="img" aria-label="Por cuartil de habilidad real: los peores (percentil 12) se creen en el percentil 62; los mejores se subestiman."></div>
-              <p class="viz__cap">Habilidad real frente a lo que cada uno cree de sí mismo, por cuartil.</p>
-            </div>
+            <div class="viz__chart"><div class="chart" data-chart="09_dunning_kruger" role="img" aria-label="Los peores se creen muy por encima de su nivel; los mejores se subestiman."></div></div>
           </div>
         </div>
       </div>
-
       <div class="scrolly__steps">
         <div class="step is-active" data-layer="0">
           <div class="step__card">
-            <h2 id="e9-h">Los que menos saben<br />son los más seguros.</h2>
-            <p class="lede">Pasa algo raro con la confianza: los que peor hacen una tarea son los que más se
-              sobreestiman. No les alcanza la habilidad ni para darse cuenta de lo que les falta.</p>
+            <h2 id="e9-h">Los que menos saben,<br />más seguros están.</h2>
+            <p class="lede">No les alcanza la habilidad ni para darse cuenta de lo que les falta.</p>
           </div>
         </div>
         <div class="step" data-layer="0">
           <div class="step__card">
-            <h3>Y los mejores se subestiman.</h3>
-            <p>Creen que cualquiera podría hacer lo que ellos hacen. Es <em>la misma curva de la confianza</em>
-              que ya viste —ahora sobre tu propio juicio.</p>
-            <p class="muted">Esa seguridad de más es, justamente, la palanca que en el próximo tramo alguien va a aprovechar.</p>
+            <p class="lede">Y los mejores se subestiman.</p>
+            <p class="muted">Es <em>la misma curva de la confianza</em> que ya viste. Esa seguridad de más es, justo, la palanca que en el próximo tramo alguien va a aprovechar.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ====================== INTERLUDIO (puente al tramo de los sesgos) ====================== -->
-    <section class="interlude" id="interludioB" data-act="bias">
-      <div class="interlude__sticky">
-        <canvas class="noise-canvas" data-noise="eye" aria-hidden="true"></canvas>
-        <div class="cover__vignette" aria-hidden="true"></div>
-        <div class="interlude__content">
-          <p class="interlude__text">
-            Si tus errores son predecibles y universales…
-            <em>alguien los puede diseñar.</em>
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Continúa en la próxima fase (Acto 3 · sesgos), sin rótulos de acto en pantalla -->
-    <section class="endcap" aria-hidden="true">
-      <p>· · ·</p>
-    </section>
+    <!-- Continúa en el próximo módulo (sesgos) — próxima fase -->
+    <section class="endcap" aria-hidden="true"><p>· · ·</p></section>
 
   </main>
 
