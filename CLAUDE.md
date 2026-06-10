@@ -117,12 +117,15 @@ assets/               imágenes y audio (ver "Mapa de assets")
   E9 Dunning-Kruger (G9, 2 líneas: creen vs saben; conecta con E5). E6/E7/E8 abren con **tarjeta de planteo**
   (`.statement`/`.gamble`, la bajada va como eyebrow) y el gráfico aparece al scrollear. La transición entre
   módulos la hace el **portal de espiral** (ya NO hay interludios $/ojo).
-- **Fase 4 — Acto 3: PENDIENTE.** E10 mejor que el promedio (`10_mejor_que_promedio`, línea ref 50%) ·
-  E11 Forer/Barnum (`11_efecto_forer` dato 4,26/5 + `11b_texto_barnum` anotado) · E12 pareidolia
-  (`12_pareidolia_paranormal` + las 3 imágenes) · E13 brecha con la ciencia (`13_brecha_consenso` + `13b`).
-  Acento violeta (`data-act="bias"`). **Regla del acto: cada escena conecta explícitamente con una ilusión ya vista.**
-- **Fase 5 — PENDIENTE.** Cierre (Checker Shadow, sin interacción) + pie (créditos, autores, materia, fuentes)
-  + pulido responsive + performance.
+- **Fase 4 — Acto 3: HECHA (jun-2026).** Mismo patrón full-bleed, **portal de espiral → "Sesgos"**, acento violeta.
+  E10 mejor que el promedio (G10 `10_mejor_que_promedio`, barras h. + línea de ref en 50%) · E11 Forer/Barnum
+  (3 capas HTML: lectura `11_lectura` → dato grande `11_efecto_forer` 4,26/5 → texto anotado `11b_texto_barnum`;
+  conexión con las víboras de E3, NO con triángulo) · E12 pareidolia (3 caras en `.faces` + G12
+  `12_pareidolia_paranormal` con explicación científica en el tooltip) · E13 brecha (G13 `13_brecha_consenso`,
+  Ciencia vs Público; "cura del cáncer oculta" ciencia ~0 vs 67%). **Cada escena conecta con una ilusión ya vista.**
+- **Fase 5 — CASI HECHA.** Cierre con **Checker Shadow** (`#cierre`, full-bleed, termina en "Ahora lo sabés") +
+  **pie** (`footer.pie`: materia, fuentes) ya están. **Pendiente:** completar los **nombres de autores** en el pie
+  (placeholder `[completar nombres del equipo]`), pulido responsive/mobile y performance.
 
 ## CORRECCIÓN DE COPY importante (E11)
 En E11 (Forer/Barnum) la frase de conexión **NO** debe mencionar un triángulo (esa escena no existe).

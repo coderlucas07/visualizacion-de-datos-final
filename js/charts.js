@@ -377,4 +377,114 @@ export const CHARTS = {
     };
     mountChart(container, option, opts);
   },
+
+  /* ===================== ACTO 3 · SESGOS (acento violeta) ===================== */
+
+  /* ---------- G10 · Mejor que el promedio (E10) ---------- */
+  '10_mejor_que_promedio'(container, data, opts) {
+    const rows = rowsToObjects(data['10_mejor_que_promedio']);
+    const accent = accentOf(container);
+    const lbl = (r) => /EE\.UU\./.test(r.muestra) ? 'Manejar (EE.UU.)' : /Suecia/.test(r.muestra) ? 'Manejar (Suecia)' : r.dominio;
+    const items = rows.map((r) => ({ label: lbl(r), value: r.pct_arriba_del_promedio, muestra: r.muestra, fuente: r.fuente }))
+      .sort((a, b) => a.value - b.value); // asc: el más alto queda arriba (category pinta abajo→arriba)
+    const option = {
+      ...baseOption(accent),
+      title: titleBlock('Casi todos se creen por encima de la media', '% que se cree mejor que el promedio · la línea marca el 50% (lo posible)'),
+      grid: { left: 16, right: 60, top: 96, bottom: 24, containLabel: true },
+      xAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
+      yAxis: catAxis({ data: items.map((i) => i.label), axisLabel: { fontSize: 14 } }),
+      tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong> — ${p.value}%<br>${items[p.dataIndex].muestra} · ${items[p.dataIndex].fuente}` },
+      series: [{
+        type: 'bar', barWidth: '58%',
+        data: items.map((i) => ({ value: i.value, itemStyle: { color: hexA(accent, 0.45 + 0.5 * (i.value / 100)), borderRadius: [0, 8, 8, 0] } })),
+        label: { show: true, position: 'right', color: INK, fontFamily: DISPLAY, fontSize: 16, fontWeight: 600, formatter: '{c}%' },
+        markLine: { silent: true, symbol: 'none', lineStyle: { color: INK_DIM, type: 'dashed', width: 1.5 }, label: { show: true, formatter: '50%', position: 'end', color: INK_DIM, fontFamily: DISPLAY }, data: [{ xAxis: 50 }] },
+        animationDuration: 1100, animationEasing: 'cubicOut', animationDelay: (i) => i * 110,
+      }],
+    };
+    mountChart(container, option, opts);
+  },
+
+  /* ---------- G11 · Lectura Barnum (E11, capa 0) — HTML ---------- */
+  '11_lectura'(container, data) {
+    const rows = rowsToObjects(data['11b_texto_barnum']);
+    container.classList.add('reading');
+    container.innerHTML = `<p class="reading__quote">${rows.map((r) => r.frase).join(' ')}</p>`;
+  },
+
+  /* ---------- G11 · Dato grande Forer (E11, capa 1) — HTML ---------- */
+  '11_efecto_forer'(container, data) {
+    const rows = rowsToObjects(data['11_efecto_forer']);
+    const accent = accentOf(container);
+    const main = rows[0];
+    container.classList.add('bigstat');
+    container.innerHTML = `
+      <div class="bigstat__num" style="color:${accent}">${main.valor}</div>
+      <p class="bigstat__cap">${main.detalle}</p>
+      <ul class="bigstat__list">
+        ${rows.slice(1).map((r) => `<li><strong>${r.valor}</strong> · ${r.item}</li>`).join('')}
+      </ul>`;
+  },
+
+  /* ---------- G11b · Texto Barnum anotado (E11, capa 2) — HTML ---------- */
+  '11b_texto_barnum'(container, data) {
+    const rows = rowsToObjects(data['11b_texto_barnum']);
+    const accent = accentOf(container);
+    container.classList.add('annotated');
+    container.innerHTML = rows.map((r) => `
+      <div class="annotated__item">
+        <p class="annotated__frase">“${r.frase}”</p>
+        <p class="annotated__tech" style="color:${accent}">↳ ${r.tecnica_lectura_en_frio}</p>
+      </div>`).join('');
+  },
+
+  /* ---------- G12 · Pareidolia / paranormal (E12) ---------- */
+  '12_pareidolia_paranormal'(container, data, opts) {
+    const rows = rowsToObjects(data['12_pareidolia_paranormal']);
+    const accent = accentOf(container);
+    const ordered = rows.slice().sort((a, b) => a.pct_si - b.pct_si);
+    const option = {
+      ...baseOption(accent),
+      title: titleBlock('Cuántos vivieron algo “paranormal”', 'Experiencias reportadas · pasá el cursor para ver la explicación científica'),
+      grid: { left: 16, right: 48, top: 96, bottom: 24, containLabel: true },
+      xAxis: valAxis({ max: 50, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
+      yAxis: catAxis({ data: ordered.map((r) => r.experiencia), axisLabel: { color: INK, fontSize: 13, width: 250, overflow: 'break' } }),
+      tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong>: ${p.value}%<br><span style="color:${accent}">Explicación:</span> ${ordered[p.dataIndex].explicacion_cientifica}` },
+      series: [{
+        type: 'bar', barWidth: '56%',
+        data: ordered.map((r) => ({ value: r.pct_si, itemStyle: { color: accent, borderRadius: [0, 8, 8, 0] } })),
+        label: { show: true, position: 'right', color: INK, fontFamily: DISPLAY, fontSize: 15, fontWeight: 600, formatter: '{c}%' },
+        animationDuration: 1100, animationEasing: 'cubicOut', animationDelay: (i) => i * 120,
+      }],
+    };
+    mountChart(container, option, opts);
+  },
+
+  /* ---------- G13 · Brecha ciencia vs público (E13) ---------- */
+  '13_brecha_consenso'(container, data, opts) {
+    const rows = rowsToObjects(data['13_brecha_consenso']);
+    const accent = accentOf(container);
+    const lbl = (t) => ({
+      'Cambio climático humano': 'Cambio\nclimático', 'Evolución humana': 'Evolución', 'Transgénicos seguros': 'Transgénicos',
+      'Vacunas (seguras)': 'Vacunas', "'La cura del cáncer está oculta'": '“Cura del\ncáncer oculta”',
+    }[t] || t);
+    const items = rows.map((r) => ({ tema: r.tema, ciencia: r.pct_cientificos, publico: r.pct_publico_arg != null ? r.pct_publico_arg : r.pct_publico_usa, brecha: r.brecha_pp, ben: r.beneficiario_del_hueco }));
+    const option = {
+      ...baseOption(accent),
+      title: titleBlock('La ciencia dice una cosa; la gente, otra', '% de acuerdo: consenso científico vs. público · pasá el cursor: ¿quién se beneficia?'),
+      grid: { left: 6, right: 16, top: 122, bottom: 30, containLabel: true },
+      legend: { data: ['Ciencia', 'Público'], top: 78, textStyle: { color: INK_DIM }, icon: 'roundRect' },
+      xAxis: catAxis({ data: items.map((i) => lbl(i.tema)), axisLabel: { color: INK, fontSize: 12, interval: 0, lineHeight: 15 } }),
+      yAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
+      tooltip: {
+        ...baseOption(accent).tooltip, trigger: 'axis', axisPointer: { type: 'shadow' },
+        formatter: (ps) => { const it = items[ps[0].dataIndex]; return `<strong>${it.tema}</strong><br>Ciencia: ${it.ciencia}% · Público: ${it.publico}%<br>Brecha: ${it.brecha} pp<br><span style="color:${accent}">Se beneficia:</span> ${it.ben}`; },
+      },
+      series: [
+        { name: 'Ciencia', type: 'bar', barWidth: '30%', data: items.map((i) => i.ciencia), itemStyle: { color: accent, borderRadius: [4, 4, 0, 0] }, label: { show: true, position: 'top', color: INK, fontFamily: DISPLAY, fontSize: 13, formatter: '{c}%' } },
+        { name: 'Público', type: 'bar', barWidth: '30%', data: items.map((i) => i.publico), itemStyle: { color: hexA(accent, 0.32), borderRadius: [4, 4, 0, 0] }, label: { show: true, position: 'top', color: INK_DIM, fontFamily: DISPLAY, fontSize: 13, formatter: '{c}%' } },
+      ],
+    };
+    mountChart(container, option, opts);
+  },
 };

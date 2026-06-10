@@ -10,11 +10,13 @@ Scrollytelling para **Visualización de Datos (UTDT)**: cómo el cerebro constru
 
 ## Estado actual (jun-2026)
 
-- ✅ **Acto 1 — Percepción** (E1–E5 + portada + Interludio A). Reconstruido como **scrollytelling real**:
-  gráfico fijo (sticky) + pasos de texto que lo van cambiando con el scroll. Sin rótulos de "Acto".
-- ✅ **Acto 2 — Decisión** (E6–E9 + Interludio B). Mismo patrón, acento ámbar.
-- ⬜ **Acto 3 — Sesgos** (E10–E13) + cierre (Checker Shadow) + pie (créditos/fuentes). **← lo que sigue.**
-- ⬜ Retoques sueltos del Acto 1 (copy / ritmo).
+La historia completa está armada (3 módulos + cierre). Layout **full-bleed**: el visual ocupa toda la pantalla,
+el texto va superpuesto, y cada módulo abre con un **portal de espiral** (gira → negro → título del módulo).
+
+- ✅ **Módulo 1 — Percepción** (E1–E5).
+- ✅ **Módulo 2 — Decisión** (E6–E9).
+- ✅ **Módulo 3 — Sesgos** (E10–E13) + **cierre** (Checker Shadow) + **pie** (créditos/fuentes).
+- ⬜ **Pendiente:** completar los nombres de autores en el pie, pulido responsive/mobile y performance.
 
 Detalle escena por escena y convenciones: en [`CLAUDE.md`](CLAUDE.md).
 

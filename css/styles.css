@@ -271,6 +271,42 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: 0.9em; background
 .audio__play.is-playing { background: var(--accent); color: #08090c; }
 .audio__hint { color: var(--ink-dim); font-size: 0.98rem; }
 
+/* ----------------------------- Forer / Barnum (E11) ----------------------------- */
+.reading { max-width: 42rem; padding: 0 1rem; }
+.reading__quote {
+  font-family: var(--font-display); font-weight: 500;
+  font-size: clamp(1.4rem, 1.1rem + 1.7vw, 2.5rem);
+  line-height: 1.32; color: var(--ink); margin: 0; max-width: none;
+}
+.bigstat { text-align: center; max-width: 36ch; padding: 0 1rem; }
+.bigstat__num { font-family: var(--font-display); font-weight: 700; font-size: clamp(4rem, 3rem + 9vw, 9rem); line-height: 0.88; letter-spacing: -0.03em; }
+.bigstat__cap { color: var(--ink-dim); font-size: 1.1rem; margin: 0.7rem auto 0; max-width: 28ch; }
+.bigstat__list { list-style: none; padding: 0; margin: 1.8rem 0 0; display: grid; gap: 0.7rem; color: var(--ink); }
+.bigstat__list li { font-size: 1.02rem; }
+.bigstat__list strong { color: #fff; }
+.annotated { max-width: 44rem; display: grid; gap: 1.3rem; padding: 0 1rem; }
+.annotated__frase { font-size: clamp(1.05rem, 1rem + 0.4vw, 1.3rem); color: var(--ink); margin: 0; max-width: none; }
+.annotated__tech { font-family: var(--font-display); font-weight: 500; font-size: 0.98rem; margin: 0.25rem 0 0; }
+
+/* ----------------------------- Pareidolia (E12) ----------------------------- */
+.faces { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(8px, 1.4vw, 16px); width: min(94vw, 920px); }
+.faces img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--radius); border: 1px solid var(--line); }
+@media (max-width: 720px) { .faces { grid-template-columns: 1fr; max-width: 70vw; } }
+
+/* ----------------------------- Cierre · Checker Shadow ----------------------------- */
+.checker { width: min(78vh, 90vw); }
+.checker img { width: 100%; border-radius: var(--radius); }
+.closing-line { font-family: var(--font-display); font-weight: 700; font-size: clamp(2.4rem, 1.6rem + 5vw, 5.5rem); color: var(--accent); margin: 0; }
+
+/* ----------------------------- Pie / créditos ----------------------------- */
+.pie { padding: 14vh var(--pad-x) 9vh; border-top: 1px solid var(--line); background: var(--bg-2); }
+.pie__inner { max-width: 60rem; margin-inline: auto; }
+.pie__title { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2.2rem); color: var(--ink); margin-bottom: 1.2rem; }
+.pie p { max-width: 62ch; color: var(--ink-dim); }
+.pie .pie__src { font-size: 0.9rem; color: var(--ink-faint); margin-top: 1.4rem; }
+.pie a { color: var(--accent); text-decoration: none; }
+.pie a:hover { text-decoration: underline; }
+
 /* ----------------------------- Portada (limpia, sin partículas) ----------------------------- */
 .cover {
   min-height: 100vh;

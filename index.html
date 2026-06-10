@@ -381,8 +381,191 @@
       </div>
     </section>
 
-    <!-- Continúa en el próximo módulo (sesgos) — próxima fase -->
-    <section class="endcap" aria-hidden="true"><p>· · ·</p></section>
+    <!-- ====================== PORTAL 3 · espiral → Sesgos ====================== -->
+    <section class="portal" id="portal3" data-act="bias">
+      <div class="portal__sticky">
+        <canvas class="portal__canvas" data-spiral aria-hidden="true"></canvas>
+        <div class="portal__title">
+          <p class="portal__kicker">Módulo tres</p>
+          <h2 class="portal__name">Sesgos</h2>
+          <p class="portal__sub">Y otros lo saben —y lo usan.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== E10 · Mejor que el promedio ====================== -->
+    <section class="scrolly" id="e10" data-act="bias" aria-labelledby="e10-h">
+      <div class="scrolly__graphic">
+        <div class="viz">
+          <div class="viz__layer is-active" data-layer="0">
+            <div class="viz__chart"><div class="chart" data-chart="10_mejor_que_promedio" role="img" aria-label="En todos los dominios, mucho más de la mitad se cree por encima del promedio."></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="scrolly__steps">
+        <div class="step is-active" data-layer="0">
+          <div class="step__card">
+            <h2 id="e10-h">El 93% se cree mejor<br />que el promedio al volante.</h2>
+            <p class="lede">Es matemáticamente imposible: por definición, <strong>solo la mitad</strong> puede estar por encima de la media.</p>
+          </div>
+        </div>
+        <div class="step" data-layer="0">
+          <div class="step__card">
+            <p class="lede">No es soberbia: es una ilusión.</p>
+            <p class="muted">El mismo cerebro que vio moverse una imagen quieta se ve a sí mismo mejor de lo que es.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== E11 · Forer / Barnum ====================== -->
+    <section class="scrolly" id="e11" data-act="bias" aria-labelledby="e11-h">
+      <div class="scrolly__graphic">
+        <div class="viz">
+          <div class="viz__layer is-active" data-layer="0">
+            <div class="reading" data-chart="11_lectura"></div>
+          </div>
+          <div class="viz__layer" data-layer="1">
+            <div class="bigstat" data-chart="11_efecto_forer"></div>
+          </div>
+          <div class="viz__layer" data-layer="2">
+            <div class="annotated" data-chart="11b_texto_barnum"></div>
+          </div>
+        </div>
+      </div>
+      <div class="scrolly__steps">
+        <div class="step is-active" data-layer="0">
+          <div class="step__card">
+            <h2 id="e11-h">Leé esto con atención.</h2>
+            <p class="lede">Es una descripción de <em>tu</em> personalidad. ¿Te sentís identificado?</p>
+          </div>
+        </div>
+        <div class="step" data-layer="1">
+          <div class="step__card">
+            <p class="lede">Es normal: <strong>este texto se lo mostramos a todos</strong>.</p>
+            <p class="muted">En 1948, Bertram Forer le dio la misma descripción genérica a sus alumnos y la calificaron, en promedio, 4,26 sobre 5 de precisión. Es el truco del horóscopo, del tarot y del psíquico.</p>
+          </div>
+        </div>
+        <div class="step" data-layer="2">
+          <div class="step__card">
+            <p class="lede">Cada frase explota un sesgo distinto.</p>
+            <p class="muted">Tu cerebro completó un texto vago con tu propia vida, igual que le agregó movimiento a una imagen que estaba quieta. La creencia y la ilusión funcionan con el mismo mecanismo: rellenar lo ambiguo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== E12 · Pareidolia / apofenia ====================== -->
+    <section class="scrolly" id="e12" data-act="bias" aria-labelledby="e12-h">
+      <div class="scrolly__graphic">
+        <div class="viz">
+          <div class="viz__layer is-active" data-layer="0">
+            <div class="faces">
+              <img src="./assets/cafe-con-cara.jpg" alt="Una 'cara' formada por la espuma de un café." />
+              <img src="./assets/450_1000.webp" alt="Una 'cara' que aparece en la textura de una pared." />
+              <img src="./assets/blog_caras.jpg" alt="La famosa 'cara' en una formación rocosa de Marte." />
+            </div>
+          </div>
+          <div class="viz__layer" data-layer="1">
+            <div class="viz__chart"><div class="chart" data-chart="12_pareidolia_paranormal" role="img" aria-label="Muchas personas reportan experiencias paranormales que tienen explicación científica."></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="scrolly__steps">
+        <div class="step is-active step--center" data-layer="0">
+          <div class="step__card" style="text-align:center; max-width:40rem;">
+            <h2 id="e12-h">El cerebro que ve fantasmas.</h2>
+            <p class="lede">Somos tan buenos detectando patrones que los vemos donde no hay: una cara en un enchufe, una presencia en una habitación vacía.</p>
+          </div>
+        </div>
+        <div class="step" data-layer="1">
+          <div class="step__card">
+            <p class="lede">El mismo cerebro que encontró movimiento en las víboras quietas encuentra fantasmas en el ruido.</p>
+            <p class="muted">Cada experiencia “paranormal” tiene una explicación conocida: pareidolia, infrasonido, alucinación hipnagógica. Pasá el cursor por las barras.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== E13 · La brecha con la ciencia ====================== -->
+    <section class="scrolly" id="e13" data-act="bias" aria-labelledby="e13-h">
+      <div class="scrolly__graphic">
+        <div class="viz">
+          <div class="viz__layer is-active" data-layer="0">
+            <div class="viz__chart"><div class="chart" data-chart="13_brecha_consenso" role="img" aria-label="Hay una brecha grande entre el consenso científico y lo que cree el público."></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="scrolly__steps">
+        <div class="step is-active" data-layer="0">
+          <div class="step__card">
+            <h2 id="e13-h">Más seguros que<br />los que saben.</h2>
+            <p class="lede">Aunque nos equivoquemos, sentimos que tenemos razón —incluso frente a miles de científicos que estudiaron el tema toda su vida.</p>
+          </div>
+        </div>
+        <div class="step" data-layer="0">
+          <div class="step__card">
+            <p class="lede">Y hay industrias que lo saben.</p>
+            <p class="muted">“La duda es nuestro producto”, escribió una tabacalera en 1969. Hoy las mismas técnicas se usan para negar el cambio climático.</p>
+          </div>
+        </div>
+        <div class="step" data-layer="0">
+          <div class="step__card">
+            <p class="lede">Es la ilusión más cara de todas.</p>
+            <p class="muted">Creer que tu percepción del mundo le gana al método que se inventó, justamente, para corregir las ilusiones del cerebro.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== CIERRE · Checker Shadow (sin interacción) ====================== -->
+    <section class="scrolly" id="cierre" data-act="bias" aria-labelledby="cierre-h">
+      <div class="scrolly__graphic">
+        <div class="viz">
+          <div class="viz__layer is-active" data-layer="0">
+            <figure class="checker"><img src="./assets/Checker_shadow_illusion.svg" alt="Ilusión del tablero de Adelson: los cuadrados A y B son exactamente del mismo gris, aunque parezcan distintos." /></figure>
+          </div>
+        </div>
+      </div>
+      <div class="scrolly__steps">
+        <div class="step is-active" data-layer="0">
+          <div class="step__card">
+            <h2 id="cierre-h">No podés apagar la ilusión.</h2>
+            <p class="lede">El tablero te va a seguir mostrando dos grises distintos aunque ya sepas que son exactamente el mismo color.</p>
+          </div>
+        </div>
+        <div class="step" data-layer="0">
+          <div class="step__card">
+            <p class="lede">Tu cerebro no te miente para hacerte mal.</p>
+            <p class="muted">Te miente porque construir una versión <em>útil</em> de la realidad es lo único que sabe hacer. Lo hace cuando mirás, cuando elegís y cuando creés.</p>
+          </div>
+        </div>
+        <div class="step" data-layer="0">
+          <div class="step__card">
+            <p class="lede">La única diferencia entre caer en la trampa y verla venir no es ser más inteligente.</p>
+            <p class="muted">Es saber que la trampa existe.</p>
+          </div>
+        </div>
+        <div class="step step--center" data-layer="0">
+          <div class="step__card" style="text-align:center;">
+            <p class="closing-line">Ahora lo sabés.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== PIE · créditos y fuentes ====================== -->
+    <footer class="pie" data-act="bias">
+      <div class="pie__inner">
+        <p class="pie__title">Tu cerebro no te cuenta toda la verdad.</p>
+        <p>Trabajo final de <strong>Visualización de Datos</strong> — Universidad Torcuato Di Tella.</p>
+        <p>Autores: <em>[completar nombres del equipo]</em>.</p>
+        <p class="pie__src">Fuentes: Jastrow (1899) · Kitaoka (Rotating Snakes) · Frederick (2005) · Tversky &amp; Kahneman (1981) ·
+          Svenson (1981) · Forer (1948) · Kruger &amp; Dunning (1999) · Molins &amp; Serrano (2019) · Pew Research ·
+          Pulsar UBA · YouGov. Datos en <code>data/datos_visualizaciones.json</code> (reales + simulados coherentes;
+          ver hoja <code>_metodologia</code>).</p>
+      </div>
+    </footer>
 
   </main>
 
