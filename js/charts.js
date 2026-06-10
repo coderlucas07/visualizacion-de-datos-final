@@ -180,37 +180,48 @@ export const CHARTS = {
     });
   },
 
-  /* ---------- G3 (remate) · 96 de cada 100 (E3) ---------- */
-  '03_count'(container, data) {
-    const r = data['03_ilusiones_movimiento_waffle'].resumen;
-    container.classList.add('stat-line');
-    container.innerHTML =
-      `<span class="stat-line__num">${r.ven_movimiento} de cada 100</span> personas ven movimiento en una imagen estática.`;
-  },
-
-  /* ---------- G3 · Waffle 100 personas (E3) — Canvas/HTML, no ECharts ---------- */
+  /* ---------- G3 · Waffle 100 personas (E3) — HTML, se pinta con el scroll ----------
+     No anima solo: expone container.__setWaffle(p) y main.js lo llama con el
+     progreso de scroll del paso, encendiendo de a poco las 96 personitas. */
   '03_ilusiones_movimiento_waffle'(container, data, opts) {
     const sheet = data['03_ilusiones_movimiento_waffle'];
     const accent = accentOf(container);
-    const ven = sheet.resumen.ven_movimiento;
+    const onTotal = sheet.resumen.ven_movimiento; // 96
     container.classList.add('waffle');
     container.setAttribute('role', 'img');
-    container.setAttribute('aria-label', `${ven} de 100 personas ven movimiento en una imagen estática.`);
+    container.setAttribute('aria-label', `${onTotal} de 100 personas ven movimiento en una imagen estática.`);
     container.style.setProperty('--accent-on', accent);
 
+    const cells = [];
     const frag = document.createDocumentFragment();
-    sheet.rows.forEach((row, i) => {
+    sheet.rows.forEach((row) => {
       const cell = document.createElement('span');
       cell.className = 'waffle__cell';
-      if (row[1] === 1) {
-        cell.classList.add('on');
-        if (!opts.reduced) cell.style.setProperty('--d', (i * 11) + 'ms');
-      }
+      cell.dataset.eligible = row[1] === 1 ? '1' : '0'; // las primeras 96 pueden encenderse
       frag.appendChild(cell);
+      cells.push(cell);
     });
     container.appendChild(frag);
-    // dispara la animación de encendido en el próximo frame
-    requestAnimationFrame(() => requestAnimationFrame(() => container.classList.add('is-on')));
+
+    let lit = -1;
+    container.__setWaffle = (p) => {
+      const n = Math.max(0, Math.min(onTotal, Math.round(p * onTotal)));
+      if (n === lit) return;
+      lit = n;
+      let count = 0;
+      for (const c of cells) {
+        if (c.dataset.eligible === '1') {
+          const on = count < n;
+          c.classList.toggle('on', on);
+          if (on) count++;
+        } else {
+          c.classList.remove('on');
+        }
+      }
+    };
+
+    // Con reduce-motion: mostrar el estado final (las 96) sin depender del scroll.
+    if (opts.reduced) container.__setWaffle(1);
   },
 
   /* ---------- G4 · Ilusión auditiva (E4) ---------- */
@@ -289,16 +300,200 @@ export const CHARTS = {
           label: { show: true, color: INK, fontFamily: DISPLAY, fontSize: 12, position: 'top', distance: 12, lineHeight: 15 },
           data: [
             { coord: [idxMax, vals[idxMax]], itemStyle: { color: accent }, label: { formatter: `el techo\n${vals[idxMax]}%` } },
-            { coord: [idxMaxConf, vals[idxMaxConf]], itemStyle: { color: loss }, label: { formatter: `máx. confianza\n${vals[idxMaxConf]}%` } },
+            // El último punto va pegado al borde: el label se ancla a la izquierda para no cortarse.
+            { coord: [idxMaxConf, vals[idxMaxConf]], itemStyle: { color: loss },
+              label: { position: 'left', distance: 16, formatter: `máx. confianza\n${vals[idxMaxConf]}%` } },
           ],
         },
         markLine: idxMaxConf !== idxMax ? {
           silent: true, symbol: 'none',
+          label: { show: false },
           lineStyle: { color: loss, type: 'dashed', width: 1 },
           data: [{ xAxis: `${rows[idxMaxConf].nivel_confianza}/5` }],
         } : undefined,
         animationDuration: 1600, animationEasing: 'cubicOut',
       }],
+    };
+    mountChart(container, option, opts);
+  },
+
+  /* ===================== ACTO 2 · DECISIÓN (acento ámbar) ===================== */
+
+  /* ---------- G6 · Bate y pelota (E6) ---------- */
+  '06_bate_pelota'(container, data, opts) {
+    const rows = rowsToObjects(data['06_bate_pelota']);
+    const accent = accentOf(container);
+    const correct = '$0,05';
+    const ordered = rows.slice().reverse();          // category pinta abajo→arriba
+    const etiBy = Object.fromEntries(rows.map((r) => [r.respuesta, r.etiqueta]));
+
+    const option = {
+      ...baseOption(accent),
+      grid: { left: 16, right: 56, top: 10, bottom: 10, containLabel: true },
+      xAxis: valAxis({ max: 70, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
+      yAxis: catAxis({
+        data: ordered.map((r) => r.respuesta),
+        axisLabel: {
+          formatter: (val) => `{p|${val}}\n{e|${etiBy[val]}}`,
+          rich: {
+            p: { fontFamily: DISPLAY, fontWeight: 600, fontSize: 15, color: INK, lineHeight: 18 },
+            e: { fontSize: 11, color: INK_DIM, lineHeight: 14 },
+          },
+        },
+      }),
+      tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong> · ${p.data.eti}<br>${p.data.tip}` },
+      series: [{
+        type: 'bar',
+        barWidth: '54%',
+        data: ordered.map((r) => ({
+          value: r.porcentaje, eti: r.etiqueta, tip: r.tooltip,
+          itemStyle: { color: r.respuesta === correct ? accent : hexA(accent, 0.32), borderRadius: [0, 6, 6, 0] },
+        })),
+        label: {
+          show: true, position: 'right', color: INK, fontFamily: DISPLAY, fontSize: 16, fontWeight: 600,
+          formatter: (p) => (p.name === correct ? `${p.value}%  ✓` : `${p.value}%`),
+        },
+        animationDuration: 1100, animationEasing: 'cubicOut', animationDelay: (i) => i * 150,
+      }],
+    };
+    mountChart(container, option, opts);
+  },
+
+  /* ---------- G7 · Aversión a las pérdidas — función de valor (E7) ----------
+     Réplica de aversion_referencia.jpeg: pérdidas en rojo / ganancias en verde,
+     ejes cruzando en el origen (marco de referencia) y λ=2,25 contado en el texto. */
+  '07_aversion_perdidas'(container, data, opts) {
+    const sheet = data['07_aversion_perdidas'];
+    const rows = rowsToObjects(sheet);
+    const loss = '#E24B4A', gain = '#1D9E75';
+    const lossPts = rows.filter((r) => r.resultado_monetario <= 0).map((r) => [r.resultado_monetario, r.valor_subjetivo]);
+    const gainPts = rows.filter((r) => r.resultado_monetario >= 0).map((r) => [r.resultado_monetario, r.valor_subjetivo]);
+    const grid05 = 'rgba(232,230,224,0.05)';
+
+    const option = {
+      ...baseOption(loss),
+      grid: { left: 8, right: 18, top: 16, bottom: 28, containLabel: true },
+      xAxis: {
+        type: 'value', min: -110, max: 110, interval: 50,
+        name: 'resultado monetario', nameLocation: 'middle', nameGap: 30, nameTextStyle: { color: INK_DIM, fontSize: 11 },
+        axisLine: { show: true, lineStyle: { color: LINE } }, axisTick: { show: false },
+        splitLine: { lineStyle: { color: grid05 } },
+        axisLabel: { color: INK_DIM, fontSize: 11, formatter: (v) => (v > 0 ? `+$${v}` : `$${v}`) },
+      },
+      yAxis: {
+        type: 'value', min: -130, max: 65, interval: 30,
+        name: 'valor subjetivo', nameTextStyle: { color: INK_DIM, fontSize: 11, align: 'left' },
+        axisLine: { show: true, lineStyle: { color: LINE } }, axisTick: { show: false },
+        splitLine: { lineStyle: { color: grid05 } },
+        axisLabel: { color: INK_DIM, fontSize: 11 },
+      },
+      tooltip: {
+        ...baseOption(loss).tooltip, trigger: 'axis',
+        formatter: (ps) => {
+          const p = ps[0]; const x = p.data[0], y = p.data[1];
+          const cuanto = x > 0 ? `Ganar $${x}` : x < 0 ? `Perder $${-x}` : 'Punto de referencia';
+          return `<strong>${cuanto}</strong><br>vale ${y.toFixed(0)} en valor psicológico subjetivo.`;
+        },
+      },
+      series: [
+        {
+          name: 'Pérdidas', type: 'line', smooth: true, symbol: 'none', data: lossPts,
+          lineStyle: { width: 3.5, color: loss }, z: 3,
+          areaStyle: { origin: 'auto', color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: hexA(loss, 0) }, { offset: 1, color: hexA(loss, 0.22) }] } },
+          markLine: { silent: true, symbol: 'none', label: { show: false }, lineStyle: { color: 'rgba(232,230,224,0.28)', width: 1 }, data: [{ xAxis: 0 }, { yAxis: 0 }] },
+          markPoint: {
+            symbolSize: 8,
+            data: [
+              { coord: [-100, lossPts[0][1]], itemStyle: { color: loss }, label: { show: true, formatter: 'PÉRDIDAS', position: 'top', color: loss, fontFamily: DISPLAY, fontWeight: 600, fontSize: 12 } },
+              { coord: [0, 0], itemStyle: { color: INK }, label: { show: true, formatter: 'marco de\nreferencia', position: 'bottom', distance: 8, color: INK_DIM, fontSize: 11, lineHeight: 13 } },
+            ],
+          },
+          animationDuration: 1500, animationEasing: 'cubicOut',
+        },
+        {
+          name: 'Ganancias', type: 'line', smooth: true, symbol: 'none', data: gainPts,
+          lineStyle: { width: 3.5, color: gain }, z: 3,
+          areaStyle: { origin: 'auto', color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: hexA(gain, 0.22) }, { offset: 1, color: hexA(gain, 0) }] } },
+          markPoint: {
+            symbolSize: 8,
+            data: [
+              { coord: [100, gainPts[gainPts.length - 1][1]], itemStyle: { color: gain }, label: { show: true, formatter: 'GANANCIAS', position: 'left', color: gain, fontFamily: DISPLAY, fontWeight: 600, fontSize: 12 } },
+            ],
+          },
+          animationDuration: 1500, animationEasing: 'cubicOut',
+        },
+      ],
+    };
+    mountChart(container, option, opts);
+  },
+
+  /* ---------- G8 · Encuadre / framing (E8) ---------- */
+  '08_framing_enfermedad'(container, data, opts) {
+    const rows = rowsToObjects(data['08_framing_enfermedad']);
+    const accent = accentOf(container);
+    const frames = ['Ganancia (vidas salvadas)', 'Pérdida (muertes)'];
+    const find = (f, o) => rows.find((r) => r.encuadre === f && r.opcion === o) || { porcentaje: 0, descripcion: '' };
+    const segura = frames.map((f) => find(f, 'Segura').porcentaje);
+    const riesgosa = frames.map((f) => find(f, 'Riesgosa').porcentaje);
+
+    const option = {
+      ...baseOption(accent),
+      grid: { left: 6, right: 16, top: 42, bottom: 30, containLabel: true },
+      legend: { data: ['Elige lo seguro', 'Prefiere arriesgar'], top: 0, textStyle: { color: INK_DIM }, icon: 'roundRect' },
+      xAxis: catAxis({ data: ['Te lo cuentan en\nvidas salvadas', 'Te lo cuentan en\nmuertes'], axisLabel: { color: INK, fontSize: 13, lineHeight: 16, interval: 0 } }),
+      yAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
+      tooltip: {
+        ...baseOption(accent).tooltip, trigger: 'axis', axisPointer: { type: 'shadow' },
+        formatter: (ps) => {
+          const i = ps[0].dataIndex;
+          const seg = find(frames[i], 'Segura'), rie = find(frames[i], 'Riesgosa');
+          return `<strong>${frames[i]}</strong><br>Seguro (${seg.descripcion}): ${seg.porcentaje}%<br>Arriesgar (${rie.descripcion}): ${rie.porcentaje}%`;
+        },
+      },
+      series: [
+        { name: 'Elige lo seguro', type: 'bar', barWidth: '30%', data: segura,
+          itemStyle: { color: accent, borderRadius: [4, 4, 0, 0] },
+          label: { show: true, position: 'top', color: INK, fontFamily: DISPLAY, fontSize: 18, fontWeight: 600, formatter: '{c}%' },
+          animationDuration: 1100, animationDelay: (i) => i * 150 },
+        { name: 'Prefiere arriesgar', type: 'bar', barWidth: '30%', data: riesgosa,
+          itemStyle: { color: hexA(accent, 0.3), borderRadius: [4, 4, 0, 0] },
+          label: { show: true, position: 'top', color: INK_DIM, fontFamily: DISPLAY, fontSize: 14, formatter: '{c}%' },
+          animationDuration: 1100, animationDelay: (i) => i * 150 + 80 },
+      ],
+    };
+    mountChart(container, option, opts);
+  },
+
+  /* ---------- G9 · Dunning-Kruger (E9) — misma forma que la curva de confianza (E5) ---------- */
+  '09_dunning_kruger'(container, data, opts) {
+    const rows = rowsToObjects(data['09_dunning_kruger']);
+    const accent = accentOf(container);
+    const cats = rows.map((r) => r.cuartil_real);
+    const real = rows.map((r) => r.competencia_real_pct);
+    const self = rows.map((r) => r.autopercepcion_pct);
+
+    const option = {
+      ...baseOption(accent),
+      grid: { left: 10, right: 28, top: 42, bottom: 28, containLabel: true },
+      legend: { data: ['Lo que creen que saben', 'Lo que realmente saben'], top: 0, textStyle: { color: INK_DIM }, icon: 'roundRect' },
+      xAxis: catAxis({ data: cats, boundaryGap: false,
+        axisLabel: { color: INK, fontSize: 12, interval: 0, formatter: (v) => ({ 'Inferior (peores)': 'Peores', '2do cuartil': '2º', '3er cuartil': '3º', 'Superior (mejores)': 'Mejores' }[v] || v) },
+        name: 'habilidad real (peor → mejor)', nameLocation: 'middle', nameGap: 32, nameTextStyle: { color: INK_DIM, fontSize: 11 } }),
+      yAxis: valAxis({ min: 0, max: 100, axisLabel: { formatter: '{value}', color: INK_DIM, fontSize: 12 }, name: 'percentil', nameTextStyle: { color: INK_DIM, fontSize: 11, align: 'left' } }),
+      tooltip: { ...baseOption(accent).tooltip, trigger: 'axis', formatter: (ps) => `<strong>${ps[0].name}</strong><br>${rows[ps[0].dataIndex].tooltip}` },
+      series: [
+        {
+          name: 'Lo que creen que saben', type: 'line', smooth: true, symbolSize: 9, data: self,
+          lineStyle: { width: 3, color: accent }, itemStyle: { color: accent, borderColor: '#0B0C10', borderWidth: 2 },
+          areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: hexA(accent, 0.22) }, { offset: 1, color: hexA(accent, 0) }] } },
+          animationDuration: 1400, animationEasing: 'cubicOut',
+        },
+        {
+          name: 'Lo que realmente saben', type: 'line', smooth: true, symbolSize: 9, data: real,
+          lineStyle: { width: 3, color: INK_DIM, type: 'dashed' }, itemStyle: { color: INK_DIM },
+          animationDuration: 1400, animationEasing: 'cubicOut',
+        },
+      ],
     };
     mountChart(container, option, opts);
   },
