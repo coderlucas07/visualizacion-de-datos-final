@@ -1,4 +1,4 @@
-# Tu cerebro no te cuenta toda la verdad
+# Tu cerebro no te cuenta toda la verdad a
 
 Scrollytelling para **Visualización de Datos (UTDT)**: cómo el cerebro construye la realidad
 (percepción · decisión · sesgos). HTML/CSS/JS vanilla + ECharts (CDN) + Canvas.
