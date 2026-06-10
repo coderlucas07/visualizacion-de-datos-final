@@ -19,11 +19,16 @@ Sitio de **scrollytelling** (una sola historia, scroll nativo) para **Visualizac
 **Tesis:** el cerebro no registra la realidad, la construye; rellenar lo ambiguo aparece cuando vemos
 (percepción), decidimos (neuroeconomía) y creemos (sesgos). **3 actos:** Percepción · Decisión · Sesgos.
 **Idioma:** español rioplatense (voseo). **Estética:** oscura, editorial, inmersiva (tipo The Pudding /
-Reuters en dark). NADA de laboratorio/HUD/sujeto/registro/personalización.
+Reuters en dark). NADA de laboratorio/HUD/sujeto/registro ni guardar datos del usuario (la pista de E2 se adapta
+a lo que respondiste, pero no persiste nada).
 
 ## Documentos que MANDAN (leerlos antes de tocar código)
 - `prompt_claude_code.md` → especificación técnica, estética y estructura escena por escena.
 - `propuesta_v2_storytelling.md` → storyboard con TODOS los textos y el orden exacto.
+> ⚠️ **OJO:** esos dos docs son la VISIÓN ORIGINAL; el proyecto evolucionó (layout full-bleed, portales de
+> espiral, módulos con título, E2 que gira con el scroll, etc.). **Donde contradigan a este CLAUDE.md, manda
+> CLAUDE.md.** Úsalos para el copy/storyboard y los datos, no para el layout ni las reglas viejas (p. ej. ya
+> NO es "solo 2 interacciones" ni "sin actos en pantalla").
 - `datos_visualizaciones.json` (en `/data`) → **motor de los 13 gráficos. NUNCA hardcodear números: leerlos del JSON.**
   Cada clave = una hoja con `headers` y `rows` (algunas con `resumen`, `params`, `nota`/`tooltip`).
   `datos_visualizaciones.xlsx` es la misma data por si hay que inspeccionarla.
@@ -40,9 +45,9 @@ HTML + CSS + JS vanilla con **módulos ES**. ECharts vía CDN para barras/línea
 ```
 index.html            portada + escenas (data-chart, data-reveal, data-act, data-noise)
 css/styles.css        paleta, tipografías, layout, reveal, reduced-motion, responsive
-js/main.js            loader JSON · setupScrolly (motor de pasos sticky) · lazy-init por capa · scrub (ruido/waffle) · interacciones
-js/charts.js          registro CHARTS[id](container, data, opts) + tema oscuro ECharts + helpers
-js/noise.js           clase NoiseToSignal (Canvas): ruido que cuaja en figura
+js/main.js            loader JSON · setupScrolly (motor full-bleed) · setupSpiral · pre-init de charts · scrub (espiral/waffle/E2) · interacciones
+js/charts.js          registro CHARTS[id](container, data, opts) + título/subtítulo + tema oscuro ECharts + helpers
+js/noise.js           NoiseToSignal (ruido→señal) + SpiralPortal (espiral hipnótico de los portales de módulo)
 data/datos_visualizaciones.json
 assets/               imágenes y audio (ver "Mapa de assets")
 ```
@@ -71,12 +76,14 @@ assets/               imágenes y audio (ver "Mapa de assets")
   (`#e3Count`) cuenta en vivo. Mismo recurso reutilizable si otra escena necesita "pintar con el scroll".
 - **Ruido→señal:** `<canvas data-noise="image|text|eye" data-src=... data-glyph=...>`. La clase `NoiseToSignal`
   muestrea la figura (imagen por luminancia / glifo de texto / función de dibujo) y la "cuaja" según el
-  progreso de scroll de su sección. Reutilizable en portada e interludios.
+  progreso de scroll de su sección. **Hoy NO se usa en pantalla** (la portada quedó limpia y al espiral lo hace
+  `SpiralPortal`); queda disponible para el ojo/figura del Acto 3 si hace falta.
 - **Revelado puntual:** elementos sueltos con `data-reveal` aparecen con fade-up al entrar (clase `is-visible`).
-- **Interacciones:** E1 (Pato/Conejo) **guarda la respuesta y personaliza E2** (`configureE2`): la pista apunta
-  al animal que NO viste (pato→conejo rota la figura 90° + chips Pascua/orejas/zanahoria; conejo→pato horizontal
-  + estanque/pico/agua) y vuelve a preguntar (Sí/No). E4 (play audio + Bicicleta/Alquiler). **No se guarda nada
-  del usuario**; las interacciones **NO gatean** contenido (todo se ve igual sin tocar). Están en `setupInteractions()`.
+- **Interacciones:** E1 (Pato/Conejo) guarda la respuesta y **personaliza E2** (`configureE2`) hacia el animal que
+  NO viste; al elegir **auto-avanza** al paso siguiente (`scrollToNextStep`). E2 **gira la figura con el scroll**
+  (0→90° si toca ver el conejo) y marca el rasgo **sobre la imagen** (`.annot`), **sin chips** (nada de Pascua/zanahoria).
+  E4 (play del audio **separado** de los botones Bicicleta/Alquiler; también auto-avanza). **No se guarda nada del
+  usuario**; las interacciones **NO gatean** contenido. En `setupInteractions()` + el scrub en `tick()`.
 - **Accesibilidad:** `alt` en imágenes, `aria-label` en gráficos, foco visible, contraste alto,
   `prefers-reduced-motion` (estados finales sin animación; el waffle se llena solo, los pasos quedan legibles).
 
@@ -98,19 +105,18 @@ assets/               imágenes y audio (ver "Mapa de assets")
 
 ## Progreso por fases
 - **Fase 1 — Scaffold: HECHA.** Estructura, CSS con paleta+fonts, motor de scroll, loader JSON, NoiseToSignal.
-- **Fase 2 — Acto 1: HECHA y RECONSTRUIDA como scrollytelling real (jun-2026).** Portada + E1–E5 + Interludio A,
-  ahora con el **motor de pasos sticky** (ver arriba), **sin pantallas de apertura de acto ni kickers de acto**.
-  Ritmo situación-por-situación: en E1 primero ves la imagen y respondés, y recién al seguir scrolleando aparece
-  el gráfico. E2 da la pista **personalizada** (al animal que no viste) y re-pregunta. E3 pinta el waffle con el
-  scroll. Gráficos G1–G5 sin cambios de datos. **Este Acto 1 es el TEMPLATE para los Actos 2 y 3.**
-- **Fase 3 — Acto 2: HECHA (jun-2026).** Mismo patrón scrolly que el Acto 1, acento ámbar (`data-act="decision"`).
-  E6 bate y pelota (G6 `06_bate_pelota`, barras h.: trampa $0,10 apagada / correcta $0,05 en ámbar con ✓) ·
-  E7 aversión (G7 `07_aversion_perdidas`: curva de valor roja/verde, ejes cruzando en el origen, glow hacia el
-  cero, λ=2,25 contado en el texto del paso) · E8 framing (G8 `08_framing_enfermedad`, agrupadas: "elige lo
-  seguro" cae 72%→22%) · E9 Dunning-Kruger (G9 `09_dunning_kruger`, 2 líneas: creen vs saben; conecta con E5).
-  E6/E7/E8 abren con una **tarjeta de planteo** (`.statement`/`.gamble`) en la capa 0 y el gráfico aparece al
-  scrollear. **Interludio B** (ruido→ojo, `data-noise="eye"`, `drawEye()`) en **violeta** (`data-act="bias"`),
-  como teaser del Acto 3.
+- **Fase 2 — Acto 1: HECHA, y REDISEÑADA a full-bleed (jun-2026, 2ª vuelta).** Portada (limpia, con pregunta) +
+  **portal de espiral → "Percepción"** + E1–E5. Motor full-bleed (ver arriba). Ritmo situación-por-situación:
+  en E1 ves la imagen, respondés y auto-avanza; el gráfico aparece al scrollear. E2 personaliza la pista girando
+  la figura con el scroll. E3: texto → ilusión full-screen → waffle que se pinta con el scroll. G1–G5 con
+  título/subtítulo, sin cambios de datos. **Este Acto 1 es el TEMPLATE para los Actos 2 y 3.**
+- **Fase 3 — Acto 2: HECHA (jun-2026).** Mismo patrón full-bleed, **portal de espiral → "Decisión"**, acento ámbar.
+  E6 bate y pelota (G6 `06_bate_pelota`, barras h.: trampa $0,10 apagada / correcta $0,05 en ámbar con ✓; planteo
+  con ilustración SVG de bate+pelota) · E7 aversión (G7 `07_aversion_perdidas`: curva roja/verde, ejes en el
+  origen, **sin sombras** bajo la curva, λ=2,25 en el texto) · E8 framing (G8: "elige lo seguro" cae 72%→22%) ·
+  E9 Dunning-Kruger (G9, 2 líneas: creen vs saben; conecta con E5). E6/E7/E8 abren con **tarjeta de planteo**
+  (`.statement`/`.gamble`, la bajada va como eyebrow) y el gráfico aparece al scrollear. La transición entre
+  módulos la hace el **portal de espiral** (ya NO hay interludios $/ojo).
 - **Fase 4 — Acto 3: PENDIENTE.** E10 mejor que el promedio (`10_mejor_que_promedio`, línea ref 50%) ·
   E11 Forer/Barnum (`11_efecto_forer` dato 4,26/5 + `11b_texto_barnum` anotado) · E12 pareidolia
   (`12_pareidolia_paranormal` + las 3 imágenes) · E13 brecha con la ciencia (`13_brecha_consenso` + `13b`).
