@@ -15,12 +15,12 @@ export function accentOf(el) {
   return v || '#3AA0FF';
 }
 
-const INK = '#EDE6D8';
-const INK_DIM = '#A89F90';
-const INK_FAINT = '#6E675C';
-const LINE = 'rgba(237,230,216,0.10)';
+const INK = '#E4EAEF';
+const INK_DIM = '#94A1AC';
+const INK_FAINT = '#5C6873';
+const LINE = 'rgba(228,234,239,0.10)';
 const FONT = 'Hanken Grotesk, system-ui, sans-serif';
-const DISPLAY = 'Fraunces, Georgia, serif';
+const DISPLAY = 'Spectral, Georgia, serif';
 const MONO = 'IBM Plex Mono, ui-monospace, monospace';
 
 /* ---------- Fuente de cada gráfico (pedido: todo gráfico cita su dataset) ---------- */
@@ -64,7 +64,7 @@ function baseOption(accent) {
     color: [accent],
     tooltip: {
       trigger: 'item', confine: true,
-      backgroundColor: 'rgba(21,18,14,0.96)', borderColor: 'rgba(237,230,216,0.14)', borderWidth: 1,
+      backgroundColor: 'rgba(13,17,21,0.96)', borderColor: 'rgba(228,234,239,0.14)', borderWidth: 1,
       padding: [10, 14], textStyle: { color: INK, fontSize: 13, fontFamily: FONT },
       extraCssText: 'border-radius:10px; max-width:280px; white-space:normal; line-height:1.5;',
     },
@@ -256,7 +256,7 @@ export const CHARTS = {
       tooltip: { ...baseOption(accent).tooltip, trigger: 'axis', formatter: (ps) => `<strong>Confianza ${rows[ps[0].dataIndex].nivel_confianza}/5</strong><br>${rows[ps[0].dataIndex].tooltip}` },
       series: [{
         type: 'line', smooth: true, symbol: 'circle', symbolSize: 10, data: vals,
-        lineStyle: { width: 3, color: accent }, itemStyle: { color: accent, borderColor: '#0E0C09', borderWidth: 2 },
+        lineStyle: { width: 3, color: accent }, itemStyle: { color: accent, borderColor: '#0A0D10', borderWidth: 2 },
         markPoint: {
           symbolSize: 13,
           label: { show: true, color: INK, fontFamily: DISPLAY, fontSize: 12, position: 'top', distance: 12, lineHeight: 15 },
@@ -312,7 +312,7 @@ export const CHARTS = {
     const loss = '#E24B4A', gain = '#1D9E75';
     const lossPts = rows.filter((r) => r.resultado_monetario <= 0).map((r) => [r.resultado_monetario, r.valor_subjetivo]);
     const gainPts = rows.filter((r) => r.resultado_monetario >= 0).map((r) => [r.resultado_monetario, r.valor_subjetivo]);
-    const grid05 = 'rgba(232,230,224,0.05)';
+    const grid05 = 'rgba(228,234,239,0.05)';
     const option = {
       ...baseOption(loss),
       title: titleBlock('Perder pesa más que ganar', 'Valor psicológico de cada resultado monetario · λ = 2,25'),
@@ -343,7 +343,7 @@ export const CHARTS = {
         {
           name: 'Pérdidas', type: 'line', smooth: true, symbol: 'none', data: lossPts,
           lineStyle: { width: 3.5, color: loss }, z: 3,
-          markLine: { silent: true, symbol: 'none', label: { show: false }, lineStyle: { color: 'rgba(232,230,224,0.28)', width: 1 }, data: [{ xAxis: 0 }, { yAxis: 0 }] },
+          markLine: { silent: true, symbol: 'none', label: { show: false }, lineStyle: { color: 'rgba(228,234,239,0.28)', width: 1 }, data: [{ xAxis: 0 }, { yAxis: 0 }] },
           markPoint: {
             symbolSize: 8,
             data: [
@@ -414,7 +414,7 @@ export const CHARTS = {
       yAxis: valAxis({ min: 0, max: 100, axisLabel: { formatter: '{value}', color: INK_DIM, fontSize: 12 }, name: 'percentil', nameTextStyle: { color: INK_DIM, fontSize: 11, align: 'left' } }),
       tooltip: { ...baseOption(accent).tooltip, trigger: 'axis', formatter: (ps) => `<strong>${ps[0].name}</strong><br>${rows[ps[0].dataIndex].tooltip}` },
       series: [
-        { name: 'Lo que creen que saben', type: 'line', smooth: true, symbolSize: 9, data: self, lineStyle: { width: 3, color: accent }, itemStyle: { color: accent, borderColor: '#0E0C09', borderWidth: 2 }, animationDuration: 1400, animationEasing: 'cubicOut' },
+        { name: 'Lo que creen que saben', type: 'line', smooth: true, symbolSize: 9, data: self, lineStyle: { width: 3, color: accent }, itemStyle: { color: accent, borderColor: '#0A0D10', borderWidth: 2 }, animationDuration: 1400, animationEasing: 'cubicOut' },
         { name: 'Lo que realmente saben', type: 'line', smooth: true, symbolSize: 9, data: real, lineStyle: { width: 3, color: INK_DIM, type: 'dashed' }, itemStyle: { color: INK_DIM }, animationDuration: 1400, animationEasing: 'cubicOut' },
       ],
     };

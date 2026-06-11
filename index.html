@@ -6,11 +6,11 @@
   <title>Tu cerebro no te cuenta toda la verdad</title>
   <meta name="description" content="Scrollytelling sobre cómo el cerebro construye la realidad: percepción, decisión y sesgos. Visualización de Datos, UTDT." />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#0E0C09" />
+  <meta name="theme-color" content="#0A0D10" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Unbounded:wght@200;300;400&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js" defer></script>
   <link rel="stylesheet" href="./css/styles.css" />
 </head>
@@ -70,76 +70,54 @@
   <main id="historia">
 
     <!-- ============================ PORTADA ============================ -->
-    <!-- Solo el título al centro; el cerebro gris asoma abajo como una luna
-         y se revela completo con el scroll. -->
+    <!-- Solo el video a pantalla completa. El scroll lo hace avanzar
+         (scrub suave); al romperse las neuronas, fundido a negro y
+         recién ahí aparece el título. Mientras nadie scrollea, el video
+         "respira" en cámara lenta para sentirse vivo. -->
     <section class="cover" id="portada">
       <div class="cover__sticky">
-        <svg class="cover__brain" id="coverBrain" viewBox="0 0 900 740" aria-hidden="true">
-          <defs>
-            <radialGradient id="brainFill" cx="46%" cy="38%" r="75%">
-              <stop offset="0%" stop-color="#3A352E" />
-              <stop offset="62%" stop-color="#262220" />
-              <stop offset="100%" stop-color="#16130F" />
-            </radialGradient>
-          </defs>
-          <!-- silueta -->
-          <path fill="url(#brainFill)" stroke="#9A917F" stroke-width="3.5" stroke-linejoin="round"
-            d="M110 420 C88 345 105 260 168 200 C232 138 330 100 432 96 C540 90 652 112 724 166 C792 216 836 300 828 378 C823 432 800 470 766 494 C786 512 794 548 776 580 C748 628 668 648 614 618 C600 652 580 682 552 706 L512 706 C524 668 530 640 524 612 C470 600 410 588 352 570 C268 544 162 506 128 470 C116 455 112 440 110 420 Z" />
-          <!-- luz de borde superior -->
-          <path fill="none" stroke="#C9C0AE" stroke-width="2" stroke-linecap="round" opacity="0.5"
-            d="M180 192 C240 142 332 106 432 102 C536 96 644 118 716 170" />
-          <!-- cisura lateral -->
-          <path fill="none" stroke="#8E867A" stroke-width="3.5" stroke-linecap="round" opacity="0.85"
-            d="M180 420 C270 372 350 376 430 400 C510 424 580 428 660 400" />
-          <!-- circunvoluciones -->
-          <g fill="none" stroke="#8E867A" stroke-width="3" stroke-linecap="round" opacity="0.62">
-            <path d="M150 330 C190 300 230 300 268 318" />
-            <path d="M200 250 C240 222 290 218 330 236" />
-            <path d="M290 180 C330 158 380 152 420 166" />
-            <path d="M420 130 C470 118 520 120 560 138" />
-            <path d="M560 150 C610 140 660 152 696 178" />
-            <path d="M660 220 C700 212 740 232 760 266" />
-            <path d="M730 310 C762 322 780 352 782 388" />
-            <path d="M230 360 C270 340 310 344 344 362" />
-            <path d="M350 300 C392 282 436 284 472 302" />
-            <path d="M470 250 C512 234 558 238 596 258" />
-            <path d="M600 310 C640 298 680 310 708 338" />
-            <path d="M320 440 C370 460 420 470 470 468" />
-            <path d="M480 500 C530 516 580 516 624 498" />
-            <path d="M200 470 C250 496 310 516 370 528" />
-          </g>
-          <!-- cerebelo -->
-          <path fill="none" stroke="#8E867A" stroke-width="3" stroke-linecap="round" opacity="0.8"
-            d="M600 520 C660 498 740 506 772 548" />
-          <g fill="none" stroke="#8E867A" stroke-width="2.4" stroke-linecap="round" opacity="0.55">
-            <path d="M640 540 C680 530 720 538 748 560" />
-            <path d="M634 566 C674 556 714 564 744 584" />
-            <path d="M640 592 C676 584 710 590 736 606" />
-          </g>
-        </svg>
+        <video class="cover__video" id="coverVideo"
+               src="./assets/video/portada_cerebro_120.mp4"
+               muted playsinline preload="auto" disablepictureinpicture
+               aria-label="Un hombre grita y su cabeza se fragmenta en una red de neuronas celestes."></video>
+        <div class="cover__vignette" aria-hidden="true"></div>
+        <div class="cover__dark" id="coverDark" aria-hidden="true"></div>
 
         <div class="cover__content">
           <p class="cover__kicker">Visualización de datos · UTDT</p>
           <h1 class="cover__title">
             <span class="t1">Tu cerebro no te cuenta</span>
-            <span class="t2">toda la verdad.</span>
+            <span class="t2">toda la verdad</span>
           </h1>
           <p class="cover__q">¿Y si nada de lo que ves, elegís y creés fuera tan tuyo como pensás?</p>
+          <p class="cover__go">Seguí bajando</p>
         </div>
 
-        <p class="cover__scrollcue">Bajá para entrar</p>
+        <button class="cover__replay" id="coverReplay" type="button" aria-label="Reiniciar la animación">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="1 4 1 10 7 10" />
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+          </svg>
+        </button>
+        <p class="cover__scrollcue" id="coverCue">Bajá</p>
       </div>
     </section>
 
-    <!-- ====================== PORTAL 1 · espiral → Percepción ====================== -->
+    <!-- ====================== PORTAL 1 · espiral → Percepción ======================
+         El título aparece recién cuando ya estás ADENTRO del espiral; abajo
+         del título nace un puntito que crece con el scroll hasta tragarte. -->
     <section class="portal" id="portal1">
       <div class="portal__sticky">
         <canvas class="portal__canvas" data-spiral aria-hidden="true"></canvas>
         <div class="portal__head">
-          <p class="portal__kicker">Módulo I</p>
-          <h2 class="portal__name">Percepción</h2>
-          <p class="portal__sub">No ves lo que creés que ves.</p>
+          <div class="portal__head-in">
+            <p class="portal__kicker">Módulo I</p>
+            <h2 class="portal__name">Percepción</h2>
+            <p class="portal__sub">No ves lo que creés que ves.</p>
+          </div>
         </div>
+        <div class="portal__dot" aria-hidden="true"></div>
         <div class="portal__after">
           <p>Lo que ves no está en tus ojos: está en tu <em>cerebro</em>.</p>
         </div>
@@ -376,10 +354,13 @@
       <div class="portal__sticky">
         <canvas class="portal__canvas" data-spiral aria-hidden="true"></canvas>
         <div class="portal__head">
-          <p class="portal__kicker">Módulo II</p>
-          <h2 class="portal__name">Decisión</h2>
-          <p class="portal__sub">Elegir también es interpretar.</p>
+          <div class="portal__head-in">
+            <p class="portal__kicker">Módulo II</p>
+            <h2 class="portal__name">Decisión</h2>
+            <p class="portal__sub">Elegir también es interpretar.</p>
+          </div>
         </div>
+        <div class="portal__dot" aria-hidden="true"></div>
         <div class="portal__after">
           <p>Tampoco elegís lo que creés que <em>elegís</em>.</p>
         </div>
@@ -397,18 +378,18 @@
                 <svg viewBox="0 0 460 310" fill="none">
                   <g transform="translate(62 246) rotate(-27)">
                     <path d="M0 -27 C-36 -27 -36 27 0 27 L30 25.5 C140 20 230 14 318 11 L318 -11 C230 -14 140 -20 30 -25.5 Z"
-                          fill="rgba(237,230,216,0.07)" stroke="#EDE6D8" stroke-width="2.5" stroke-linejoin="round" />
-                    <circle cx="334" cy="0" r="16" fill="rgba(237,230,216,0.07)" stroke="#EDE6D8" stroke-width="2.5" />
-                    <path d="M52 -25 C56 -8 56 8 52 25" stroke="#FF5A36" stroke-width="2" />
-                    <path d="M66 -24 C70 -8 70 8 66 24" stroke="#FF5A36" stroke-width="2" opacity="0.6" />
-                    <path d="M30 -8 C120 -10 220 -7 300 -4" stroke="#EDE6D8" stroke-width="1" opacity="0.25" />
-                    <path d="M26 9 C120 11 210 8 295 5" stroke="#EDE6D8" stroke-width="1" opacity="0.18" />
+                          fill="rgba(228,234,239,0.07)" stroke="#E4EAEF" stroke-width="2.5" stroke-linejoin="round" />
+                    <circle cx="334" cy="0" r="16" fill="rgba(228,234,239,0.07)" stroke="#E4EAEF" stroke-width="2.5" />
+                    <path d="M52 -25 C56 -8 56 8 52 25" stroke="#8FD8FF" stroke-width="2" />
+                    <path d="M66 -24 C70 -8 70 8 66 24" stroke="#8FD8FF" stroke-width="2" opacity="0.6" />
+                    <path d="M30 -8 C120 -10 220 -7 300 -4" stroke="#E4EAEF" stroke-width="1" opacity="0.25" />
+                    <path d="M26 9 C120 11 210 8 295 5" stroke="#E4EAEF" stroke-width="1" opacity="0.18" />
                   </g>
-                  <circle cx="238" cy="212" r="46" fill="#EDE6D8" />
-                  <path d="M210 176 q22 36 0 72" stroke="#FF5A36" stroke-width="2.5" />
-                  <path d="M266 176 q-22 36 0 72" stroke="#FF5A36" stroke-width="2.5" />
-                  <path d="M205 183 q19 30 0 58" stroke="#FF5A36" stroke-width="5" stroke-dasharray="1.5 7" opacity="0.85" />
-                  <path d="M271 183 q-19 30 0 58" stroke="#FF5A36" stroke-width="5" stroke-dasharray="1.5 7" opacity="0.85" />
+                  <circle cx="238" cy="212" r="46" fill="#E4EAEF" />
+                  <path d="M210 176 q22 36 0 72" stroke="#8FD8FF" stroke-width="2.5" />
+                  <path d="M266 176 q-22 36 0 72" stroke="#8FD8FF" stroke-width="2.5" />
+                  <path d="M205 183 q19 30 0 58" stroke="#8FD8FF" stroke-width="5" stroke-dasharray="1.5 7" opacity="0.85" />
+                  <path d="M271 183 q-19 30 0 58" stroke="#8FD8FF" stroke-width="5" stroke-dasharray="1.5 7" opacity="0.85" />
                 </svg>
               </div>
               <p class="statement__line">Un bate y una pelota cuestan <strong>$1,10</strong>.</p>
@@ -539,10 +520,13 @@
       <div class="portal__sticky">
         <canvas class="portal__canvas" data-spiral aria-hidden="true"></canvas>
         <div class="portal__head">
-          <p class="portal__kicker">Módulo III</p>
-          <h2 class="portal__name">Sesgos</h2>
-          <p class="portal__sub">Creer es rellenar lo ambiguo.</p>
+          <div class="portal__head-in">
+            <p class="portal__kicker">Módulo III</p>
+            <h2 class="portal__name">Sesgos</h2>
+            <p class="portal__sub">Creer es rellenar lo ambiguo.</p>
+          </div>
         </div>
+        <div class="portal__dot" aria-hidden="true"></div>
         <div class="portal__after">
           <p>Y otros lo saben. <em>Y lo usan.</em></p>
         </div>

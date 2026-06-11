@@ -1,9 +1,10 @@
 /* =====================================================================
    Tu cerebro no te cuenta toda la verdad — scrollytelling UTDT
-   Identidad: negro cálido + hueso + UN acento bermellón. Editorial,
-   tipo "21hrs on the Moon" / The Pudding. Serif con carácter (Fraunces)
-   para títulos, grotesk limpia (Hanken) para cuerpo, mono (Plex) para
-   kickers y fuentes de datos.
+   Identidad: gris frío + celeste neuronal (el celeste del cerebro del
+   video de portada). Cinemática, inmersiva, tipo "21hrs on the Moon".
+   Unbounded para los momentos-identidad (portada, portales, cierre),
+   Spectral (serif fría con itálicas) para títulos y citas, Hanken para
+   cuerpo, Plex Mono para kickers y fuentes de datos.
    Layout: texto en columna IZQUIERDA que scrollea; visual FIJO a la
    derecha. El texto nunca tapa la visualización (excepto momentos
    full-bleed deliberados, como las Rotating Snakes).
@@ -11,22 +12,23 @@
 
 /* ----------------------------- Tokens ----------------------------- */
 :root {
-  --bg:        #0E0C09;
-  --bg-2:      #15120E;
-  --paper:     #EFE9DD;
-  --ink:       #EDE6D8;
-  --ink-dim:   #A89F90;
-  --ink-faint: #6E675C;
-  --line:      rgba(237, 230, 216, 0.14);
-  --line-soft: rgba(237, 230, 216, 0.08);
+  --bg:        #0A0D10;
+  --bg-2:      #10151A;
+  --paper:     #E9EEF2;
+  --ink:       #E4EAEF;
+  --ink-dim:   #94A1AC;
+  --ink-faint: #5C6873;
+  --line:      rgba(228, 234, 239, 0.14);
+  --line-soft: rgba(228, 234, 239, 0.08);
 
-  --accent:      #FF5A36;
-  --accent-soft: rgba(255, 90, 54, 0.13);
+  --accent:      #8FD8FF;
+  --accent-soft: rgba(143, 216, 255, 0.12);
 
   --loss: #E5484D;
   --gain: #3FA76E;
 
-  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-hero:    "Unbounded", "Hanken Grotesk", sans-serif;
+  --font-display: "Spectral", Georgia, "Times New Roman", serif;
   --font-body:    "Hanken Grotesk", system-ui, -apple-system, sans-serif;
   --font-mono:    "IBM Plex Mono", ui-monospace, Menlo, monospace;
 
@@ -54,7 +56,7 @@ body {
 }
 img, canvas, svg { max-width: 100%; display: block; }
 button { font-family: inherit; }
-::selection { background: var(--accent); color: #14100c; }
+::selection { background: var(--accent); color: #07222F; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
 
 /* Grano sutil sobre todo (textura editorial, muy leve) */
@@ -67,12 +69,15 @@ body::after {
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
+/* Sobre la portada el grano se apaga: blend sobre video cuesta caro
+   y el scrubbing se siente más suave sin esa capa. */
+body.cover-vis::after { display: none; }
 
 /* ----------------------------- Tipografía ----------------------------- */
 h1, h2, h3 {
   font-family: var(--font-display);
-  font-weight: 600;
-  line-height: 1.06;
+  font-weight: 500;
+  line-height: 1.1;
   letter-spacing: -0.01em;
   margin: 0 0 0.5em;
   text-wrap: balance;
@@ -92,15 +97,19 @@ p { margin: 0 0 1.1em; max-width: var(--measure); }
 .muted { color: var(--ink-dim); }
 strong { color: #fff; font-weight: 600; }
 em { font-style: italic; color: var(--ink); }
-code { font-family: var(--font-mono); font-size: 0.88em; background: rgba(237,230,216,0.08); padding: 0.1em 0.4em; border-radius: 5px; }
+code { font-family: var(--font-mono); font-size: 0.88em; background: rgba(228,234,239,0.08); padding: 0.1em 0.4em; border-radius: 5px; }
 
 /* ===================================================================== */
 /* MENÚ DE MÓDULOS (arriba a la izquierda)                               */
 /* ===================================================================== */
+/* Al inicio de la portada no hay NADA en pantalla: solo el video */
+body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none; }
+.menu-btn, .progress { transition: opacity 0.5s var(--ease); }
+
 .menu-btn {
   position: fixed; top: 1.1rem; left: 1.2rem; z-index: 130;
   display: inline-flex; align-items: center; gap: 0.6rem;
-  background: rgba(14, 12, 9, 0.6);
+  background: rgba(10, 13, 16, 0.65);
   color: var(--ink);
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -117,7 +126,7 @@ code { font-family: var(--font-mono); font-size: 0.88em; background: rgba(237,23
 
 .menu {
   position: fixed; inset: 0; z-index: 125;
-  background: rgba(10, 8, 6, 0.94);
+  background: rgba(7, 10, 13, 0.94);
   backdrop-filter: blur(14px);
   display: grid; place-items: center;
   opacity: 0; visibility: hidden;
@@ -152,76 +161,149 @@ code { font-family: var(--font-mono); font-size: 0.88em; background: rgba(237,23
 .menu .menu__close:hover { border-color: var(--accent); }
 
 /* ===================================================================== */
-/* PORTADA — solo el título al centro; el cerebro gris asoma abajo       */
-/* como la luna y se revela completo con el scroll.                      */
+/* PORTADA — el video solo, a pantalla completa. El scroll lo scrubea;   */
+/* al final funde a negro y recién ahí aparece el título.                */
 /* ===================================================================== */
-.cover { position: relative; height: 240vh; }
+.cover { position: relative; height: 460vh; background: #06080B; }
 .cover__sticky {
   position: sticky; top: 0; height: 100vh;
   overflow: hidden;
   display: grid; place-items: center;
+  background: #06080B;
+}
+.cover__video {
+  position: absolute; inset: 0; z-index: 1;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+/* Viñeta cinematográfica + sombra extra en la esquina del watermark */
+.cover__vignette {
+  position: absolute; inset: 0; z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(18% 22% at 90% 83%, rgba(4, 6, 8, 0.75), transparent 72%),
+    radial-gradient(135% 135% at 50% 40%, transparent 52%, rgba(4, 6, 8, 0.6) 100%);
+}
+/* Fundido a negro del final (la opacidad la maneja el JS) */
+.cover__dark {
+  position: absolute; inset: 0; z-index: 3;
+  background: #06080B;
+  opacity: 0;
+  pointer-events: none;
 }
 .cover__content {
-  position: relative; z-index: 2;
+  position: relative; z-index: 4;
   text-align: center;
   padding: 0 var(--pad-x);
-  transform: translateY(-9vh);
+  pointer-events: none;
 }
 .cover__kicker {
-  font-family: var(--font-mono); font-size: 0.72rem;
-  letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-dim);
+  font-family: var(--font-mono); font-size: 0.7rem;
+  letter-spacing: 0.34em; text-transform: uppercase; color: var(--ink-dim);
   display: flex; align-items: center; justify-content: center; gap: 1.2rem;
   white-space: nowrap;
-  margin-bottom: 2rem;
+  margin-bottom: 2.4rem;
 }
 .cover__kicker::before, .cover__kicker::after {
   content: ''; height: 1px; width: clamp(2.5rem, 8vw, 7rem); background: var(--line);
 }
-.cover__title { margin: 0; font-weight: 500; }
+.cover__title { margin: 0; font-family: var(--font-hero); text-transform: uppercase; }
 .cover__title .t1 {
   display: block;
-  font-size: clamp(1.5rem, 1rem + 2.4vw, 3rem);
+  font-weight: 200;
+  font-size: clamp(0.85rem, 0.62rem + 1.2vw, 1.45rem);
+  letter-spacing: 0.34em;
   color: var(--ink-dim);
-  margin-bottom: 0.35rem;
+  margin-bottom: 1.1rem;
 }
 .cover__title .t2 {
   display: block;
-  font-style: italic; font-weight: 600;
-  font-size: clamp(3rem, 1.6rem + 7vw, 7.5rem);
-  letter-spacing: -0.02em;
-  color: var(--ink);
+  font-weight: 300;
+  font-size: clamp(1.6rem, 0.9rem + 3.8vw, 4rem);
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  text-shadow: 0 0 38px rgba(143, 216, 255, 0.4), 0 0 120px rgba(143, 216, 255, 0.18);
 }
 .cover__q {
   font-family: var(--font-display); font-style: italic;
   font-size: clamp(1.05rem, 0.95rem + 0.7vw, 1.5rem);
   color: var(--ink-dim);
-  margin: 2.2rem auto 0; max-width: 32ch;
-  opacity: 0; transform: translateY(14px);
-  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+  margin: 2.4rem auto 0; max-width: 34ch;
 }
-.cover.q-on .cover__q { opacity: 1; transform: none; }
+.cover__go {
+  font-family: var(--font-mono); font-size: 0.66rem;
+  letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-faint);
+  margin: 3rem auto 0;
+}
+/* El título vive oculto; cuando la pantalla queda negra, entra escalonado
+   y el letter-spacing se aprieta (gesto de título de película). */
+.cover__content > * {
+  opacity: 0; transform: translateY(16px);
+  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease), letter-spacing 1.2s var(--ease);
+}
+.cover__title .t1, .cover__title .t2 {
+  opacity: 0; transform: translateY(16px);
+  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease), letter-spacing 1.2s var(--ease);
+}
+.cover__title { opacity: 1; transform: none; }
+.cover__title .t2 { letter-spacing: 0.18em; }
+.cover.title-on .cover__content > *,
+.cover.title-on .cover__title .t1,
+.cover.title-on .cover__title .t2 { opacity: 1; transform: none; }
+.cover.title-on .cover__title .t2 { letter-spacing: 0.05em; transition-delay: 0.35s; }
+.cover.title-on .cover__title .t1 { transition-delay: 0.15s; }
+.cover.title-on .cover__kicker { transition-delay: 0s; }
+.cover.title-on .cover__q { transition-delay: 0.85s; }
+.cover.title-on .cover__go { transition-delay: 1.3s; }
 
-/* El cerebro: asoma desde abajo (como la luna del reference) */
-.cover__brain {
-  position: absolute; z-index: 1;
-  left: 50%; bottom: -4vh;
-  width: min(44vw, 540px);
-  transform: translateX(-50%) translateY(var(--rise, 58%));
-  filter: drop-shadow(0 -18px 60px rgba(0,0,0,0.55));
-  will-change: transform;
+/* Botón de reiniciar: disco redondo plantado EXACTAMENTE sobre el sparkle
+   de Gemini (la posición y el tamaño los calcula el JS según la pantalla);
+   el halo de sombra tapa el resplandor del logo alrededor. */
+.cover__replay {
+  position: absolute; z-index: 5; right: 1rem; bottom: 1rem; /* fallback; JS pone left/top */
+  width: 68px; height: 68px;
+  display: grid; place-items: center;
+  background: rgba(8, 11, 14, 0.94);
+  color: var(--ink-dim);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  box-shadow: 0 0 26px 22px rgba(6, 8, 11, 0.9);
+  cursor: pointer;
+  opacity: 0; pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.85);
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease),
+              border-color 0.3s var(--ease), color 0.3s var(--ease);
 }
+.cover__replay svg { transition: transform 0.5s var(--ease); }
+.cover__replay:hover { border-color: var(--accent); color: var(--accent); }
+.cover__replay:hover svg { transform: rotate(-70deg); }
+.cover__replay:active svg { transform: rotate(-220deg); }
+.cover.replay-on .cover__replay { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%); }
+
 .cover__scrollcue {
-  position: absolute; z-index: 2; bottom: 2rem; left: 50%;
+  position: absolute; z-index: 4; bottom: 2rem; left: 50%;
   transform: translateX(-50%);
-  font-family: var(--font-mono); font-size: 0.68rem;
-  letter-spacing: 0.28em; text-transform: uppercase; color: var(--ink-faint);
-  animation: cuepulse 2.6s var(--ease) infinite;
+  font-family: var(--font-mono); font-size: 0.64rem;
+  letter-spacing: 0.34em; text-transform: uppercase; color: var(--ink-faint);
+  padding-top: 2.6rem;
+  opacity: 0;
+  transition: opacity 0.4s var(--ease);
+  animation: cuepulse 2.6s var(--ease) 2s infinite;   /* aparece recién a los 2s */
 }
-@keyframes cuepulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.9; } }
+.cover.cue-off .cover__scrollcue { animation: none; opacity: 0; }
+/* hilo vertical sobre el texto del cue */
+.cover__scrollcue::before {
+  content: '';
+  position: absolute; top: 0; left: 50%;
+  width: 1px; height: 2rem;
+  background: linear-gradient(to bottom, transparent, var(--ink-faint));
+}
+@keyframes cuepulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.85; } }
 
 /* ===================================================================== */
-/* PORTAL — título del módulo arriba, espiral como DISCO abajo;          */
-/* al scrollear el disco te traga (zoom adentro) y queda en negro.       */
+/* PORTAL — túnel de espiral a pantalla completa. Entrás scrolleando;    */
+/* el título aparece cuando ya estás ADENTRO; abajo nace un puntito que  */
+/* crece hasta tragarte; en el negro, la frase del módulo.               */
 /* ===================================================================== */
 .portal { position: relative; height: 300vh; }
 .portal__sticky {
@@ -230,24 +312,49 @@ code { font-family: var(--font-mono); font-size: 0.88em; background: rgba(237,23
 }
 .portal__canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
 .portal__head {
-  position: absolute; top: 11vh; left: 0; right: 0; z-index: 2;
+  position: absolute; inset: 0 0 16vh 0; z-index: 2;
+  display: grid; place-items: center;
   text-align: center; padding: 0 var(--pad-x);
+  opacity: 0;
   will-change: opacity, transform;
+  pointer-events: none;
 }
 .portal__head p { margin-inline: auto; }
 .portal__kicker {
-  font-family: var(--font-mono); font-size: 0.72rem;
-  letter-spacing: 0.32em; text-transform: uppercase;
-  color: var(--ink-dim); margin-bottom: 0.9rem;
+  font-family: var(--font-mono); font-size: 0.7rem;
+  letter-spacing: 0.34em; text-transform: uppercase;
+  color: var(--ink-dim); margin-bottom: 1.1rem;
 }
 .portal__name {
-  font-size: clamp(2.6rem, 1.8rem + 5vw, 6rem);
-  font-weight: 600; color: var(--ink); margin: 0;
+  font-family: var(--font-hero); font-weight: 300;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  font-size: clamp(1.9rem, 1.2rem + 3.6vw, 4.4rem);
+  color: var(--ink); margin: 0;
+  text-shadow: 0 0 50px rgba(143, 216, 255, 0.25);
 }
-.portal__sub { color: var(--ink-dim); font-size: clamp(1rem, 0.9rem + 0.5vw, 1.35rem); margin: 0.5rem 0 0; }
-/* Frase que aparece sobre el negro, ya “adentro” del espiral */
+.portal__sub {
+  font-family: var(--font-display); font-style: italic;
+  color: var(--ink-dim); font-size: clamp(1rem, 0.9rem + 0.5vw, 1.35rem);
+  margin: 0.8rem 0 0;
+}
+/* El puntito: nace debajo del título y crece con el scroll hasta cubrir
+   toda la pantalla (la escala la maneja el JS). */
+.portal__dot {
+  position: absolute; left: 50%; top: 68%; z-index: 3;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    #04060A 0 57%,
+    rgba(143, 216, 255, 0.4) 70%,
+    rgba(143, 216, 255, 0) 78%);
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+/* Frase que aparece sobre el negro, ya “adentro” */
 .portal__after {
-  position: absolute; inset: 0; z-index: 2;
+  position: absolute; inset: 0; z-index: 4;
   display: grid; place-items: center;
   text-align: center; padding: 0 var(--pad-x);
   opacity: 0; will-change: opacity;
@@ -329,7 +436,7 @@ code { font-family: var(--font-mono); font-size: 0.88em; background: rgba(237,23
 .scrolly--bleed .step--center .step__card { text-align: center; }
 /* chip flotante: no tapa el centro de la ilusión */
 .scrolly--bleed .step__card--chip {
-  background: rgba(14, 12, 9, 0.88);
+  background: rgba(10, 13, 16, 0.88);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 1.1rem 1.4rem;
@@ -441,7 +548,7 @@ code { font-family: var(--font-mono); font-size: 0.88em; background: rgba(237,23
               color 0.3s var(--ease), transform 0.15s var(--ease);
 }
 .choice svg { width: 30px; height: 30px; flex: none; fill: currentColor; opacity: 0.85; }
-.choice:hover { border-color: var(--ink); background: rgba(237,230,216,0.06); }
+.choice:hover { border-color: var(--ink); background: rgba(228,234,239,0.06); }
 .choice:active { transform: scale(0.97); }
 .choice[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: #fff; }
 
@@ -464,7 +571,7 @@ code { font-family: var(--font-mono); font-size: 0.88em; background: rgba(237,23
   position: absolute;
   width: 10px; height: 10px; border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 0 3px rgba(255, 90, 54, 0.25);
+  box-shadow: 0 0 0 3px rgba(143, 216, 255, 0.25);
   transform: translate(-50%, -50%);
   opacity: 0;
   transition: opacity 0.5s var(--ease);
@@ -473,7 +580,7 @@ code { font-family: var(--font-mono); font-size: 0.88em; background: rgba(237,23
   content: attr(data-label);
   position: absolute; left: 50%; bottom: 16px;
   transform: translateX(-50%) rotate(calc(-1 * var(--rot, 0deg)));
-  background: rgba(14, 12, 9, 0.92);
+  background: rgba(10, 13, 16, 0.92);
   color: var(--ink);
   border: 1px solid var(--accent);
   border-radius: 999px;
@@ -504,7 +611,7 @@ code { font-family: var(--font-mono); font-size: 0.88em; background: rgba(237,23
   transition: transform 0.15s var(--ease), background-color 0.3s var(--ease), color 0.3s var(--ease);
 }
 .audio__play:hover { transform: scale(1.05); }
-.audio__play.is-playing { background: var(--accent); color: #14100c; }
+.audio__play.is-playing { background: var(--accent); color: #07222F; }
 .audio__hint { color: var(--ink-dim); font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; }
 
 /* ----------------------------- Waffle 100 personas (E3) ----------------------------- */
@@ -517,7 +624,7 @@ code { font-family: var(--font-mono); font-size: 0.88em; background: rgba(237,23
 }
 .waffle__cell {
   aspect-ratio: 1; background: currentColor;
-  color: rgba(237, 230, 216, 0.13);
+  color: rgba(228, 234, 239, 0.13);
   -webkit-mask: var(--person) center / contain no-repeat;
   mask: var(--person) center / contain no-repeat;
   transition: color 0.3s var(--ease);
@@ -606,9 +713,11 @@ code { font-family: var(--font-mono); font-size: 0.88em; background: rgba(237,23
 .checker { width: min(64vh, 92%); margin: 0; }
 .checker img { width: 100%; border-radius: var(--radius); }
 .closing-line {
-  font-family: var(--font-display); font-style: italic; font-weight: 600;
-  font-size: clamp(2.2rem, 1.4rem + 4vw, 4.6rem);
+  font-family: var(--font-hero); font-weight: 300;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  font-size: clamp(1.7rem, 1.1rem + 3vw, 3.6rem);
   color: var(--accent); margin: 0;
+  text-shadow: 0 0 44px rgba(143, 216, 255, 0.3);
 }
 
 /* ----------------------------- Pie / créditos ----------------------------- */
@@ -621,11 +730,11 @@ code { font-family: var(--font-mono); font-size: 0.88em; background: rgba(237,23
 .pie a:hover { text-decoration: underline; }
 
 /* ----------------------------- Progreso de lectura ----------------------------- */
-.progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 100; background: rgba(237,230,216,0.06); }
-.progress__bar { display: block; height: 100%; width: 0%; background: var(--accent); transition: width 0.1s linear; }
+.progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 100; background: rgba(228,234,239,0.06); }
+.progress__bar { display: block; height: 100%; width: 100%; background: var(--accent); transform: scaleX(0); transform-origin: 0 50%; transition: transform 0.1s linear; will-change: transform; }
 
 /* ----------------------------- Aviso de error de datos ----------------------------- */
-.data-error { position: fixed; inset: auto 1rem 1rem 1rem; z-index: 200; background: #1d1410; border: 1px solid var(--accent); border-radius: var(--radius); padding: 1rem 1.25rem; max-width: 40rem; margin-inline: auto; }
+.data-error { position: fixed; inset: auto 1rem 1rem 1rem; z-index: 200; background: #101A22; border: 1px solid var(--accent); border-radius: var(--radius); padding: 1rem 1.25rem; max-width: 40rem; margin-inline: auto; }
 .data-error p { margin: 0; color: var(--ink); }
 
 /* ----------------------------- Revelado puntual ----------------------------- */
@@ -651,7 +760,7 @@ code { font-family: var(--font-mono); font-size: 0.88em; background: rgba(237,23
   .intro__stage--img { grid-template-columns: 1fr; gap: 1.2rem; align-content: center; }
   .intro__fig { width: min(38vh, 86vw); }
   .duo { height: 34vh; }
-  .cover__brain { width: min(76vw, 460px); }
+  .cover { height: 380vh; }
   .faces { grid-template-columns: 1fr; max-width: 60vw; }
   .menu__scenes { display: none; }
 }
@@ -664,6 +773,8 @@ code { font-family: var(--font-mono); font-size: 0.88em; background: rgba(237,23
   .step__card { opacity: 1 !important; transform: none !important; }
   .wave span { height: 50%; animation: none; }
   .faces img { opacity: 1 !important; transform: none !important; }
-  .cover__brain { transform: translateX(-50%) translateY(0) !important; }
-  .cover__q { opacity: 1 !important; transform: none !important; }
+  .cover__content > *, .cover__title .t1, .cover__title .t2 { opacity: 1 !important; transform: none !important; }
+  .cover__scrollcue, .cover__go { animation: none; }
+  .cover.is-still .cover__scrollcue { display: none; }
+  .portal__head { opacity: 1 !important; transform: none !important; }
 }

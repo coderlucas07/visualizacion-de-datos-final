@@ -4,8 +4,11 @@
      la derecha (el texto nunca tapa el gráfico). Momentos full-bleed
      deliberados (snakes) con chips flotantes.
    - Menú de módulos (arriba a la izquierda) para saltar a cada módulo.
-   - Portada: el cerebro asoma como una luna y se revela con el scroll.
-   - Portales: disco de espiral bajo el título; al scrollear te traga.
+   - Portada: VIDEO a pantalla completa scrubeado por el scroll; mientras
+     nadie scrollea "respira" en cámara lenta; al final funde a negro y
+     aparece el título. Botón ↺ rebobina en reversa hasta el inicio.
+   - Portales: túnel de espiral; el título aparece ya ADENTRO; un puntito
+     crece con el scroll hasta tragarte.
    - E1 (pato-conejo): máquina de estados imagen ⇄ gráfico (sin scroll de
      texto); las barras crecen de 0 al % esperado con el scroll.
    - E2: la figura gira con el scroll; marcas ancladas A LA IMAGEN.
@@ -21,10 +24,10 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 let DATA = null;
 let dataReady = false;
-const portals = [];   // espirales: { sp, section, head, after }
+const portals = [];   // espirales: { sp, section, head, dot, after }
 
 /* Refs cacheadas para el scrub */
-let coverEl = null, brainEl = null, cueEl = null;
+let coverEl = null;
 let introEl = null, duoEl = null;
 let e2Sec = null, e2Fig = null, e2Step = null;
 let e3bSec = null, waffleEl = null, e3CountEl = null;
@@ -40,6 +43,7 @@ async function init() {
   setupIntro();
   setupInteractions();
   cacheScrubRefs();
+  setupCover();
   setupScroll();
 
   try {
@@ -154,6 +158,7 @@ function setupSpiral() {
       sp,
       section,
       head: section ? section.querySelector('.portal__head') : null,
+      dot: section ? section.querySelector('.portal__dot') : null,
       after: section ? section.querySelector('.portal__after') : null,
     });
     const vis = new IntersectionObserver(
@@ -162,6 +167,157 @@ function setupSpiral() {
     );
     vis.observe(canvas);
   });
+}
+
+/* =====================================================================
+   PORTADA — video scrubeado por el scroll.
+   El scroll fija un "tiempo objetivo" y el frame real lo persigue con
+   un lerp (suave, sin saltos); los seeks se cuantizan al frame (24fps)
+   y solo se piden cuando el anterior terminó. Al final el negro sube y
+   entra el título. ↺ rebobina: vuelve el scroll al inicio y el video
+   lo sigue en reversa.
+   ===================================================================== */
+function setupCover() {
+  const video = document.getElementById('coverVideo');
+  const dark = document.getElementById('coverDark');
+  const replay = document.getElementById('coverReplay');
+  if (!coverEl || !video) return;
+
+  const SCRUB_END = 0.74;  // fracción de la sección en la que el video completa
+  let duration = 0;
+  let cur = 0;
+  let visible = false;
+  let raf = null;
+
+  video.pause();
+
+  const onMeta = () => {
+    duration = video.duration || 0;
+    // Bufferear el archivo completo en memoria → seeks instantáneos al scrubear.
+    fetch(video.currentSrc || video.src)
+      .then((r) => (r.ok ? r.blob() : Promise.reject(r.status)))
+      .then((blob) => {
+        const t = video.currentTime;
+        video.src = URL.createObjectURL(blob);
+        video.currentTime = t;
+      })
+      .catch(() => { /* sin blob igual funciona, solo menos fluido */ });
+  };
+  if (video.readyState >= 1) onMeta();
+  else video.addEventListener('loadedmetadata', onMeta, { once: true });
+
+  if (REDUCED) {
+    // Sin animación: cuadro final del video de fondo, negro y título puestos.
+    coverEl.classList.add('title-on', 'is-still');
+    if (dark) dark.style.opacity = '0.94';
+    const still = () => { try { video.currentTime = Math.max(0, (video.duration || 0) - 0.05); } catch { /* noop */ } };
+    if (video.readyState >= 1) still();
+    else video.addEventListener('loadedmetadata', still, { once: true });
+    return;
+  }
+
+  const FPS = 120;      // el mp4 de portada está interpolado a 120fps (movimiento continuo)
+  const MIN_RATE = 0.5; // velocidad MÍNIMA (× tiempo real): apenas scrolleás, ya reproduce fluido
+  const MAX_RATE = 3.5; // tope al perseguir un salto grande de scroll
+  const ACCEL = 4;      // rampa de entrada suave (sin tirones por cada tick de rueda)
+  const DECEL = 0.95;   // la suelta MUY de a poco: inercia "gravedad cero" (1/s)
+  let vel = 0;          // velocidad actual del video (× tiempo real)
+  let lastTs = 0;
+  const frame = (now) => {
+    raf = null;
+    const p = sectionProgress(coverEl);
+    const dt = lastTs ? Math.min(0.05, (now - lastTs) / 1000) : 0.016;
+    lastTs = now;
+
+    if (duration > 0) {
+      const target = clamp(p / SCRUB_END) * Math.max(0, duration - 0.06);
+      const diff = target - cur;
+      const HALF = 0.5 / FPS;
+
+      // Velocidad deseada: proporcional a la distancia, nunca menor que MIN_RATE.
+      // Para atrás recién con un retroceso real (histéresis): así el derrape de
+      // la inercia no "rebota" volviendo en reversa.
+      let desired = 0;
+      if (diff > HALF) desired = Math.min(MAX_RATE, Math.max(MIN_RATE, diff * 2.2));
+      else if (diff < -0.25) desired = Math.max(-MAX_RATE, Math.min(-MIN_RATE, diff * 2.2));
+
+      // Asimetría: acelera vivo, frena flotando. Al soltar el scroll el video
+      // sigue de largo y se va apagando solo, muy de a poco.
+      const g = (Math.abs(desired) > Math.abs(vel) || desired * vel < 0) ? ACCEL : DECEL;
+      vel += (desired - vel) * Math.min(1, g * dt);
+      if (desired === 0 && Math.abs(vel) < 0.02) vel = 0;
+      cur = clamp(cur + vel * dt, 0, Math.max(0, duration - 0.06));
+
+      // Seek cuantizado al frame y recién cuando terminó el anterior:
+      // nunca se piden decodes que no cambian el cuadro visible.
+      const frameT = Math.round(cur * FPS) / FPS;
+      if (!video.seeking && Math.abs(video.currentTime - frameT) > HALF) {
+        try { video.currentTime = frameT; } catch { /* metadata aún no lista */ }
+      }
+    }
+
+    if (dark) dark.style.opacity = clamp((p - SCRUB_END) / 0.1).toFixed(3);
+    coverEl.classList.toggle('title-on', p > 0.845);
+    coverEl.classList.toggle('replay-on', p > 0.02);
+    coverEl.classList.toggle('cue-off', p > 0.03);
+
+    if (visible) raf = requestAnimationFrame(frame);
+  };
+
+  const vis = new IntersectionObserver(
+    (entries) => entries.forEach((e) => {
+      visible = e.isIntersecting;
+      // Mientras la portada está a la vista se apaga el grano global
+      // (mix-blend-mode sobre video es caro y serrucha el scroll).
+      document.body.classList.toggle('cover-vis', visible);
+      if (visible && !raf) raf = requestAnimationFrame(frame);
+    }),
+    { threshold: 0 }
+  );
+  vis.observe(coverEl);
+
+  if (replay) replay.addEventListener('click', () => {
+    const top = coverEl.getBoundingClientRect().top + window.scrollY;
+    animateScrollTo(top, 1400 + 1800 * sectionProgress(coverEl));
+  });
+
+  // El botón se planta EXACTAMENTE sobre el sparkle de Gemini del video.
+  // El sparkle está centrado en (1743, 902) del frame de 1920×1080; acá se
+  // replica la cuenta del object-fit: cover para cualquier pantalla.
+  const placeReplay = () => {
+    if (!replay) return;
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const s = Math.max(vw / 1920, vh / 1080);
+    const x = 1743 * s - (1920 * s - vw) / 2;
+    const y = 902 * s - (1080 * s - vh) / 2;
+    const d = Math.round(Math.max(64, 92 * s)); // el sparkle mide ~80px @1080p; el disco lo tapa entero
+    replay.style.left = x.toFixed(0) + 'px';
+    replay.style.top = y.toFixed(0) + 'px';
+    replay.style.right = 'auto';
+    replay.style.bottom = 'auto';
+    replay.style.width = replay.style.height = d + 'px';
+  };
+  placeReplay();
+  window.addEventListener('resize', placeReplay);
+}
+
+/* Scroll animado propio (suave y con duración controlada).
+   OJO: hay `scroll-behavior: smooth` global; si no se pisa con 'auto',
+   cada scrollTo del rAF dispara SU PROPIA animación y no se mueve nada. */
+function animateScrollTo(targetY, ms) {
+  const startY = window.scrollY;
+  const t0 = performance.now();
+  const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const html = document.documentElement;
+  const prev = html.style.scrollBehavior;
+  html.style.scrollBehavior = 'auto';
+  const step = (now) => {
+    const k = clamp((now - t0) / ms);
+    window.scrollTo(0, startY + (targetY - startY) * ease(k));
+    if (k < 1) requestAnimationFrame(step);
+    else html.style.scrollBehavior = prev;
+  };
+  requestAnimationFrame(step);
 }
 
 /* =====================================================================
@@ -260,8 +416,6 @@ function configureE2(firstChoice) {
 /* ----------------------------- Refs para el scrub ----------------------------- */
 function cacheScrubRefs() {
   coverEl = document.getElementById('portada');
-  brainEl = document.getElementById('coverBrain');
-  cueEl = document.querySelector('.cover__scrollcue');
   introEl = document.getElementById('e1');
   duoEl = document.getElementById('duoChart');
   e2Sec = document.getElementById('e2');
@@ -285,30 +439,32 @@ function tick() {
   // Progreso de lectura
   const sh = document.documentElement.scrollHeight - window.innerHeight;
   const read = sh > 0 ? clamp(window.scrollY / sh) : 0;
-  if (progressBar) progressBar.style.width = (read * 100).toFixed(2) + '%';
+  if (progressBar) progressBar.style.transform = `scaleX(${read.toFixed(4)})`;
 
-  // Portada: el cerebro se revela con el scroll; al final aparece la pregunta
-  if (coverEl && brainEl) {
-    const p = sectionProgress(coverEl);
-    if (!REDUCED) {
-      const rise = 58 * (1 - easeOut(clamp(p / 0.7)));
-      brainEl.style.setProperty('--rise', rise.toFixed(2) + '%');
-    }
-    coverEl.classList.toggle('q-on', p > 0.6);
-    if (cueEl) cueEl.style.opacity = String(1 - clamp(p / 0.2));
-  }
+  // Arriba de todo no se muestra ningún chrome: el video va solo
+  document.body.classList.toggle('at-top', window.scrollY < 40);
 
-  // Portales: el disco te traga; el título se va, la frase aparece en el negro
+  // Portales: entrás al túnel; el título aparece ya ADENTRO; el puntito
+  // crece debajo del título hasta tragarte; la frase aparece en el negro.
   for (const pt of portals) {
     if (!pt.section) continue;
     const prog = sectionProgress(pt.section);
     pt.sp.setProgress(prog);
     if (pt.head) {
-      const fade = 1 - clamp((prog - 0.45) / 0.25);
-      pt.head.style.opacity = fade.toFixed(3);
-      pt.head.style.transform = `translateY(${(-14 * (1 - fade)).toFixed(1)}px)`;
+      const tIn = REDUCED ? 1 : clamp((prog - 0.3) / 0.14);
+      const tOut = 1 - clamp((prog - 0.8) / 0.12);
+      pt.head.style.opacity = (easeOut(tIn) * tOut).toFixed(3);
+      pt.head.style.transform = `translateY(${(18 * (1 - easeOut(tIn))).toFixed(1)}px)`;
     }
-    if (pt.after) pt.after.style.opacity = clamp((prog - 0.84) / 0.14).toFixed(3);
+    if (pt.dot) {
+      const appear = clamp((prog - 0.5) / 0.05);
+      const grow = clamp((prog - 0.5) / 0.42);
+      const dotMax = Math.hypot(window.innerWidth, window.innerHeight) / 8;
+      const s = appear * (1 + Math.pow(grow, 2.7) * dotMax);
+      pt.dot.style.opacity = appear.toFixed(3);
+      pt.dot.style.transform = `translate(-50%, -50%) scale(${s.toFixed(2)})`;
+    }
+    if (pt.after) pt.after.style.opacity = clamp((prog - 0.9) / 0.08).toFixed(3);
   }
 
   // E1: en estado gráfico, las barras crecen de 0 al % esperado con el scroll

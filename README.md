@@ -8,15 +8,18 @@ Scrollytelling para **Visualización de Datos (UTDT)**: cómo el cerebro constru
 
 ---
 
-## Estado actual (jun-2026, tras el rediseño integral)
+## Estado actual (jun-2026, tras la portada de video + identidad gris/celeste)
 
-La historia completa está armada (3 módulos + cierre) con la **identidad nueva**: negro cálido + hueso +
-acento bermellón, tipografías **Fraunces / Hanken Grotesk / IBM Plex Mono**. Layout **dos columnas**
-(el texto scrollea a la izquierda y **nunca tapa** el visual fijo de la derecha), con momentos full-bleed
-deliberados (Rotating Snakes a pantalla completa). La **portada** muestra solo el título y un **cerebro gris**
-que se revela con el scroll; cada módulo abre con el **espiral-disco** que te traga; hay **menú de módulos**
-arriba a la izquierda; **E1 es interactivo** (imagen ⇄ gráfico con barras que crecen con el scroll) y
-**cada gráfico cita su fuente**.
+La historia completa está armada (3 módulos + cierre) con la **identidad nueva**: gris frío + **celeste
+neuronal `#8FD8FF`** (el celeste del cerebro del video), tipografías **Unbounded / Spectral / Hanken
+Grotesk / IBM Plex Mono**. Layout **dos columnas** (el texto scrollea a la izquierda y **nunca tapa** el
+visual fijo de la derecha), con momentos full-bleed deliberados (Rotating Snakes a pantalla completa).
+La **portada** es un **video a pantalla completa scrubeado por el scroll** (el hombre que grita y su cabeza
+se rompe en neuronas): arranca solo, "respira" mientras nadie scrollea, y al final funde a negro y aparece
+el título (con botón ↺ para rebobinar en reversa). Cada módulo abre con el **túnel de espiral**: el título
+aparece ya adentro y un **puntito crece con el scroll hasta tragarte**. Hay **menú de módulos** arriba a la
+izquierda; **E1 es interactivo** (imagen ⇄ gráfico con barras que crecen con el scroll) y **cada gráfico
+cita su fuente**.
 
 - ✅ **Módulo 1 — Percepción** (E1–E5, con E3 snakes full-bleed + E3b waffle).
 - ✅ **Módulo 2 — Decisión** (E6–E9).
@@ -67,8 +70,8 @@ Claude lee `CLAUDE.md` solo, pero para que arranque bien podés pegarle este pri
 
 > Leé `CLAUDE.md` completo (manda sobre los docs viejos) y mirá `data/datos_visualizaciones.json`.
 > Decime en qué fase está el proyecto antes de tocar nada. Reglas clave: el **scroll es el protagonista**
-> (motor de pasos en dos columnas: el texto nunca tapa el visual), identidad **Fraunces + bermellón**
-> sobre negro cálido, y los números **siempre** se leen del JSON (no hardcodear).
+> (motor de pasos en dos columnas: el texto nunca tapa el visual), identidad **gris + celeste neuronal**
+> (Unbounded/Spectral) sobre gris-negro frío, y los números **siempre** se leen del JSON (no hardcodear).
 
 ---
 

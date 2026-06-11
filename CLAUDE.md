@@ -66,13 +66,26 @@ assets/               imágenes y audio (ver "Mapa de assets")
   completa, `object-fit:cover`, sin fondo blanco). El waffle vive aparte en `#e3b` (dos columnas).
 - **Menú de módulos:** botón fijo arriba-izquierda (`#menuBtn`) abre overlay (`#menu`) con links a
   portada/portales/escenas/cierre. Cierra con Esc, con el botón o al elegir un link (`setupMenu()`).
-- **Portada:** título centrado (Fraunces, hueso) + **cerebro SVG gris** (`#coverBrain`) que asoma desde abajo
-  como una luna y **se revela completo con el scroll** (`--rise` en `tick()`); al final aparece la pregunta
-  (`.cover__q`, clase `q-on`).
-- **Portales de espiral entre módulos:** `<section class="portal">` con `<canvas data-spiral>` (clase
-  `SpiralPortal` en noise.js). El espiral es un **DISCO** (círculo, no full-bleed "foto") debajo del título
-  del módulo (`.portal__head`, visible desde el arranque); al scrollear el disco gira, crece y **te traga**
-  (zoom adentro) hasta el negro, donde aparece la frase del módulo (`.portal__after`).
+- **Portada (rediseño jun-2026, VIDEO):** `#coverVideo` (`assets/video/portada_cerebro_scrub.mp4`, el hombre
+  que grita y su cabeza se rompe en neuronas celestes), **scrubeado por el scroll** (`setupCover()` en
+  main.js: rAF propio). La persecución del scroll es **física con inercia**: velocidad mínima 0.5× apenas
+  scrolleás (nunca "de a fotos"), tope 3.5×, acelera vivo (`ACCEL`) y al soltar **frena flotando, gravedad
+  cero** (`DECEL` bajo, con histéresis de −0.25s para que el derrape no rebote en reversa); seeks cuantizados
+  al frame (120fps) y solo cuando terminó el anterior. El video va a pantalla completa (`object-fit: cover`,
+  escala 1). Al inicio NO hay nada en pantalla (menú/progreso ocultos vía `body.at-top`; el grano global se
+  apaga sobre la portada vía `body.cover-vis`, por performance — quieto NO se mueve, se descartó la
+  "respiración"). Al romperse las neuronas (p≈0.74) **funde a negro** (`#coverDark`) y aparece el título
+  escalonado (clase `title-on`, Unbounded uppercase con glow celeste). Botón de reiniciar redondo
+  (`#coverReplay`, solo ícono ↺): `placeReplay()` lo planta **exactamente sobre el sparkle de Gemini**
+  replicando la cuenta del object-fit:cover (centro del logo ≈ (1155, 598) @1280×720) y lo escala con la
+  pantalla; **rebobina en reversa** hasta el inicio (scroll animado propio que pisa el `scroll-behavior:
+  smooth` global — sin eso no anda). El mp4 se bufferea entero a blob para seeks instantáneos.
+- **Portales de espiral entre módulos (rediseño jun-2026):** `<section class="portal">` con
+  `<canvas data-spiral>` (clase `SpiralPortal` en noise.js). Ahora es un **TÚNEL volumétrico** a pantalla
+  completa (brazos de espiral logarítmico en grises + anillos de profundidad + polvo orbitando + núcleo de
+  luz celeste), acorde a la estética del video. Coreografía: entrás al túnel → el título del módulo aparece
+  **ya adentro** (p≈0.3) → debajo del título nace un **puntito** (`.portal__dot`) que **crece con el scroll
+  hasta tragarte** (p 0.5→0.92, escala manejada en `tick()`) → en el negro aparece la frase (`.portal__after`).
 - **Gráficos:** `<div class="chart" data-chart="CLAVE_DEL_JSON">` dentro de una `.viz__layer`. En `js/charts.js`,
   `CHARTS['CLAVE'](container, data, opts)` lo construye; se inicializa cuando su capa se activa. Usar
   `rowsToObjects(sheet)` para pasar `{headers, rows}` a objetos y `accentOf(container)` para el acento.
@@ -98,15 +111,24 @@ assets/               imágenes y audio (ver "Mapa de assets")
 - **Accesibilidad:** `alt` en imágenes, `aria-label` en gráficos, foco visible, contraste alto,
   `prefers-reduced-motion` (estados finales sin animación; waffle/duo llenos, cerebro revelado, espiral estático).
 
-## Paleta y tipografías (identidad jun-2026 — UN solo acento)
-- Fondo `#0E0C09` (negro cálido) / `#15120E`. Texto hueso `#EDE6D8`. Secundario `#A89F90`. Tenue `#6E675C`.
-- **Acento ÚNICO bermellón `#FF5A36`** para TODO (highlight de gráficos, marcas, menú, espiral).
-  Ya NO hay acento por módulo (se quitó el trío cian/ámbar/violeta y los `data-act`).
-- Curva de valor (G7): pérdidas `#E24B4A` / ganancias `#1D9E75`. Papel del espiral/figuras: `#EFE9DD`.
-- Fonts (Google): **Fraunces** (títulos, itálica para énfasis) + **Hanken Grotesk** (cuerpo) +
-  **IBM Plex Mono** (kickers, fuentes de datos, menú).
+## Paleta y tipografías (identidad jun-2026 v2 — gris + celeste neuronal)
+- Fondo `#0A0D10` (gris-negro frío) / `#10151A`. Texto gris claro `#E4EAEF`. Secundario `#94A1AC`. Tenue `#5C6873`.
+- **Acento ÚNICO celeste `#8FD8FF`** (el celeste del cerebro del video de portada) para TODO
+  (highlight de gráficos, marcas, menú, núcleo del espiral). Reemplaza al bermellón `#FF5A36`.
+- Curva de valor (G7): pérdidas `#E24B4A` / ganancias `#1D9E75`. Figuras claras: `#E9EEF2`.
+- Fonts (Google): **Unbounded** (`--font-hero`: portada, nombres de portales, cierre — uppercase, peso liviano)
+  + **Spectral** (`--font-display`: títulos de escenas y citas, con itálicas) + **Hanken Grotesk** (cuerpo) +
+  **IBM Plex Mono** (kickers, fuentes de datos, menú). Reemplazan a Fraunces.
 
 ## Mapa de assets (nombres exactos, en /assets)
+- **Video de portada:** `video/portada_cerebro_120.mp4` — es el que usa el sitio: **1920×1080 interpolado
+  a 120fps** (minterpolate: el original es 24fps y scrubearlo se veía "de a fotos") y **all-intra** (un
+  keyframe por frame, sin audio) para que el scrubbing por scroll sea continuo y fluido. Si se cambia el
+  fps, actualizar la constante `FPS` en `setupCover()` (main.js). `video/portada_cerebro.mp4` es el original
+  de Gemini **en 1080p** (fuente, no tocar; si se reemplaza el video, regenerar con:
+  `ffmpeg -i in.mp4 -vf "minterpolate=fps=120:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1" -an -c:v libx264 -preset medium -crf 19 -g 1 -keyint_min 1 -pix_fmt yuv420p -movflags +faststart out.mp4`
+  — y recalibrar el centro del sparkle de Gemini en `placeReplay()` si el watermark cambia de lugar:
+  hoy ≈ (1743, 902) en 1920×1080).
 - Pato-conejo (E1/E2): `840_560.jpg`
 - Rotating snakes (E3): `rotsnake-grayscale_custom-4b8924c1c70b79314017cd1200b900fc7d067758.gif`
 - Audio ilusión auditiva (E4): `download.mp3`
@@ -149,6 +171,17 @@ assets/               imágenes y audio (ver "Mapa de assets")
   (estaban "en cualquier lado": eran % de la pantalla). (8) **Snakes a pantalla completa** sin fondo blanco
   (`object-fit:cover`). (9) **Fuente citada en cada gráfico** (`SOURCES`/`addSource`). (10) Ilustración del
   bate y la pelota rehecha según la foto de referencia (`bate y pelota.jpeg`, en la raíz del repo).
+- **Fase 7 — PORTADA DE VIDEO + IDENTIDAD GRIS/CELESTE (jun-2026, pedido de Gero): HECHA.** Manda sobre la
+  Fase 6 donde contradiga: (1) **Portada = video scrubeado por el scroll** (`portada_cerebro_120.mp4`,
+  a pantalla completa; sin nada más en pantalla al inicio, ni menú ni progreso; quieto se queda quieto
+  (la "respiración" se probó y se descartó) pero al soltar el scroll frena con inercia "gravedad cero";
+  al romperse las neuronas funde a negro y ahí entra el título; botón ↺ redondo que rebobina en reversa
+  y tapa el logo de Gemini; ya NO existe el cerebro SVG). (2) **Paleta gris + celeste `#8FD8FF`** (el celeste del
+  cerebro del video) en todo el sitio; el bermellón quedó descartado. (3) **Tipografías nuevas:**
+  Unbounded (hero) + Spectral (display) + Hanken + Plex Mono; Fraunces quedó descartada. (4) **Portales
+  rediseñados:** espiral = túnel volumétrico realista (grises + núcleo celeste); el título del módulo aparece
+  **ya adentro** del espiral; debajo del título un **puntito crece con el scroll hasta tragarte**; la frase
+  aparece en el negro.
 
 ## CORRECCIÓN DE COPY importante (E11)
 En E11 (Forer/Barnum) la frase de conexión **NO** debe mencionar un triángulo (esa escena no existe).
