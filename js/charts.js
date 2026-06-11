@@ -15,11 +15,47 @@ export function accentOf(el) {
   return v || '#3AA0FF';
 }
 
-const INK = '#E8E6E0';
-const INK_DIM = '#A7A59E';
-const LINE = 'rgba(232,230,224,0.10)';
-const FONT = 'Inter, system-ui, sans-serif';
-const DISPLAY = 'Space Grotesk, sans-serif';
+const INK = '#EDE6D8';
+const INK_DIM = '#A89F90';
+const INK_FAINT = '#6E675C';
+const LINE = 'rgba(237,230,216,0.10)';
+const FONT = 'Hanken Grotesk, system-ui, sans-serif';
+const DISPLAY = 'Fraunces, Georgia, serif';
+const MONO = 'IBM Plex Mono, ui-monospace, monospace';
+
+/* ---------- Fuente de cada gráfico (pedido: todo gráfico cita su dataset) ---------- */
+const SOURCES = {
+  '01_pato_conejo': 'Fuente: Jastrow (1899) · distribución según literatura de ambigüedad biestable (n=80).',
+  '02_contexto_cambio': 'Fuente: simulación coherente del efecto de priming contextual.',
+  '03_ilusiones_movimiento_waffle': 'Fuente: Kitaoka (2003), “Rotating Snakes” · proporción simulada coherente.',
+  '04_ilusion_auditiva': 'Fuente: simulación coherente · ilusión auditiva ambigua (tipo “bicicleta/alquiler”).',
+  '04b_auditiva_con_pista': 'Fuente: simulación coherente · la palabra leída sesga lo que se oye.',
+  '05_confianza_precision': 'Fuente: prototípico · paradoja confianza-acierto (n=1.120 respuestas).',
+  '06_bate_pelota': 'Fuente: Frederick (2005), Cognitive Reflection Test · distribución representativa.',
+  '07_aversion_perdidas': 'Fuente: Kahneman & Tversky (1979), teoría prospectiva · α=β=0,88 · λ=2,25.',
+  '08_framing_enfermedad': 'Fuente: Tversky & Kahneman (1981), problema de la enfermedad asiática.',
+  '09_dunning_kruger': 'Fuente: forma de Kruger & Dunning (1999) · cuartil inferior ≈ p62.',
+  '10_mejor_que_promedio': 'Fuente: Svenson (1981) · Cross (1977) · College Board.',
+  '11_efecto_forer': 'Fuente: Forer (1948) · calificación media 4,26/5.',
+  '11b_texto_barnum': 'Fuente: Forer (1948) · técnicas de lectura en frío.',
+  '12_pareidolia_paranormal': 'Fuente: YouGov · experiencias paranormales reportadas.',
+  '13_brecha_consenso': 'Fuente: Pew Research (científicos vs. público) · Pulsar UBA (Argentina).',
+};
+
+/* Inserta la cita: usa el slot [data-src-for] de la sección si existe;
+   si no, agrega un caption dentro/junto al contenedor del gráfico. */
+export function addSource(container, id) {
+  const text = SOURCES[id];
+  if (!text) return;
+  const section = container.closest('section');
+  const slot = section && section.querySelector(`[data-src-for="${id}"]`);
+  if (slot) { slot.textContent = text; return; }
+  const p = document.createElement('p');
+  p.textContent = text;
+  const wrap = container.closest('.viz__chart');
+  if (wrap) { p.className = 'chart-src'; wrap.appendChild(p); }
+  else { p.className = 'chart-src chart-src--static'; container.appendChild(p); }
+}
 
 function baseOption(accent) {
   return {
@@ -28,7 +64,7 @@ function baseOption(accent) {
     color: [accent],
     tooltip: {
       trigger: 'item', confine: true,
-      backgroundColor: 'rgba(16,17,22,0.96)', borderColor: 'rgba(232,230,224,0.14)', borderWidth: 1,
+      backgroundColor: 'rgba(21,18,14,0.96)', borderColor: 'rgba(237,230,216,0.14)', borderWidth: 1,
       padding: [10, 14], textStyle: { color: INK, fontSize: 13, fontFamily: FONT },
       extraCssText: 'border-radius:10px; max-width:280px; white-space:normal; line-height:1.5;',
     },
@@ -38,9 +74,9 @@ function baseOption(accent) {
 /* Título + subtítulo dentro del gráfico (como cualquier gráfico). */
 function titleBlock(text, subtext) {
   return {
-    text, subtext, left: 'center', top: 14,
-    textStyle: { color: INK, fontFamily: DISPLAY, fontWeight: 600, fontSize: 26, overflow: 'truncate' },
-    subtextStyle: { color: INK_DIM, fontFamily: FONT, fontSize: 15, overflow: 'truncate' },
+    text, subtext, left: 'center', top: 12,
+    textStyle: { color: INK, fontFamily: DISPLAY, fontWeight: 600, fontSize: 24, overflow: 'truncate' },
+    subtextStyle: { color: INK_DIM, fontFamily: FONT, fontSize: 14, overflow: 'truncate' },
     itemGap: 8,
   };
 }
@@ -73,27 +109,34 @@ function hexA(hex, a) {
    REGISTRO DE GRÁFICOS — clave = data-chart del HTML / hoja del JSON.
    ===================================================================== */
 export const CHARTS = {
-  /* ---------- G1 · Pato vs conejo (E1) ---------- */
+  /* ---------- G1 · Pato vs conejo (E1) — HTML, las barras crecen con el scroll ----------
+     Sin ejes: solo las dos barras (juntas), el % arriba contando de 0 al esperado. */
   '01_pato_conejo'(container, data, opts) {
     const rows = rowsToObjects(data['01_pato_conejo']);
-    const accent = accentOf(container);
     const max = Math.max(...rows.map((r) => r.porcentaje));
-    const ordered = rows.slice().reverse();
-    const option = {
-      ...baseOption(accent),
-      title: titleBlock('Se reparten casi por la mitad', 'Qué vio la gente al mirar la figura por primera vez'),
-      grid: { left: 6, right: 60, top: 96, bottom: 24, containLabel: true },
-      xAxis: valAxis({ max: Math.ceil(max / 10) * 10, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
-      yAxis: catAxis({ data: ordered.map((r) => r.respuesta), axisLabel: { fontSize: 18 } }),
-      tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong><br>${p.data.tip}` },
-      series: [{
-        type: 'bar', barWidth: '46%',
-        data: ordered.map((r) => ({ value: r.porcentaje, tip: r.tooltip, itemStyle: { color: r.porcentaje === max ? accent : hexA(accent, 0.45), borderRadius: [0, 8, 8, 0] } })),
-        label: { show: true, position: 'right', color: INK, fontFamily: DISPLAY, fontSize: 22, fontWeight: 600, formatter: (p) => `${p.value}%` },
-        animationDuration: 1100, animationEasing: 'cubicOut', animationDelay: (i) => i * 180,
-      }],
+    container.classList.add('duo');
+    const fmt = (v) => String(Math.round(v * 10) / 10).replace('.', ',');
+    const items = rows.map((r) => {
+      const item = document.createElement('div');
+      item.className = 'duo__item' + (r.porcentaje === max ? ' duo__item--max' : '');
+      item.innerHTML = `
+        <div class="duo__track"><div class="duo__bar"></div><span class="duo__pct">0%</span></div>
+        <span class="duo__name">${r.respuesta}</span>`;
+      item.title = r.tooltip;
+      container.appendChild(item);
+      return { pct: item.querySelector('.duo__pct'), track: item.querySelector('.duo__track'), value: r.porcentaje };
+    });
+    let last = -1;
+    container.__setDuo = (p) => {
+      if (p === last) return;
+      last = p;
+      for (const it of items) {
+        const v = it.value * p;
+        it.track.style.setProperty('--p', (v / 100).toFixed(4));
+        it.pct.textContent = fmt(v) + '%';
+      }
     };
-    mountChart(container, option, opts);
+    container.__setDuo(opts.reduced ? 1 : 0);
   },
 
   /* ---------- G2 · Contexto antes/después (E2) ---------- */
@@ -213,7 +256,7 @@ export const CHARTS = {
       tooltip: { ...baseOption(accent).tooltip, trigger: 'axis', formatter: (ps) => `<strong>Confianza ${rows[ps[0].dataIndex].nivel_confianza}/5</strong><br>${rows[ps[0].dataIndex].tooltip}` },
       series: [{
         type: 'line', smooth: true, symbol: 'circle', symbolSize: 10, data: vals,
-        lineStyle: { width: 3, color: accent }, itemStyle: { color: accent, borderColor: '#0B0C10', borderWidth: 2 },
+        lineStyle: { width: 3, color: accent }, itemStyle: { color: accent, borderColor: '#0E0C09', borderWidth: 2 },
         markPoint: {
           symbolSize: 13,
           label: { show: true, color: INK, fontFamily: DISPLAY, fontSize: 12, position: 'top', distance: 12, lineHeight: 15 },
@@ -371,7 +414,7 @@ export const CHARTS = {
       yAxis: valAxis({ min: 0, max: 100, axisLabel: { formatter: '{value}', color: INK_DIM, fontSize: 12 }, name: 'percentil', nameTextStyle: { color: INK_DIM, fontSize: 11, align: 'left' } }),
       tooltip: { ...baseOption(accent).tooltip, trigger: 'axis', formatter: (ps) => `<strong>${ps[0].name}</strong><br>${rows[ps[0].dataIndex].tooltip}` },
       series: [
-        { name: 'Lo que creen que saben', type: 'line', smooth: true, symbolSize: 9, data: self, lineStyle: { width: 3, color: accent }, itemStyle: { color: accent, borderColor: '#0B0C10', borderWidth: 2 }, animationDuration: 1400, animationEasing: 'cubicOut' },
+        { name: 'Lo que creen que saben', type: 'line', smooth: true, symbolSize: 9, data: self, lineStyle: { width: 3, color: accent }, itemStyle: { color: accent, borderColor: '#0E0C09', borderWidth: 2 }, animationDuration: 1400, animationEasing: 'cubicOut' },
         { name: 'Lo que realmente saben', type: 'line', smooth: true, symbolSize: 9, data: real, lineStyle: { width: 3, color: INK_DIM, type: 'dashed' }, itemStyle: { color: INK_DIM }, animationDuration: 1400, animationEasing: 'cubicOut' },
       ],
     };

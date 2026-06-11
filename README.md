@@ -8,15 +8,20 @@ Scrollytelling para **Visualización de Datos (UTDT)**: cómo el cerebro constru
 
 ---
 
-## Estado actual (jun-2026)
+## Estado actual (jun-2026, tras el rediseño integral)
 
-La historia completa está armada (3 módulos + cierre). Layout **full-bleed**: el visual ocupa toda la pantalla,
-el texto va superpuesto, y cada módulo abre con un **portal de espiral** (gira → negro → título del módulo).
+La historia completa está armada (3 módulos + cierre) con la **identidad nueva**: negro cálido + hueso +
+acento bermellón, tipografías **Fraunces / Hanken Grotesk / IBM Plex Mono**. Layout **dos columnas**
+(el texto scrollea a la izquierda y **nunca tapa** el visual fijo de la derecha), con momentos full-bleed
+deliberados (Rotating Snakes a pantalla completa). La **portada** muestra solo el título y un **cerebro gris**
+que se revela con el scroll; cada módulo abre con el **espiral-disco** que te traga; hay **menú de módulos**
+arriba a la izquierda; **E1 es interactivo** (imagen ⇄ gráfico con barras que crecen con el scroll) y
+**cada gráfico cita su fuente**.
 
-- ✅ **Módulo 1 — Percepción** (E1–E5).
+- ✅ **Módulo 1 — Percepción** (E1–E5, con E3 snakes full-bleed + E3b waffle).
 - ✅ **Módulo 2 — Decisión** (E6–E9).
 - ✅ **Módulo 3 — Sesgos** (E10–E13) + **cierre** (Checker Shadow) + **pie** (créditos/fuentes).
-- ⬜ **Pendiente:** completar los nombres de autores en el pie, pulido responsive/mobile y performance.
+- ⬜ **Pendiente:** completar los nombres de autores en el pie y pulido fino mobile/performance.
 
 Detalle escena por escena y convenciones: en [`CLAUDE.md`](CLAUDE.md).
 
@@ -60,11 +65,10 @@ Abrir **http://localhost:8000** y refrescar con **Cmd/Ctrl + Shift + R** despué
 
 Claude lee `CLAUDE.md` solo, pero para que arranque bien podés pegarle este primer mensaje:
 
-> Leé `CLAUDE.md`, `prompt_claude_code.md` y `propuesta_v2_storytelling.md` completos, y mirá
-> `data/datos_visualizaciones.json`. Decime en qué fase está el proyecto antes de tocar nada.
-> Regla clave: el **scroll es el protagonista** (motor sticky de pasos, una idea por vez), **nada de
-> "actos" explícitos en pantalla**, y los números **siempre** se leen del JSON (no hardcodear).
-> Cuando entiendas el estado, seguimos con el Acto 3 (E10–E13).
+> Leé `CLAUDE.md` completo (manda sobre los docs viejos) y mirá `data/datos_visualizaciones.json`.
+> Decime en qué fase está el proyecto antes de tocar nada. Reglas clave: el **scroll es el protagonista**
+> (motor de pasos en dos columnas: el texto nunca tapa el visual), identidad **Fraunces + bermellón**
+> sobre negro cálido, y los números **siempre** se leen del JSON (no hardcodear).
 
 ---
 

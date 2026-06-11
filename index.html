@@ -6,15 +6,61 @@
   <title>Tu cerebro no te cuenta toda la verdad</title>
   <meta name="description" content="Scrollytelling sobre cómo el cerebro construye la realidad: percepción, decisión y sesgos. Visualización de Datos, UTDT." />
   <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0E0C09" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js" defer></script>
   <link rel="stylesheet" href="./css/styles.css" />
 </head>
 <body>
   <div class="progress" aria-hidden="true"><span class="progress__bar" id="progressBar"></span></div>
+
+  <!-- ============================ MENÚ DE MÓDULOS ============================ -->
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu">
+    <span class="menu-btn__icon" aria-hidden="true"><span></span><span></span><span></span></span>
+    Índice
+  </button>
+  <nav class="menu" id="menu" aria-label="Índice de módulos">
+    <button class="menu__close" id="menuClose">Cerrar</button>
+    <ul class="menu__list">
+      <li class="menu__item">
+        <a class="menu__link" href="#portada"><span class="menu__num">00</span>Portada</a>
+      </li>
+      <li class="menu__item">
+        <a class="menu__link" href="#portal1"><span class="menu__num">01</span>Percepción</a>
+        <div class="menu__scenes">
+          <a class="menu__scene" href="#e1">Pato o conejo</a>
+          <a class="menu__scene" href="#e2">La pista</a>
+          <a class="menu__scene" href="#e3">Serpientes</a>
+          <a class="menu__scene" href="#e4">El oído</a>
+          <a class="menu__scene" href="#e5">Confianza</a>
+        </div>
+      </li>
+      <li class="menu__item">
+        <a class="menu__link" href="#portal2"><span class="menu__num">02</span>Decisión</a>
+        <div class="menu__scenes">
+          <a class="menu__scene" href="#e6">Bate y pelota</a>
+          <a class="menu__scene" href="#e7">Pérdidas</a>
+          <a class="menu__scene" href="#e8">Encuadre</a>
+          <a class="menu__scene" href="#e9">Dunning-Kruger</a>
+        </div>
+      </li>
+      <li class="menu__item">
+        <a class="menu__link" href="#portal3"><span class="menu__num">03</span>Sesgos</a>
+        <div class="menu__scenes">
+          <a class="menu__scene" href="#e10">Mejor que el promedio</a>
+          <a class="menu__scene" href="#e11">El texto que es tuyo</a>
+          <a class="menu__scene" href="#e12">Caras y fantasmas</a>
+          <a class="menu__scene" href="#e13">La brecha</a>
+        </div>
+      </li>
+      <li class="menu__item">
+        <a class="menu__link" href="#cierre"><span class="menu__num">04</span>Cierre</a>
+      </li>
+    </ul>
+  </nav>
 
   <div class="data-error" id="dataError" hidden>
     <p>No se pudieron cargar los datos. Serví el sitio con un server estático
@@ -23,70 +69,139 @@
 
   <main id="historia">
 
-    <!-- ============================ PORTADA (limpia, sin partículas) ============================ -->
-    <section class="cover" id="portada" data-act="perception">
-      <div class="cover__content">
-        <p class="kicker">Visualización de Datos · UTDT</p>
-        <h1 class="cover__title">Tu cerebro no te cuenta<br />toda la verdad.</h1>
-        <p class="cover__lede">
-          Estás convencido de que ves lo que hay, elegís lo que te conviene y creés lo que es cierto.
-        </p>
-        <p class="cover__q">¿Y si ninguna de las tres fuera tan tuya como creés?</p>
-        <div class="scroll-cue"><span>Bajá para entrar</span><span class="scroll-cue__arrow" aria-hidden="true"></span></div>
+    <!-- ============================ PORTADA ============================ -->
+    <!-- Solo el título al centro; el cerebro gris asoma abajo como una luna
+         y se revela completo con el scroll. -->
+    <section class="cover" id="portada">
+      <div class="cover__sticky">
+        <svg class="cover__brain" id="coverBrain" viewBox="0 0 900 740" aria-hidden="true">
+          <defs>
+            <radialGradient id="brainFill" cx="46%" cy="38%" r="75%">
+              <stop offset="0%" stop-color="#3A352E" />
+              <stop offset="62%" stop-color="#262220" />
+              <stop offset="100%" stop-color="#16130F" />
+            </radialGradient>
+          </defs>
+          <!-- silueta -->
+          <path fill="url(#brainFill)" stroke="#9A917F" stroke-width="3.5" stroke-linejoin="round"
+            d="M110 420 C88 345 105 260 168 200 C232 138 330 100 432 96 C540 90 652 112 724 166 C792 216 836 300 828 378 C823 432 800 470 766 494 C786 512 794 548 776 580 C748 628 668 648 614 618 C600 652 580 682 552 706 L512 706 C524 668 530 640 524 612 C470 600 410 588 352 570 C268 544 162 506 128 470 C116 455 112 440 110 420 Z" />
+          <!-- luz de borde superior -->
+          <path fill="none" stroke="#C9C0AE" stroke-width="2" stroke-linecap="round" opacity="0.5"
+            d="M180 192 C240 142 332 106 432 102 C536 96 644 118 716 170" />
+          <!-- cisura lateral -->
+          <path fill="none" stroke="#8E867A" stroke-width="3.5" stroke-linecap="round" opacity="0.85"
+            d="M180 420 C270 372 350 376 430 400 C510 424 580 428 660 400" />
+          <!-- circunvoluciones -->
+          <g fill="none" stroke="#8E867A" stroke-width="3" stroke-linecap="round" opacity="0.62">
+            <path d="M150 330 C190 300 230 300 268 318" />
+            <path d="M200 250 C240 222 290 218 330 236" />
+            <path d="M290 180 C330 158 380 152 420 166" />
+            <path d="M420 130 C470 118 520 120 560 138" />
+            <path d="M560 150 C610 140 660 152 696 178" />
+            <path d="M660 220 C700 212 740 232 760 266" />
+            <path d="M730 310 C762 322 780 352 782 388" />
+            <path d="M230 360 C270 340 310 344 344 362" />
+            <path d="M350 300 C392 282 436 284 472 302" />
+            <path d="M470 250 C512 234 558 238 596 258" />
+            <path d="M600 310 C640 298 680 310 708 338" />
+            <path d="M320 440 C370 460 420 470 470 468" />
+            <path d="M480 500 C530 516 580 516 624 498" />
+            <path d="M200 470 C250 496 310 516 370 528" />
+          </g>
+          <!-- cerebelo -->
+          <path fill="none" stroke="#8E867A" stroke-width="3" stroke-linecap="round" opacity="0.8"
+            d="M600 520 C660 498 740 506 772 548" />
+          <g fill="none" stroke="#8E867A" stroke-width="2.4" stroke-linecap="round" opacity="0.55">
+            <path d="M640 540 C680 530 720 538 748 560" />
+            <path d="M634 566 C674 556 714 564 744 584" />
+            <path d="M640 592 C676 584 710 590 736 606" />
+          </g>
+        </svg>
+
+        <div class="cover__content">
+          <p class="cover__kicker">Visualización de datos · UTDT</p>
+          <h1 class="cover__title">
+            <span class="t1">Tu cerebro no te cuenta</span>
+            <span class="t2">toda la verdad.</span>
+          </h1>
+          <p class="cover__q">¿Y si nada de lo que ves, elegís y creés fuera tan tuyo como pensás?</p>
+        </div>
+
+        <p class="cover__scrollcue">Bajá para entrar</p>
       </div>
     </section>
 
     <!-- ====================== PORTAL 1 · espiral → Percepción ====================== -->
-    <section class="portal" id="portal1" data-act="perception">
+    <section class="portal" id="portal1">
       <div class="portal__sticky">
         <canvas class="portal__canvas" data-spiral aria-hidden="true"></canvas>
-        <div class="portal__title">
-          <p class="portal__kicker">Módulo uno</p>
+        <div class="portal__head">
+          <p class="portal__kicker">Módulo I</p>
           <h2 class="portal__name">Percepción</h2>
           <p class="portal__sub">No ves lo que creés que ves.</p>
         </div>
+        <div class="portal__after">
+          <p>Lo que ves no está en tus ojos: está en tu <em>cerebro</em>.</p>
+        </div>
       </div>
     </section>
 
-    <!-- ====================== E1 · ¿Qué ves? (INTERACCIÓN 1) ====================== -->
-    <section class="scrolly" id="e1" data-act="perception" aria-labelledby="e1-h">
-      <div class="scrolly__graphic">
-        <div class="viz">
-          <div class="viz__layer is-active" data-layer="0">
-            <figure class="flip-figure viz__media">
-              <div class="figure-card">
-                <img src="./assets/840_560.jpg"
-                     alt="Figura ambigua de Jastrow: el mismo trazo puede leerse como un pato mirando a la izquierda o como un conejo." />
-              </div>
-            </figure>
-          </div>
-          <div class="viz__layer" data-layer="1">
-            <div class="viz__chart"><div class="chart" data-chart="01_pato_conejo" role="img" aria-label="La gente se reparte casi por la mitad entre pato y conejo."></div></div>
-          </div>
-        </div>
-      </div>
-      <div class="scrolly__steps">
-        <div class="step is-active" data-layer="0">
-          <div class="step__card">
+    <!-- ====================== E1 · ¿Qué ves? (INTERACCIÓN 1) ======================
+         Pregunta estática a la izquierda, figura a la derecha. Al elegir, pasa
+         al gráfico (con botón para volver); las barras crecen con el scroll. -->
+    <section class="intro" id="e1" data-state="img" aria-labelledby="e1-h">
+      <div class="intro__sticky">
+
+        <div class="intro__stage intro__stage--img">
+          <div class="intro__ask">
+            <p class="kicker">Primera prueba</p>
             <h2 id="e1-h">Mirá la imagen.<br />¿Qué ves?</h2>
             <p class="lede">Lo primero que aparezca. Sin pensarlo.</p>
             <div class="choices" role="group" aria-label="¿Qué ves primero?">
-              <button class="choice" data-choice="pato" aria-pressed="false">Un pato</button>
-              <button class="choice" data-choice="conejo" aria-pressed="false">Un conejo</button>
+              <button class="choice" data-choice="pato" aria-pressed="false">
+                <svg viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="19" cy="14" r="8" />
+                  <path d="M11.5 12.5 3 10.5l8.7 5.8" stroke-linejoin="round" />
+                  <circle cx="21" cy="12" r="1.6" fill="currentColor" stroke="none" />
+                </svg>
+                <span>Un pato</span>
+              </button>
+              <button class="choice" data-choice="conejo" aria-pressed="false">
+                <svg viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="16" cy="21" r="7.5" />
+                  <path d="M12.5 14.5C10 10 9.5 5.5 12 4c1.8 1.2 3 5 3 9M19.5 14.5C22 10 22.5 5.5 20 4c-1.8 1.2-3 5-3 9" stroke-linecap="round" />
+                  <circle cx="13.5" cy="20" r="1.4" fill="currentColor" stroke="none" />
+                </svg>
+                <span>Un conejo</span>
+              </button>
             </div>
           </div>
+          <figure class="intro__fig figure-card">
+            <img src="./assets/840_560.jpg"
+                 alt="Figura ambigua de Jastrow: el mismo trazo puede leerse como un pato mirando a la izquierda o como un conejo." />
+          </figure>
         </div>
-        <div class="step" data-layer="1">
-          <div class="step__card">
+
+        <div class="intro__stage intro__stage--chart">
+          <header class="chart-head">
+            <h3>Se reparten casi por la mitad</h3>
+            <p>Qué vio la gente al mirar la figura por primera vez · seguí bajando: las barras crecen con tu scroll</p>
+          </header>
+          <div class="chart" data-chart="01_pato_conejo" id="duoChart" role="img"
+               aria-label="La gente se reparte casi por la mitad entre pato y conejo."></div>
+          <div class="intro__after">
             <p class="lede">La mitad jura que es un pato; la otra mitad, que es un conejo.</p>
             <p class="muted">La imagen es siempre la misma. Lo que cambia es el cerebro que la mira.</p>
+            <p class="chart-src chart-src--static" data-src-for="01_pato_conejo"></p>
+            <button class="ghost-btn" id="backToImg">← Volver a la imagen</button>
           </div>
         </div>
+
       </div>
     </section>
 
-    <!-- ====================== E2 · La pista (gira con el scroll, sin chips) ====================== -->
-    <section class="scrolly" id="e2" data-act="perception" aria-labelledby="e2-h">
+    <!-- ====================== E2 · La pista (gira con el scroll) ====================== -->
+    <section class="scrolly" id="e2" aria-labelledby="e2-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -94,11 +209,9 @@
               <div class="figure-card">
                 <img src="./assets/840_560.jpg" alt="La misma figura; al girar y marcar sus rasgos aparece el otro animal." />
               </div>
-            </figure>
-            <div class="annot-layer">
               <span class="annot" id="e2Annot1"></span>
               <span class="annot" id="e2Annot2"></span>
-            </div>
+            </figure>
           </div>
           <div class="viz__layer" data-layer="1">
             <div class="viz__chart"><div class="chart" data-chart="02_contexto_cambio" role="img" aria-label="Con una pista de contexto, la mayoría pasa a ver el otro animal."></div></div>
@@ -106,8 +219,9 @@
         </div>
       </div>
       <div class="scrolly__steps">
-        <div class="step is-active" data-layer="0">
+        <div class="step step--tall is-active" data-layer="0">
           <div class="step__card">
+            <p class="kicker">La pista</p>
             <h2 id="e2-h" data-e2-title>Dale vuelta la cabeza.</h2>
             <p class="lede" data-e2-lede>Seguí bajando: la figura gira y aparece el otro animal.</p>
           </div>
@@ -121,8 +235,8 @@
       </div>
     </section>
 
-    <!-- ====================== E3 · Movimiento donde no hay (texto → ilusión → waffle) ====================== -->
-    <section class="scrolly" id="e3" data-act="perception" aria-labelledby="e3-h">
+    <!-- ====================== E3 · Movimiento donde no hay (snakes FULL-BLEED) ====================== -->
+    <section class="scrolly scrolly--bleed" id="e3" aria-labelledby="e3-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0"></div>
@@ -132,46 +246,64 @@
                    alt="Ilusión Rotating Snakes (Kitaoka): anillos que parecen girar aunque la imagen está totalmente quieta." />
             </figure>
           </div>
-          <div class="viz__layer" data-layer="2">
-            <div class="chart waffle" id="e3Waffle" data-chart="03_ilusiones_movimiento_waffle"></div>
-          </div>
         </div>
       </div>
       <div class="scrolly__steps">
-        <div class="step is-active step--center" data-layer="0">
+        <div class="step step--center is-active" data-layer="0">
           <div class="step__card">
             <h2 id="e3-h">No todas las ilusiones<br />son ambiguas.</h2>
-            <p class="lede">Algunas te muestran movimiento donde no hay ninguno. Seguí bajando.</p>
+            <p class="lede">Algunas inventan movimiento donde no hay ninguno. Seguí bajando.</p>
           </div>
         </div>
         <div class="step" data-layer="1">
-          <div class="step__card">
-            <p class="lede">Esta imagen está <strong>completamente quieta</strong>. Ni un solo píxel se mueve.</p>
-            <p class="muted">Y, sin embargo, gira.</p>
-          </div>
-        </div>
-        <div class="step" data-layer="2">
-          <div class="step__card">
-            <p class="stat-line"><span class="stat-line__num" id="e3Count">0</span> de cada 100 personas
-              ven movimiento donde no lo hay.</p>
-            <p>Tu cerebro <em>agrega</em> una información que no existe. El mismo mecanismo que más adelante
-              va a encontrar caras y fantasmas donde solo hay ruido.</p>
+          <div class="step__card step__card--chip">
+            <p class="lede">Esta imagen está <strong>completamente quieta</strong>.</p>
+            <p class="muted">Ni un solo píxel se mueve. Y, sin embargo, gira.</p>
+            <p class="chart-src chart-src--static">Fuente: Kitaoka (2003), “Rotating Snakes”.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ====================== E4 · También el oído (INTERACCIÓN 2 · botones separados) ====================== -->
-    <section class="scrolly" id="e4" data-act="perception" aria-labelledby="e4-h">
+    <!-- ====================== E3b · Waffle: cuántos ven el movimiento ====================== -->
+    <section class="scrolly" id="e3b" aria-labelledby="e3b-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
-            <div class="wave" id="e4Wave" aria-hidden="true">
-              <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span><span style="--i:3"></span>
-              <span style="--i:4"></span><span style="--i:5"></span><span style="--i:6"></span><span style="--i:7"></span>
-              <span style="--i:8"></span><span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
-              <span style="--i:12"></span><span style="--i:13"></span><span style="--i:14"></span><span style="--i:15"></span>
-              <span style="--i:16"></span><span style="--i:17"></span><span style="--i:18"></span><span style="--i:19"></span>
+            <div class="chart waffle" id="e3Waffle" data-chart="03_ilusiones_movimiento_waffle"></div>
+          </div>
+        </div>
+      </div>
+      <div class="scrolly__steps">
+        <div class="step step--tall is-active" data-layer="0">
+          <div class="step__card">
+            <p class="kicker" id="e3b-h">De cada 100 personas</p>
+            <p class="stat-line"><span class="stat-line__num" id="e3Count">0</span> ven movimiento donde no lo hay.</p>
+            <p class="muted">Tu cerebro <em>agrega</em> una información que no existe. El mismo mecanismo que más adelante va a encontrar caras y fantasmas donde solo hay ruido.</p>
+            <p class="chart-src chart-src--static" data-src-for="03_ilusiones_movimiento_waffle"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== E4 · También el oído (INTERACCIÓN 2) ====================== -->
+    <section class="scrolly" id="e4" aria-labelledby="e4-h">
+      <div class="scrolly__graphic">
+        <div class="viz">
+          <div class="viz__layer is-active" data-layer="0">
+            <div class="audio-stage">
+              <div class="wave" id="e4Wave" aria-hidden="true">
+                <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span><span style="--i:3"></span>
+                <span style="--i:4"></span><span style="--i:5"></span><span style="--i:6"></span><span style="--i:7"></span>
+                <span style="--i:8"></span><span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
+                <span style="--i:12"></span><span style="--i:13"></span><span style="--i:14"></span><span style="--i:15"></span>
+                <span style="--i:16"></span><span style="--i:17"></span><span style="--i:18"></span><span style="--i:19"></span>
+              </div>
+              <div class="audio">
+                <button class="audio__play" id="audioPlay" aria-label="Reproducir audio"><span class="audio__icon" aria-hidden="true">▶</span></button>
+                <span class="audio__hint">Un audio, para todos el mismo</span>
+              </div>
+              <audio id="audioEl" src="./assets/download.mp3" preload="auto"></audio>
             </div>
           </div>
           <div class="viz__layer" data-layer="1">
@@ -183,23 +315,19 @@
         </div>
       </div>
       <div class="scrolly__steps">
-        <div class="step is-active step--center" data-layer="0">
-          <div class="step__card" style="text-align:center; max-width:34rem;">
+        <div class="step is-active" data-layer="0">
+          <div class="step__card">
+            <p class="kicker">Segunda prueba</p>
             <h2 id="e4-h">No es solo la vista.<br />También el oído.</h2>
-            <p class="lede">Si el cerebro interpreta lo que ve, también interpreta lo que oye. Escuchá una vez.</p>
-            <div class="audio">
-              <button class="audio__play" id="audioPlay" aria-label="Reproducir audio"><span class="audio__icon" aria-hidden="true">▶</span></button>
-              <span class="audio__hint">Un audio, para todos el mismo.</span>
-            </div>
-            <audio id="audioEl" src="./assets/download.mp3" preload="auto"></audio>
+            <p class="lede">Si el cerebro interpreta lo que ve, también interpreta lo que oye. Dale play y escuchá una vez.</p>
           </div>
         </div>
-        <div class="step step--center" data-layer="0">
-          <div class="step__card" style="text-align:center; max-width:46rem;">
+        <div class="step" data-layer="0">
+          <div class="step__card">
             <h3>¿Qué palabra oíste?</h3>
-            <div class="choices choices--spread" role="group" aria-label="¿Qué escuchaste?">
-              <button class="choice" data-choice="bicicleta" aria-pressed="false">Bicicleta</button>
-              <button class="choice" data-choice="alquiler" aria-pressed="false">Alquiler</button>
+            <div class="choices" role="group" aria-label="¿Qué escuchaste?">
+              <button class="choice" data-choice="bicicleta" aria-pressed="false"><span>Bicicleta</span></button>
+              <button class="choice" data-choice="alquiler" aria-pressed="false"><span>Alquiler</span></button>
             </div>
           </div>
         </div>
@@ -219,7 +347,7 @@
     </section>
 
     <!-- ====================== E5 · Confianza ≠ acierto (cierre del módulo) ====================== -->
-    <section class="scrolly" id="e5" data-act="perception" aria-labelledby="e5-h">
+    <section class="scrolly" id="e5" aria-labelledby="e5-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -244,33 +372,43 @@
     </section>
 
     <!-- ====================== PORTAL 2 · espiral → Decisión ====================== -->
-    <section class="portal" id="portal2" data-act="decision">
+    <section class="portal" id="portal2">
       <div class="portal__sticky">
         <canvas class="portal__canvas" data-spiral aria-hidden="true"></canvas>
-        <div class="portal__title">
-          <p class="portal__kicker">Módulo dos</p>
+        <div class="portal__head">
+          <p class="portal__kicker">Módulo II</p>
           <h2 class="portal__name">Decisión</h2>
-          <p class="portal__sub">Tampoco elegís lo que creés que elegís.</p>
+          <p class="portal__sub">Elegir también es interpretar.</p>
+        </div>
+        <div class="portal__after">
+          <p>Tampoco elegís lo que creés que <em>elegís</em>.</p>
         </div>
       </div>
     </section>
 
     <!-- ====================== E6 · Bate y pelota ====================== -->
-    <section class="scrolly" id="e6" data-act="decision" aria-labelledby="e6-h">
+    <section class="scrolly" id="e6" aria-labelledby="e6-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
             <div class="statement">
               <p class="statement__eyebrow" id="e6-h">Un atajo que casi nunca falla</p>
               <div class="batball" aria-hidden="true">
-                <svg viewBox="0 0 260 150" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                  <g transform="rotate(-36 165 75)">
-                    <path d="M120 75 H232" stroke-width="26" />
-                    <path d="M120 75 H232" stroke="#0B0C10" stroke-width="2" opacity="0.25" />
-                    <circle cx="110" cy="75" r="9" stroke-width="6" />
+                <svg viewBox="0 0 460 310" fill="none">
+                  <g transform="translate(62 246) rotate(-27)">
+                    <path d="M0 -27 C-36 -27 -36 27 0 27 L30 25.5 C140 20 230 14 318 11 L318 -11 C230 -14 140 -20 30 -25.5 Z"
+                          fill="rgba(237,230,216,0.07)" stroke="#EDE6D8" stroke-width="2.5" stroke-linejoin="round" />
+                    <circle cx="334" cy="0" r="16" fill="rgba(237,230,216,0.07)" stroke="#EDE6D8" stroke-width="2.5" />
+                    <path d="M52 -25 C56 -8 56 8 52 25" stroke="#FF5A36" stroke-width="2" />
+                    <path d="M66 -24 C70 -8 70 8 66 24" stroke="#FF5A36" stroke-width="2" opacity="0.6" />
+                    <path d="M30 -8 C120 -10 220 -7 300 -4" stroke="#EDE6D8" stroke-width="1" opacity="0.25" />
+                    <path d="M26 9 C120 11 210 8 295 5" stroke="#EDE6D8" stroke-width="1" opacity="0.18" />
                   </g>
-                  <circle cx="64" cy="92" r="30" stroke-width="5" />
-                  <path d="M42 78 q22 14 44 0 M42 106 q22 -14 44 0" stroke-width="3" opacity="0.85" />
+                  <circle cx="238" cy="212" r="46" fill="#EDE6D8" />
+                  <path d="M210 176 q22 36 0 72" stroke="#FF5A36" stroke-width="2.5" />
+                  <path d="M266 176 q-22 36 0 72" stroke="#FF5A36" stroke-width="2.5" />
+                  <path d="M205 183 q19 30 0 58" stroke="#FF5A36" stroke-width="5" stroke-dasharray="1.5 7" opacity="0.85" />
+                  <path d="M271 183 q-19 30 0 58" stroke="#FF5A36" stroke-width="5" stroke-dasharray="1.5 7" opacity="0.85" />
                 </svg>
               </div>
               <p class="statement__line">Un bate y una pelota cuestan <strong>$1,10</strong>.</p>
@@ -284,7 +422,12 @@
         </div>
       </div>
       <div class="scrolly__steps">
-        <div class="step is-active" data-layer="0"></div>
+        <div class="step is-active" data-layer="0">
+          <div class="step__card">
+            <p class="kicker">Tercera prueba</p>
+            <p class="lede">Respondé rápido, sin lápiz ni papel. Después seguí bajando.</p>
+          </div>
+        </div>
         <div class="step" data-layer="1">
           <div class="step__card">
             <p class="lede">Si pensaste $0,10, te pasó lo mismo que a la mayoría. Está mal.</p>
@@ -295,7 +438,7 @@
     </section>
 
     <!-- ====================== E7 · Aversión a las pérdidas ====================== -->
-    <section class="scrolly" id="e7" data-act="decision" aria-labelledby="e7-h">
+    <section class="scrolly" id="e7" aria-labelledby="e7-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -312,10 +455,15 @@
         </div>
       </div>
       <div class="scrolly__steps">
-        <div class="step is-active" data-layer="0"></div>
+        <div class="step is-active" data-layer="0">
+          <div class="step__card">
+            <p class="kicker">Una apuesta justa</p>
+            <p class="lede">Ganás y perdés exactamente lo mismo. Decidí con la panza y seguí bajando.</p>
+          </div>
+        </div>
         <div class="step" data-layer="1">
           <div class="step__card">
-            <p class="lede">El juego es “justo”: ganás y perdés lo mismo, y casi nadie acepta. Para tu cerebro no lo es.</p>
+            <p class="lede">Casi nadie acepta. Para tu cerebro, el juego no es justo.</p>
             <p class="muted">La rama de las pérdidas se hunde más rápido de lo que sube la de las ganancias.</p>
           </div>
         </div>
@@ -329,7 +477,7 @@
     </section>
 
     <!-- ====================== E8 · Encuadre (framing) ====================== -->
-    <section class="scrolly" id="e8" data-act="decision" aria-labelledby="e8-h">
+    <section class="scrolly" id="e8" aria-labelledby="e8-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -346,7 +494,12 @@
         </div>
       </div>
       <div class="scrolly__steps">
-        <div class="step is-active" data-layer="0"></div>
+        <div class="step is-active" data-layer="0">
+          <div class="step__card">
+            <p class="kicker">El encuadre</p>
+            <p class="lede">Leé el planteo. Ahora mirá qué pasa cuando lo único que cambia es <em>cómo se cuenta</em>.</p>
+          </div>
+        </div>
         <div class="step" data-layer="1">
           <div class="step__card">
             <p class="lede">Contado en <strong>vidas salvadas</strong>, elegís lo seguro. En <strong>muertes</strong> —lo mismo— te arriesgás.</p>
@@ -357,7 +510,7 @@
     </section>
 
     <!-- ====================== E9 · Dunning-Kruger (cierre del módulo) ====================== -->
-    <section class="scrolly" id="e9" data-act="decision" aria-labelledby="e9-h">
+    <section class="scrolly" id="e9" aria-labelledby="e9-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -382,19 +535,22 @@
     </section>
 
     <!-- ====================== PORTAL 3 · espiral → Sesgos ====================== -->
-    <section class="portal" id="portal3" data-act="bias">
+    <section class="portal" id="portal3">
       <div class="portal__sticky">
         <canvas class="portal__canvas" data-spiral aria-hidden="true"></canvas>
-        <div class="portal__title">
-          <p class="portal__kicker">Módulo tres</p>
+        <div class="portal__head">
+          <p class="portal__kicker">Módulo III</p>
           <h2 class="portal__name">Sesgos</h2>
-          <p class="portal__sub">Y otros lo saben —y lo usan.</p>
+          <p class="portal__sub">Creer es rellenar lo ambiguo.</p>
+        </div>
+        <div class="portal__after">
+          <p>Y otros lo saben. <em>Y lo usan.</em></p>
         </div>
       </div>
     </section>
 
     <!-- ====================== E10 · Mejor que el promedio ====================== -->
-    <section class="scrolly" id="e10" data-act="bias" aria-labelledby="e10-h">
+    <section class="scrolly" id="e10" aria-labelledby="e10-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -419,7 +575,7 @@
     </section>
 
     <!-- ====================== E11 · Forer / Barnum ====================== -->
-    <section class="scrolly" id="e11" data-act="bias" aria-labelledby="e11-h">
+    <section class="scrolly" id="e11" aria-labelledby="e11-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -456,7 +612,7 @@
     </section>
 
     <!-- ====================== E12 · Pareidolia / apofenia ====================== -->
-    <section class="scrolly" id="e12" data-act="bias" aria-labelledby="e12-h">
+    <section class="scrolly" id="e12" aria-labelledby="e12-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -472,8 +628,8 @@
         </div>
       </div>
       <div class="scrolly__steps">
-        <div class="step is-active step--center" data-layer="0">
-          <div class="step__card" style="text-align:center; max-width:40rem;">
+        <div class="step is-active" data-layer="0">
+          <div class="step__card">
             <h2 id="e12-h">El cerebro que ve fantasmas.</h2>
             <p class="lede">Somos tan buenos detectando patrones que los vemos donde no hay: una cara en un enchufe, una presencia en una habitación vacía.</p>
           </div>
@@ -488,7 +644,7 @@
     </section>
 
     <!-- ====================== E13 · La brecha con la ciencia ====================== -->
-    <section class="scrolly" id="e13" data-act="bias" aria-labelledby="e13-h">
+    <section class="scrolly" id="e13" aria-labelledby="e13-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -518,8 +674,8 @@
       </div>
     </section>
 
-    <!-- ====================== CIERRE · Checker Shadow (sin interacción) ====================== -->
-    <section class="scrolly" id="cierre" data-act="bias" aria-labelledby="cierre-h">
+    <!-- ====================== CIERRE · Checker Shadow ====================== -->
+    <section class="scrolly" id="cierre" aria-labelledby="cierre-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -546,8 +702,8 @@
             <p class="muted">Es saber que la trampa existe.</p>
           </div>
         </div>
-        <div class="step step--center" data-layer="0">
-          <div class="step__card" style="text-align:center;">
+        <div class="step" data-layer="0">
+          <div class="step__card">
             <p class="closing-line">Ahora lo sabés.</p>
           </div>
         </div>
@@ -555,12 +711,12 @@
     </section>
 
     <!-- ====================== PIE · créditos y fuentes ====================== -->
-    <footer class="pie" data-act="bias">
+    <footer class="pie">
       <div class="pie__inner">
         <p class="pie__title">Tu cerebro no te cuenta toda la verdad.</p>
         <p>Trabajo final de <strong>Visualización de Datos</strong> — Universidad Torcuato Di Tella.</p>
         <p>Autores: <em>[completar nombres del equipo]</em>.</p>
-        <p class="pie__src">Fuentes: Jastrow (1899) · Kitaoka (Rotating Snakes) · Frederick (2005) · Tversky &amp; Kahneman (1981) ·
+        <p class="pie__src">Fuentes: Jastrow (1899) · Kitaoka (Rotating Snakes) · Frederick (2005) · Kahneman &amp; Tversky (1979, 1981) ·
           Svenson (1981) · Forer (1948) · Kruger &amp; Dunning (1999) · Molins &amp; Serrano (2019) · Pew Research ·
           Pulsar UBA · YouGov. Datos en <code>data/datos_visualizaciones.json</code> (reales + simulados coherentes;
           ver hoja <code>_metodologia</code>).</p>

@@ -1,37 +1,43 @@
 /* =====================================================================
-   main.js — orquestación del scrollytelling (layout full-bleed).
-   - Motor de pasos: cada .scrolly tiene un gráfico fijo a pantalla completa
-     y pasos (.step) superpuestos; al cruzar el centro se cambia la capa.
-   - Portales de espiral entre módulos (SpiralPortal), scrubeados por scroll.
-   - Gráficos pre-inicializados al cargar los datos → scroll fluido (sin lag).
-   - Interacciones: E1/E4 auto-avanzan al elegir; E2 gira la figura con el scroll.
+   main.js — orquestación del scrollytelling.
+   - Layout 2 columnas: texto a la izquierda que scrollea, visual fija a
+     la derecha (el texto nunca tapa el gráfico). Momentos full-bleed
+     deliberados (snakes) con chips flotantes.
+   - Menú de módulos (arriba a la izquierda) para saltar a cada módulo.
+   - Portada: el cerebro asoma como una luna y se revela con el scroll.
+   - Portales: disco de espiral bajo el título; al scrollear te traga.
+   - E1 (pato-conejo): máquina de estados imagen ⇄ gráfico (sin scroll de
+     texto); las barras crecen de 0 al % esperado con el scroll.
+   - E2: la figura gira con el scroll; marcas ancladas A LA IMAGEN.
    Respeta prefers-reduced-motion.
    ===================================================================== */
 
-import { NoiseToSignal, SpiralPortal } from './noise.js';
-import { CHARTS } from './charts.js';
+import { SpiralPortal } from './noise.js';
+import { CHARTS, addSource } from './charts.js';
 
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const easeOut = (t) => 1 - Math.pow(1 - t, 3);
 const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 let DATA = null;
 let dataReady = false;
-const scrubbers = [];      // motivos ruido→señal (si hubiera): { section, cb }
-const portals = [];        // espirales: { sp, section, title }
+const portals = [];   // espirales: { sp, section, head, after }
 
-// Refs del waffle (E3) y de la figura de E2 para scrubbear con el scroll
-let waffleEl = null, waffleStep = null, e3CountEl = null;
-let e2Fig = null, e2Step = null;
+/* Refs cacheadas para el scrub */
+let coverEl = null, brainEl = null, cueEl = null;
+let introEl = null, duoEl = null;
+let e2Sec = null, e2Fig = null, e2Step = null;
+let e3bSec = null, waffleEl = null, e3CountEl = null;
 
 const state = { first: null, e2rotate: true };
 const progressBar = document.getElementById('progressBar');
 
 async function init() {
+  setupMenu();
   setupReveal();
-  setupActAccent();
-  setupNoise();
   setupSpiral();
   setupScrolly();
+  setupIntro();
   setupInteractions();
   cacheScrubRefs();
   setupScroll();
@@ -55,6 +61,31 @@ async function loadData() {
   return res.json();
 }
 
+/* ----------------------------- Menú de módulos ----------------------------- */
+function setupMenu() {
+  const btn = document.getElementById('menuBtn');
+  const panel = document.getElementById('menu');
+  const closeBtn = document.getElementById('menuClose');
+  if (!btn || !panel) return;
+
+  const open = () => {
+    panel.classList.add('is-open');
+    panel.setAttribute('aria-hidden', 'false');
+    btn.setAttribute('aria-expanded', 'true');
+  };
+  const shut = () => {
+    panel.classList.remove('is-open');
+    panel.setAttribute('aria-hidden', 'true');
+    btn.setAttribute('aria-expanded', 'false');
+  };
+  shut();
+
+  btn.addEventListener('click', open);
+  if (closeBtn) closeBtn.addEventListener('click', shut);
+  panel.querySelectorAll('a').forEach((a) => a.addEventListener('click', shut));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') shut(); });
+}
+
 /* ----------------------------- Revelado puntual ----------------------------- */
 function setupReveal() {
   const els = document.querySelectorAll('[data-reveal]');
@@ -68,7 +99,7 @@ function setupReveal() {
 }
 
 /* =====================================================================
-   MOTOR DE PASOS
+   MOTOR DE PASOS (texto izq. → cambia la capa visual der.)
    ===================================================================== */
 function setupScrolly() {
   document.querySelectorAll('.scrolly').forEach((scrolly) => {
@@ -103,8 +134,10 @@ function initOne(el) {
   const id = el.dataset.chart;
   const fn = CHARTS[id];
   el.dataset.inited = '1';
-  if (fn) { try { fn(el, DATA, { reduced: REDUCED }); } catch (err) { console.error('[chart] error en', id, err); } }
-  else console.warn('[chart] sin handler para', id);
+  if (fn) {
+    try { fn(el, DATA, { reduced: REDUCED }); addSource(el, id); }
+    catch (err) { console.error('[chart] error en', id, err); }
+  } else console.warn('[chart] sin handler para', id);
 }
 function initCharts(scope) {
   if (!dataReady || !scope) return;
@@ -112,26 +145,17 @@ function initCharts(scope) {
   scope.querySelectorAll?.('[data-chart]:not([data-inited])').forEach(initOne);
 }
 
-/* ----------------------------- Acento por tramo ----------------------------- */
-function setupActAccent() {
-  const obs = new IntersectionObserver(
-    (entries) => entries.forEach((e) => {
-      if (!e.isIntersecting) return;
-      const accent = getComputedStyle(e.target).getPropertyValue('--accent').trim();
-      if (accent) document.documentElement.style.setProperty('--accent', accent);
-    }),
-    { threshold: 0.5 }
-  );
-  document.querySelectorAll('[data-act]').forEach((s) => obs.observe(s));
-}
-
 /* ----------------------------- Portales de espiral ----------------------------- */
 function setupSpiral() {
   document.querySelectorAll('[data-spiral]').forEach((canvas) => {
     const sp = new SpiralPortal(canvas, { reduced: REDUCED });
     const section = canvas.closest('.portal');
-    const title = section ? section.querySelector('.portal__title') : null;
-    portals.push({ sp, section, title });
+    portals.push({
+      sp,
+      section,
+      head: section ? section.querySelector('.portal__head') : null,
+      after: section ? section.querySelector('.portal__after') : null,
+    });
     const vis = new IntersectionObserver(
       (entries) => entries.forEach((e) => (e.isIntersecting ? sp.start() : sp.stop())),
       { threshold: 0 }
@@ -140,51 +164,31 @@ function setupSpiral() {
   });
 }
 
-/* ----------------------------- Ruido→señal (interludios, si hubiera) ----------------------------- */
-function setupNoise() {
-  document.querySelectorAll('[data-noise]').forEach((canvas) => {
-    const accentHex = getComputedStyle(canvas).getPropertyValue('--accent').trim() || '#3AA0FF';
-    const n2s = new NoiseToSignal(canvas, { reduced: REDUCED, colorAccent: accentHex });
-    const type = canvas.dataset.noise;
-    if (type === 'image') n2s.setTargetFromImage(canvas.dataset.src, { threshold: 120 });
-    else if (type === 'text') n2s.setTargetFromText(canvas.dataset.glyph || '$');
-    else if (type === 'eye') n2s.setTargetFromDraw(drawEye);
-    const section = canvas.closest('section') || canvas.parentElement;
-    scrubbers.push({ section, cb: (p) => n2s.setProgress(p) });
-    const vis = new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting ? n2s.start() : n2s.stop())), { threshold: 0 });
-    vis.observe(canvas);
-  });
-}
-function drawEye(ctx, w, h) {
-  const cx = w / 2, cy = h / 2, rw = Math.min(w, h) * 0.42, rh = rw * 0.52;
-  ctx.fillStyle = '#fff'; ctx.lineWidth = Math.max(2, rw * 0.04); ctx.strokeStyle = '#fff';
-  ctx.beginPath(); ctx.ellipse(cx, cy, rw, rh, 0, 0, Math.PI * 2); ctx.stroke();
-  ctx.beginPath(); ctx.arc(cx, cy, rh * 0.66, 0, Math.PI * 2); ctx.stroke();
-  ctx.beginPath(); ctx.arc(cx, cy, rh * 0.28, 0, Math.PI * 2); ctx.fill();
+/* =====================================================================
+   E1 — máquina de estados imagen ⇄ gráfico (sin scroll de texto que cae)
+   ===================================================================== */
+function setupIntro() {
+  const intro = document.getElementById('e1');
+  if (!intro) return;
+
+  intro.querySelectorAll('.choice').forEach((b) => b.addEventListener('click', () => {
+    intro.querySelectorAll('.choice').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    state.first = b.dataset.choice;
+    configureE2(state.first);
+    intro.dataset.state = 'chart';
+    // Arrancar el scrub desde el inicio de la sección: las barras crecen al bajar.
+    const top = intro.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({ top: top + 8, behavior: REDUCED ? 'auto' : 'smooth' });
+  }));
+
+  const back = document.getElementById('backToImg');
+  if (back) back.addEventListener('click', () => { intro.dataset.state = 'img'; });
 }
 
-/* ----------------------------- Interacciones ----------------------------- */
+/* ----------------------------- Interacciones (E4) ----------------------------- */
 function setupInteractions() {
-  // E1 — ¿qué ves? Guarda la primera lectura, personaliza E2 y AUTO-AVANZA.
-  const e1 = document.getElementById('e1');
-  if (e1) {
-    const btns = e1.querySelectorAll('[data-choice]');
-    btns.forEach((b) => b.addEventListener('click', () => {
-      btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-      state.first = b.dataset.choice;
-      configureE2(state.first);
-      scrollToNextStep(b);
-    }));
-  }
-
   configureE2(state.first || 'pato'); // default: la mayoría ve pato → guiamos al conejo
-  const e2 = document.getElementById('e2');
-  if (e2) {
-    const btns = e2.querySelectorAll('[data-choice]');
-    btns.forEach((b) => b.addEventListener('click', () => btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)))));
-  }
 
-  // E4 — audio + elección. La elección AUTO-AVANZA.
   const audio = document.getElementById('audioEl');
   const play = document.getElementById('audioPlay');
   const wave = document.getElementById('e4Wave');
@@ -222,7 +226,9 @@ function scrollToNextStep(fromEl) {
   if (target) setTimeout(() => target.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'center' }), 260);
 }
 
-/* Configura E2 según lo que se vio primero (pista al animal que falta). */
+/* Configura E2 según lo que se vio primero (pista hacia el animal que falta).
+   Las marcas van en % de la IMAGEN (anatomía real de la figura de Jastrow):
+   pico/orejas ≈ (20, 22) · ojo ≈ (68,5, 30) · hocico del conejo ≈ (92, 51). */
 function configureE2(firstChoice) {
   const titleEl = document.querySelector('#e2 [data-e2-title]');
   const ledeEl = document.querySelector('#e2 [data-e2-lede]');
@@ -232,26 +238,38 @@ function configureE2(firstChoice) {
   const target = firstChoice === 'conejo' ? 'pato' : 'conejo';
   state.e2rotate = target === 'conejo';
 
+  const place = (el, label, left, top) => {
+    el.dataset.label = label;
+    el.style.left = left + '%';
+    el.style.top = top + '%';
+  };
+
   if (target === 'conejo') {
     titleEl.textContent = 'Dale vuelta la cabeza.';
     ledeEl.innerHTML = 'Seguí bajando: la figura gira. Eso que era un pico ahora son <strong>dos orejas</strong>. ¿Aparece el conejo?';
-    a1.textContent = 'las orejas'; a1.className = 'annot annot--down'; a1.style.left = '50%'; a1.style.top = '30%';
-    a2.textContent = 'el hocico'; a2.className = 'annot annot--up'; a2.style.left = '54%'; a2.style.top = '70%';
+    place(a1, 'las orejas', 20, 22);
+    place(a2, 'el hocico', 92, 51);
   } else {
     titleEl.textContent = 'Mirá otra vez.';
     ledeEl.innerHTML = 'Eso que parecían orejas es un <strong>pico</strong>, y el ojo mira hacia el agua. ¿Aparece el pato?';
-    a1.textContent = 'el pico'; a1.className = 'annot annot--up'; a1.style.left = '24%'; a1.style.top = '56%';
-    a2.textContent = 'el ojo'; a2.className = 'annot annot--down'; a2.style.left = '60%'; a2.style.top = '40%';
+    place(a1, 'el pico', 20, 22);
+    place(a2, 'el ojo', 68.5, 30);
   }
 }
 
 /* ----------------------------- Refs para el scrub ----------------------------- */
 function cacheScrubRefs() {
-  waffleEl = document.getElementById('e3Waffle');
-  waffleStep = document.querySelector('#e3 .step[data-layer="2"]') || document.querySelector('#e3 .step[data-layer="1"]');
-  e3CountEl = document.getElementById('e3Count');
+  coverEl = document.getElementById('portada');
+  brainEl = document.getElementById('coverBrain');
+  cueEl = document.querySelector('.cover__scrollcue');
+  introEl = document.getElementById('e1');
+  duoEl = document.getElementById('duoChart');
+  e2Sec = document.getElementById('e2');
   e2Fig = document.getElementById('e2Fig');
   e2Step = document.querySelector('#e2 .step[data-layer="0"]');
+  e3bSec = document.getElementById('e3b');
+  waffleEl = document.getElementById('e3Waffle');
+  e3CountEl = document.getElementById('e3Count');
 }
 
 /* ----------------------------- Motor de scroll ----------------------------- */
@@ -269,38 +287,53 @@ function tick() {
   const read = sh > 0 ? clamp(window.scrollY / sh) : 0;
   if (progressBar) progressBar.style.width = (read * 100).toFixed(2) + '%';
 
-  // Ruido→señal (si hubiera)
-  for (const s of scrubbers) if (s.section) s.cb(sectionProgress(s.section));
-
-  // Espirales: progreso + revelado del título tras el negro
-  for (const p of portals) {
-    if (!p.section) continue;
-    const prog = sectionProgress(p.section);
-    p.sp.setProgress(prog);
-    if (p.title) {
-      const tp = clamp((prog - 0.8) / 0.18);
-      p.title.style.opacity = tp.toFixed(3);
-      p.title.style.transform = `translateY(${((1 - tp) * 18).toFixed(1)}px)`;
+  // Portada: el cerebro se revela con el scroll; al final aparece la pregunta
+  if (coverEl && brainEl) {
+    const p = sectionProgress(coverEl);
+    if (!REDUCED) {
+      const rise = 58 * (1 - easeOut(clamp(p / 0.7)));
+      brainEl.style.setProperty('--rise', rise.toFixed(2) + '%');
     }
+    coverEl.classList.toggle('q-on', p > 0.6);
+    if (cueEl) cueEl.style.opacity = String(1 - clamp(p / 0.2));
   }
 
-  // Waffle: se pinta con el scroll
-  if (!REDUCED && waffleEl && waffleEl.__setWaffle && waffleStep) {
-    const p = stepFill(waffleStep);
-    waffleEl.__setWaffle(p);
-    if (e3CountEl) e3CountEl.textContent = Math.round(p * 96);
+  // Portales: el disco te traga; el título se va, la frase aparece en el negro
+  for (const pt of portals) {
+    if (!pt.section) continue;
+    const prog = sectionProgress(pt.section);
+    pt.sp.setProgress(prog);
+    if (pt.head) {
+      const fade = 1 - clamp((prog - 0.45) / 0.25);
+      pt.head.style.opacity = fade.toFixed(3);
+      pt.head.style.transform = `translateY(${(-14 * (1 - fade)).toFixed(1)}px)`;
+    }
+    if (pt.after) pt.after.style.opacity = clamp((prog - 0.84) / 0.14).toFixed(3);
+  }
+
+  // E1: en estado gráfico, las barras crecen de 0 al % esperado con el scroll
+  if (introEl && introEl.dataset.state === 'chart' && duoEl && duoEl.__setDuo && !REDUCED) {
+    const p = clamp((sectionProgress(introEl) - 0.04) / 0.76);
+    duoEl.__setDuo(easeOut(p));
   }
 
   // E2: la figura gira con el scroll (si toca girar) y aparecen las marcas
   if (e2Fig && e2Step) {
-    const p = stepFill(e2Step);
-    const deg = state.e2rotate ? (REDUCED ? 90 : p * 90) : 0;
+    const p = stepScrub(e2Step);
+    const deg = state.e2rotate ? (REDUCED ? 90 : easeOut(p) * 90) : 0;
     e2Fig.style.setProperty('--rot', deg.toFixed(1) + 'deg');
-    const e2 = document.getElementById('e2');
-    if (e2) e2.classList.toggle('cues-on', p > 0.45);
+    if (e2Sec) e2Sec.classList.toggle('cues-on', p > (state.e2rotate ? 0.55 : 0.3));
+  }
+
+  // Waffle (E3b): se pinta con el scroll
+  if (!REDUCED && waffleEl && waffleEl.__setWaffle && e3bSec) {
+    const p = clamp((sectionProgress(e3bSec) - 0.08) / 0.72);
+    waffleEl.__setWaffle(p);
+    if (e3CountEl) e3CountEl.textContent = Math.round(p * 96);
   }
 }
 
+/* Progreso 0→1 de una sección sticky (cuánto de su recorrido ya scrolleaste) */
 function sectionProgress(section) {
   const rect = section.getBoundingClientRect();
   const vh = window.innerHeight;
@@ -309,12 +342,12 @@ function sectionProgress(section) {
   return clamp((vh - rect.top) / (vh + rect.height));
 }
 
-function stepFill(el) {
+/* Progreso 0→1 de un paso largo a través del viewport (para scrubs por paso) */
+function stepScrub(el) {
   if (!el) return 0;
   const r = el.getBoundingClientRect();
   const vh = window.innerHeight;
-  const start = vh * 0.85, end = vh * 0.35;
-  return clamp((start - r.top) / (start - end));
+  return clamp((vh * 0.7 - r.top) / Math.max(1, r.height - vh * 0.3));
 }
 
 /* Arranque (módulo deferred: el DOM ya está listo y todo lo de arriba evaluado). */

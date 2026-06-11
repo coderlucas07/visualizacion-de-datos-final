@@ -19,7 +19,7 @@ Sitio de **scrollytelling** (una sola historia, scroll nativo) para **Visualizac
 **Tesis:** el cerebro no registra la realidad, la construye; rellenar lo ambiguo aparece cuando vemos
 (percepción), decidimos (neuroeconomía) y creemos (sesgos). **3 actos:** Percepción · Decisión · Sesgos.
 **Idioma:** español rioplatense (voseo). **Estética:** oscura, editorial, inmersiva (tipo The Pudding /
-Reuters en dark). NADA de laboratorio/HUD/sujeto/registro ni guardar datos del usuario (la pista de E2 se adapta
+"21hrs on the Moon"). NADA de laboratorio/HUD/sujeto/registro ni guardar datos del usuario (la pista de E2 se adapta
 a lo que respondiste, pero no persiste nada).
 
 ## Documentos que MANDAN (leerlos antes de tocar código)
@@ -54,44 +54,57 @@ assets/               imágenes y audio (ver "Mapa de assets")
 
 ## Convenciones de arquitectura (respetarlas al sumar escenas)
 - **Motor de scrollytelling (lo CENTRAL — el scroll es el protagonista):** cada escena de datos es una
-  `<section class="scrolly">` con un **gráfico fijo** (`.scrolly__graphic`, `position:sticky`) y una columna
-  de **pasos de texto** (`.step`) que scrollean. Cada `.step` lleva `data-layer="N"` que apunta a una capa del
-  gráfico (`.viz__layer[data-layer="N"]`). `setupScrolly()` (main.js) usa un IntersectionObserver con franja
-  central (`rootMargin:-45% 0 -45%`): cuando un paso cruza el centro, intercambia la capa visible. **Layout
-  FULL-BLEED:** el `.scrolly__graphic` ocupa toda la pantalla (sticky) y los `.step` van **superpuestos** encima
-  (`margin-top:-100vh`), con texto abajo + scrim suave (NADA de dos columnas: el texto va sobre el visual).
-  Los gráficos se **pre-inicializan** al cargar el JSON (scroll fluido, sin lag). Varios pasos comparten capa
-  (cambia el texto, el gráfico queda). **Patrón para sumar escenas: copiar esta estructura full-bleed.**
+  `<section class="scrolly">` con **DOS COLUMNAS**: pasos de texto (`.scrolly__steps`, IZQUIERDA, scrollean)
+  y **visual fija** (`.scrolly__graphic`, `position:sticky`, DERECHA). **El texto NUNCA tapa el visual**
+  (pedido explícito del equipo, jun-2026; revierte el viejo full-bleed superpuesto). Cada `.step` lleva
+  `data-layer="N"` que apunta a una capa (`.viz__layer[data-layer="N"]`). `setupScrolly()` (main.js) usa un
+  IntersectionObserver con franja central (`rootMargin:-45% 0 -45%`): al cruzar el centro cambia la capa.
+  Pasos largos: `.step--tall` (el texto queda **sticky** mientras el visual se anima, p. ej. E2).
+  Los gráficos se **pre-inicializan** al cargar el JSON. **Patrón para sumar escenas: copiar esta estructura.**
+- **Momentos full-bleed deliberados:** `.scrolly--bleed` (visual a pantalla completa + texto en chips
+  flotantes `.step__card--chip` abajo a la izquierda). Hoy lo usa SOLO E3 (Rotating Snakes a pantalla
+  completa, `object-fit:cover`, sin fondo blanco). El waffle vive aparte en `#e3b` (dos columnas).
+- **Menú de módulos:** botón fijo arriba-izquierda (`#menuBtn`) abre overlay (`#menu`) con links a
+  portada/portales/escenas/cierre. Cierra con Esc, con el botón o al elegir un link (`setupMenu()`).
+- **Portada:** título centrado (Fraunces, hueso) + **cerebro SVG gris** (`#coverBrain`) que asoma desde abajo
+  como una luna y **se revela completo con el scroll** (`--rise` en `tick()`); al final aparece la pregunta
+  (`.cover__q`, clase `q-on`).
 - **Portales de espiral entre módulos:** `<section class="portal">` con `<canvas data-spiral>` (clase
-  `SpiralPortal` en noise.js): el espiral gira y hace zoom al scrollear hasta tragar la pantalla en negro, y
-  ahí aparece el **título del módulo** (`.portal__title`, lo revela `tick()` cuando el progreso pasa 0,8).
+  `SpiralPortal` en noise.js). El espiral es un **DISCO** (círculo, no full-bleed "foto") debajo del título
+  del módulo (`.portal__head`, visible desde el arranque); al scrollear el disco gira, crece y **te traga**
+  (zoom adentro) hasta el negro, donde aparece la frase del módulo (`.portal__after`).
 - **Gráficos:** `<div class="chart" data-chart="CLAVE_DEL_JSON">` dentro de una `.viz__layer`. En `js/charts.js`,
   `CHARTS['CLAVE'](container, data, opts)` lo construye; se inicializa cuando su capa se activa. Usar
   `rowsToObjects(sheet)` para pasar `{headers, rows}` a objetos y `accentOf(container)` para el acento.
-- **Acento por tramo:** `data-act="perception|decision|bias"` setea `--accent` (cian/ámbar/violeta) y tiñe la
-  barra de progreso. Los **módulos SÍ se nombran** (Percepción / Decisión / Sesgos) pero **solo tras el espiral**
-  (no hay kickers "E1 · Percepción" sueltos en cada escena). Es decir: el portal del espiral hace de apertura de módulo.
-- **Waffle por scroll (E3):** el handler arma 100 celdas apagadas y expone `container.__setWaffle(p)`; `main.js`
-  lo llama en `tick()` con el progreso del paso (`stepFill`) y las 96 personitas se pintan de a poco; el número
-  (`#e3Count`) cuenta en vivo. Mismo recurso reutilizable si otra escena necesita "pintar con el scroll".
-- **Ruido→señal:** `<canvas data-noise="image|text|eye" data-src=... data-glyph=...>`. La clase `NoiseToSignal`
-  muestrea la figura (imagen por luminancia / glifo de texto / función de dibujo) y la "cuaja" según el
-  progreso de scroll de su sección. **Hoy NO se usa en pantalla** (la portada quedó limpia y al espiral lo hace
-  `SpiralPortal`); queda disponible para el ojo/figura del Acto 3 si hace falta.
+  **Toda visualización cita su fuente:** `addSource(el, id)` (main.js lo llama tras `initOne`) toma el texto
+  de `SOURCES` (charts.js) y lo pone en el slot `[data-src-for="id"]` de la sección o en un caption
+  `.chart-src` dentro del contenedor.
+- **G1 (pato/conejo) es HTML, no ECharts:** dos barras (`.duo`) SIN ejes que **crecen de 0% al esperado con
+  el scroll** (`container.__setDuo(p)` desde `tick()` mientras E1 está en estado "chart").
+- **E1 es una máquina de estados, no scroll de pasos:** `#e1[data-state="img|chart"]`. Estado "img": pregunta
+  **estática a la izquierda** + figura a la derecha (más chica, no full-screen). Al elegir → estado "chart"
+  (título + barras + texto DEBAJO del gráfico, todo entra en una pantalla) + botón **"Volver a la imagen"**.
+  No se puede "scrollear de vuelta a la foto": la foto es una capa, no una posición de scroll.
+- **Waffle por scroll (E3b):** el handler arma 100 celdas y expone `container.__setWaffle(p)`; `tick()` lo
+  scrubea con el progreso de la sección `#e3b`; el número (`#e3Count`) cuenta en vivo.
+- **Ruido→señal:** la clase `NoiseToSignal` (noise.js) queda disponible pero hoy NO se usa en pantalla.
 - **Revelado puntual:** elementos sueltos con `data-reveal` aparecen con fade-up al entrar (clase `is-visible`).
-- **Interacciones:** E1 (Pato/Conejo) guarda la respuesta y **personaliza E2** (`configureE2`) hacia el animal que
-  NO viste; al elegir **auto-avanza** al paso siguiente (`scrollToNextStep`). E2 **gira la figura con el scroll**
-  (0→90° si toca ver el conejo) y marca el rasgo **sobre la imagen** (`.annot`), **sin chips** (nada de Pascua/zanahoria).
-  E4 (play del audio **separado** de los botones Bicicleta/Alquiler; también auto-avanza). **No se guarda nada del
-  usuario**; las interacciones **NO gatean** contenido. En `setupInteractions()` + el scrub en `tick()`.
+- **Interacciones:** E1 (Pato/Conejo) guarda la respuesta y **personaliza E2** (`configureE2`) hacia el animal
+  que NO viste. E2 **gira la figura con el scroll** (0→90° si toca ver el conejo) y marca los rasgos con
+  puntos **anclados a la anatomía de la imagen** (`.annot` DENTRO de `#e2Fig`, en % de la imagen:
+  pico/orejas ≈ 20,22 · ojo ≈ 68.5,30 · hocico ≈ 92,51; el rótulo se contra-rota con `--rot` para quedar
+  horizontal). E4: play del audio **separado** de los botones; la elección auto-avanza (`scrollToNextStep`).
+  **No se guarda nada del usuario**; las interacciones **NO gatean** contenido.
 - **Accesibilidad:** `alt` en imágenes, `aria-label` en gráficos, foco visible, contraste alto,
-  `prefers-reduced-motion` (estados finales sin animación; el waffle se llena solo, los pasos quedan legibles).
+  `prefers-reduced-motion` (estados finales sin animación; waffle/duo llenos, cerebro revelado, espiral estático).
 
-## Paleta y tipografías
-- Fondo `#0B0C10` / `#0E0F14`. Texto hueso `#E8E6E0`. Secundario `#A7A59E`.
-- Acentos: Percepción `#3AA0FF` (cian) · Decisión `#FF8A3D` (ámbar) · Sesgos `#9B6BFF` (violeta).
-- Curva de valor: pérdidas `#E24B4A` (rojo) / ganancias `#1D9E75` (verde).
-- Fonts (Google): **Space Grotesk** (títulos) + **Inter** (cuerpo).
+## Paleta y tipografías (identidad jun-2026 — UN solo acento)
+- Fondo `#0E0C09` (negro cálido) / `#15120E`. Texto hueso `#EDE6D8`. Secundario `#A89F90`. Tenue `#6E675C`.
+- **Acento ÚNICO bermellón `#FF5A36`** para TODO (highlight de gráficos, marcas, menú, espiral).
+  Ya NO hay acento por módulo (se quitó el trío cian/ámbar/violeta y los `data-act`).
+- Curva de valor (G7): pérdidas `#E24B4A` / ganancias `#1D9E75`. Papel del espiral/figuras: `#EFE9DD`.
+- Fonts (Google): **Fraunces** (títulos, itálica para énfasis) + **Hanken Grotesk** (cuerpo) +
+  **IBM Plex Mono** (kickers, fuentes de datos, menú).
 
 ## Mapa de assets (nombres exactos, en /assets)
 - Pato-conejo (E1/E2): `840_560.jpg`
@@ -123,9 +136,19 @@ assets/               imágenes y audio (ver "Mapa de assets")
   conexión con las víboras de E3, NO con triángulo) · E12 pareidolia (3 caras en `.faces` + G12
   `12_pareidolia_paranormal` con explicación científica en el tooltip) · E13 brecha (G13 `13_brecha_consenso`,
   Ciencia vs Público; "cura del cáncer oculta" ciencia ~0 vs 67%). **Cada escena conecta con una ilusión ya vista.**
-- **Fase 5 — CASI HECHA.** Cierre con **Checker Shadow** (`#cierre`, full-bleed, termina en "Ahora lo sabés") +
+- **Fase 5 — CASI HECHA.** Cierre con **Checker Shadow** (`#cierre`, termina en "Ahora lo sabés") +
   **pie** (`footer.pie`: materia, fuentes) ya están. **Pendiente:** completar los **nombres de autores** en el pie
   (placeholder `[completar nombres del equipo]`), pulido responsive/mobile y performance.
+- **Fase 6 — REDISEÑO INTEGRAL (jun-2026, feedback del equipo): HECHA.** Cambios que MANDAN sobre lo anterior:
+  (1) **Identidad nueva**: negro cálido + hueso + acento único bermellón; Fraunces/Hanken Grotesk/IBM Plex Mono.
+  (2) **Layout dos columnas** (texto izq. nunca tapa el visual der.); full-bleed solo deliberado (snakes).
+  (3) **Portada estilo "21hrs on the Moon"**: solo título centrado + cerebro SVG gris que asoma y se revela
+  con el scroll; después viene el espiral. (4) **Espiral = disco** bajo el título del módulo que te traga.
+  (5) **Menú de módulos** arriba a la izquierda. (6) **E1 interactivo** (imagen ⇄ gráfico con botón Volver,
+  barras HTML que crecen 0→% con el scroll, sin ejes). (7) **Anotaciones de E2 ancladas a la imagen**
+  (estaban "en cualquier lado": eran % de la pantalla). (8) **Snakes a pantalla completa** sin fondo blanco
+  (`object-fit:cover`). (9) **Fuente citada en cada gráfico** (`SOURCES`/`addSource`). (10) Ilustración del
+  bate y la pelota rehecha según la foto de referencia (`bate y pelota.jpeg`, en la raíz del repo).
 
 ## CORRECCIÓN DE COPY importante (E11)
 En E11 (Forer/Barnum) la frase de conexión **NO** debe mencionar un triángulo (esa escena no existe).
