@@ -61,9 +61,15 @@ assets/               imágenes y audio (ver "Mapa de assets")
   IntersectionObserver con franja central (`rootMargin:-45% 0 -45%`): al cruzar el centro cambia la capa.
   Pasos largos: `.step--tall` (el texto queda **sticky** mientras el visual se anima, p. ej. E2).
   Los gráficos se **pre-inicializan** al cargar el JSON. **Patrón para sumar escenas: copiar esta estructura.**
-- **Momentos full-bleed deliberados:** `.scrolly--bleed` (visual a pantalla completa + texto en chips
-  flotantes `.step__card--chip` abajo a la izquierda). Hoy lo usa SOLO E3 (Rotating Snakes a pantalla
-  completa, `object-fit:cover`, sin fondo blanco). El waffle vive aparte en `#e3b` (dos columnas).
+- **Momentos full-bleed deliberados:** `.scrolly--bleed`. Hoy lo usa SOLO E3 (Rotating Snakes, jun-2026,
+  **inmersión en rosa**): toda la escena es `#CF807F` (el color del centro de los círculos del PNG);
+  entrás con un **notch negro** arriba (`.e3-notch`, clip-path) que **sube con el scroll normal**; con la
+  pantalla toda rosa, el **título blanco** (sticky centrado, `#e3TitleCard`) **se desvanece** (scrub en
+  `tick()`); después **salís (deszoom 14×→1×) del centro de un círculo** de la ilusión
+  (`transform-origin: 62.5% 50%`, calibrado por píxeles al círculo más cercano al medio; CSS var
+  `--snake-zoom`) hasta el tamaño final (`max-height:60vh`). El texto final va **sin chip**
+  (`.step__card--final`): blanco, grande, sticky a media altura a la izquierda. El waffle vive aparte
+  en `#e3b` (dos columnas).
 - **Menú de módulos:** botón fijo arriba-izquierda (`#menuBtn`) abre overlay (`#menu`) con links a
   portada/portales/escenas/cierre. Cierra con Esc, con el botón o al elegir un link (`setupMenu()`).
 - **Portada (rediseño jun-2026, VIDEO):** `#coverVideo` (`assets/video/portada_cerebro_scrub.mp4`, el hombre
@@ -130,7 +136,9 @@ assets/               imágenes y audio (ver "Mapa de assets")
   — y recalibrar el centro del sparkle de Gemini en `placeReplay()` si el watermark cambia de lugar:
   hoy ≈ (1743, 902) en 1920×1080).
 - Pato-conejo (E1/E2): `840_560.jpg`
-- Rotating snakes (E3): `rotsnake-grayscale_custom-4b8924c1c70b79314017cd1200b900fc7d067758.gif`
+- Rotating snakes (E3): `Rotating_snakes_illusion.png` (3840×2880, a color: centros rosa `#CF807F`,
+  fondo negro — clave para la inmersión de E3). El gif viejo
+  `rotsnake-grayscale_custom-4b8924c1c70b79314017cd1200b900fc7d067758.gif` quedó sin uso.
 - Audio ilusión auditiva (E4): `download.mp3`
 - Pareidolia (E12): `450_1000.webp` (cara en pared), `blog_caras.jpg` (cara en Marte), `cafe-con-cara.jpg`
 - Cierre: `Checker_shadow_illusion.svg`

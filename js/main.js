@@ -30,6 +30,7 @@ const portals = [];   // espirales: { sp, section, head, dot, after }
 let coverEl = null;
 let introEl = null, duoEl = null;
 let e2Sec = null, e2Fig = null, e2Step = null;
+let e3Img = null, e3Step = null, e3TitleCard = null, e3TitleStep = null, e3FinalCard = null;
 let e3bSec = null, waffleEl = null, e3CountEl = null;
 
 const state = { first: null, e2rotate: true };
@@ -421,6 +422,11 @@ function cacheScrubRefs() {
   e2Sec = document.getElementById('e2');
   e2Fig = document.getElementById('e2Fig');
   e2Step = document.querySelector('#e2 .step[data-layer="0"]');
+  e3Img = document.querySelector('#e3 .snakes');
+  e3Step = document.querySelector('#e3 .step[data-layer="1"]');
+  e3TitleCard = document.getElementById('e3TitleCard');
+  e3TitleStep = document.querySelector('#e3 .step[data-layer="0"]');
+  e3FinalCard = document.querySelector('#e3 .step__card--final');
   e3bSec = document.getElementById('e3b');
   waffleEl = document.getElementById('e3Waffle');
   e3CountEl = document.getElementById('e3Count');
@@ -479,6 +485,25 @@ function tick() {
     const deg = state.e2rotate ? (REDUCED ? 90 : easeOut(p) * 90) : 0;
     e2Fig.style.setProperty('--rot', deg.toFixed(1) + 'deg');
     if (e2Sec) e2Sec.classList.toggle('cues-on', p > (state.e2rotate ? 0.55 : 0.3));
+  }
+
+  // E3 (snakes): el notch negro sube con el scroll normal; con la pantalla
+  // toda rosa el título se desvanece en el lugar; después salís (deszoom)
+  // del centro de un círculo de la ilusión hasta el tamaño final, y recién
+  // ahí aparece el texto blanco.
+  if (e3TitleCard && e3TitleStep && !REDUCED) {
+    const p = stepScrub(e3TitleStep);
+    e3TitleCard.style.opacity = (1 - clamp((p - 0.72) / 0.18)).toFixed(3);
+  }
+  if (e3Img && e3Step && !REDUCED) {
+    const raw = stepScrub(e3Step);
+    // Mantiene el zoom máximo el primer tramo (estás ADENTRO del círculo,
+    // todo rosa) y recién después suelta; el deszoom termina al 80% del paso.
+    const p = clamp((raw - 0.16) / 0.64);
+    const z = 1 + 200 * Math.pow(1 - p, 3);   // 120× adentro del círculo → 1× final
+    e3Img.style.setProperty('--snake-zoom', z.toFixed(3));
+    // El texto final aparece SOLO con la imagen ya en su tamaño mínimo.
+    if (e3FinalCard) e3FinalCard.style.opacity = clamp((raw - 0.84) / 0.1).toFixed(3);
   }
 
   // Waffle (E3b): se pinta con el scroll

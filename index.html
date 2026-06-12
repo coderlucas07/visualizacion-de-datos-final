@@ -77,7 +77,7 @@
     <section class="cover" id="portada">
       <div class="cover__sticky">
         <video class="cover__video" id="coverVideo"
-               src="./assets/video/portada_cerebro_120.mp4"
+               src="./assets/video/portada_cerebro_120.webM"
                muted playsinline preload="auto" disablepictureinpicture
                aria-label="Un hombre grita y su cabeza se fragmenta en una red de neuronas celestes."></video>
         <div class="cover__vignette" aria-hidden="true"></div>
@@ -213,28 +213,32 @@
       </div>
     </section>
 
-    <!-- ====================== E3 · Movimiento donde no hay (snakes FULL-BLEED) ====================== -->
+    <!-- ====================== E3 · Movimiento donde no hay (snakes FULL-BLEED) ======================
+         Inmersión en el rosa del centro de los círculos: entrás con un notch
+         negro arriba que sube con el scroll; con todo rosa el título se
+         desvanece y salís (deszoom) del centro de un círculo de la ilusión. -->
     <section class="scrolly scrolly--bleed" id="e3" aria-labelledby="e3-h">
+      <div class="e3-notch" aria-hidden="true"></div>
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0"></div>
           <div class="viz__layer" data-layer="1">
             <figure class="viz__media viz__media--snakes">
-              <img class="snakes" src="./assets/rotsnake-grayscale_custom-4b8924c1c70b79314017cd1200b900fc7d067758.gif"
+              <img class="snakes" src="./assets/Rotating_snakes_illusion.png"
                    alt="Ilusión Rotating Snakes (Kitaoka): anillos que parecen girar aunque la imagen está totalmente quieta." />
             </figure>
           </div>
         </div>
       </div>
       <div class="scrolly__steps">
-        <div class="step step--center is-active" data-layer="0">
-          <div class="step__card">
+        <div class="step step--center step--tall is-active" data-layer="0">
+          <div class="step__card" id="e3TitleCard">
             <h2 id="e3-h">No todas las ilusiones<br />son ambiguas.</h2>
             <p class="lede">Algunas inventan movimiento donde no hay ninguno. Seguí bajando.</p>
           </div>
         </div>
-        <div class="step" data-layer="1">
-          <div class="step__card step__card--chip">
+        <div class="step step--tall" data-layer="1">
+          <div class="step__card step__card--final">
             <p class="lede">Esta imagen está <strong>completamente quieta</strong>.</p>
             <p class="muted">Ni un solo píxel se mueve. Y, sin embargo, gira.</p>
             <p class="chart-src chart-src--static">Fuente: Kitaoka (2003), “Rotating Snakes”.</p>
