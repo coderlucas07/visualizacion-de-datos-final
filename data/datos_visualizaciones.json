@@ -34,15 +34,15 @@
   "rows": [
    [
     "Sin contexto",
-    58.0,
-    42.0,
+    74.0,
+    26.0,
     "Primera mirada, sin pista."
    ],
    [
     "Con contexto",
     26.0,
     74.0,
-    "Tras cebar la lectura 'conejo' (orejas, zanahoria, Pascua)."
+    "Tras la pista de contexto que orienta hacia el conejo."
    ]
   ]
  },
