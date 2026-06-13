@@ -567,6 +567,30 @@
    ]
   ]
  },
+ "05_cierre_percepcion": {
+  "headers": [
+   "item",
+   "valor",
+   "detalle"
+  ],
+  "rows": [
+   [
+    "Ceguera atencional (Simons & Chabris, 1999)",
+    "≈50%",
+    "de las personas no ve un gorila que cruza la pantalla mientras está concentrada en contar pases."
+   ],
+   [
+    "reflector",
+    "",
+    "Tu atención es un reflector: ilumina una porción mínima del mundo y deja el resto a oscuras."
+   ],
+   [
+    "construccion",
+    "",
+    "No percibís el mundo: percibís lo que mirás. El resto lo completa tu cerebro con expectativas."
+   ]
+  ]
+ },
  "05_confianza_precision": {
   "headers": [
    "nivel_confianza",

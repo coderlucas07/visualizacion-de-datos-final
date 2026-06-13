@@ -30,6 +30,7 @@ const SOURCES = {
   '03_ilusiones_movimiento_waffle': 'Dataset: Encuesta de Movimiento Ilusorio (n=1.000) · “Rotating Snakes”, Kitaoka (2003).',
   '04_ilusion_auditiva': 'Dataset: Relevamiento de Audio Ambiguo (n=600) · estímulo “bici / alquiler”.',
   '04b_auditiva_con_pista': 'Dataset: Audio Ambiguo con texto-pista (n=600) · el rótulo previo sesga lo que se oye.',
+  '05_cierre_percepcion': 'Dataset: Ceguera atencional — Simons & Chabris (1999), “gorilas invisibles”.',
   '05_confianza_precision': 'Dataset: Confianza vs. Acierto UTDT-2024 (n=1.120 respuestas).',
   '06_bate_pelota': 'Dataset: Cognitive Reflection Test (n=3.428) · Frederick (2005).',
   '07_aversion_perdidas': 'Modelo: función de valor de la Teoría Prospectiva (Kahneman & Tversky, 1979) · λ=2,25.',
@@ -285,7 +286,23 @@ export const CHARTS = {
     mountChart(container, option, opts);
   },
 
-  /* ---------- G5 · Confianza vs acierto (E5) ---------- */
+  /* ---------- G5 · Cierre de Percepción — ceguera atencional (E5), HTML big-stat ----------
+     Reemplaza al de confianza/acierto: en percepción no hay "respuestas
+     correctas". El cierre es que la atención recorta lo que ves (gorila invisible). */
+  '05_cierre_percepcion'(container, data) {
+    const rows = rowsToObjects(data['05_cierre_percepcion']);
+    const accent = accentOf(container);
+    const main = rows[0];
+    container.classList.add('bigstat');
+    container.innerHTML = `
+      <div class="bigstat__num" style="color:${accent}">${main.valor}</div>
+      <p class="bigstat__cap">${main.detalle}</p>
+      <ul class="bigstat__list">
+        ${rows.slice(1).map((r) => `<li>${r.detalle}</li>`).join('')}
+      </ul>`;
+  },
+
+  /* ---------- G5 (viejo) · Confianza vs acierto — ya no se usa en E5 ---------- */
   '05_confianza_precision'(container, data, opts) {
     const rows = rowsToObjects(data['05_confianza_precision']);
     const accent = accentOf(container);
