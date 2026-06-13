@@ -25,6 +25,15 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   (se sacó "otra"); los botones bici/alquiler van en la misma sección que el play; el "con pista" (04b) quedó con 2 barras.
 - **Cierre de Percepción:** se reemplazó confianza/acierto (en percepción no hay "respuestas correctas") por
   **ceguera atencional** (`05_cierre_percepcion`: gorila invisible ≈50%, Simons & Chabris) + puente a Decisión.
+- **Video del gorila (`#gorila`, antes de E5):** el test original de atención selectiva (Simons & Chabris,
+  YouTube `vJG698U2Mvo`) **a pantalla completa**, intercalado entre E4 y E5 como SETUP del dato del cierre
+  (consigna "contá los pases" → en E5 se revela que la mitad no ve al gorila). **Arranca solo** cuando la
+  sección queda alineada al viewport: `setupGorila()` (main.js) carga el **IFrame API de YouTube** y un
+  IntersectionObserver lo reproduce al superar el 90% de cobertura y lo pausa al salir. Empieza **muteado**
+  (autoplay garantizado) con botón "Sonido" para el audio original; `controls:0` (inmersivo) salvo con
+  `prefers-reduced-motion`, donde NO autoplaya y deja los controles nativos. El video es el 16:9 más grande
+  que entra (franjas casi-negras que se funden con el fondo: no se recorta la entrada del gorila). Sumado a
+  `setupModuleColors` (púrpura) y al menú.
 - **E3:** se sacó el fondo rosa `#CF807F`; conserva la paleta oscura del sitio.
 - **Decisión:** E6 con botones para responder + Sistema 1/2 + bate de madera (foto `bate y pelota.jpeg`); E7 intro
   "Ahora un juego" + el λ nombra **"aversión a las pérdidas"**; E8 el "600" con planteo claro + bifurcación vidas/muertes.

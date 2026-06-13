@@ -36,6 +36,7 @@
           <a class="menu__scene" href="#e2">La pista</a>
           <a class="menu__scene" href="#e3">Serpientes</a>
           <a class="menu__scene" href="#e4">El oído</a>
+          <a class="menu__scene" href="#gorila">El gorila</a>
           <a class="menu__scene" href="#e5">Confianza</a>
         </div>
       </li>
@@ -322,6 +323,47 @@
             <p class="muted">Leer “bicicleta” hace que 8 de cada 10 oigan bicicleta. El mismo truco del contexto —ahora en tus oídos.</p>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- ====================== E4b · El gorila invisible (VIDEO a pantalla completa) ======================
+         Test de atención selectiva de Simons & Chabris (video original). Ocupa
+         TODA la pantalla y ARRANCA SOLO cuando la sección queda perfectamente
+         alineada (cuando llena el viewport): un IntersectionObserver (setupGorila
+         en main.js) lo reproduce al superar el 90% de cobertura y lo pausa al
+         salir. Empieza muteado (así el navegador nunca bloquea el autoplay); el
+         botón de sonido activa el audio original. La consigna ("contá los pases")
+         prepara el dato del cierre (E5): la mitad no ve al gorila. -->
+    <section class="gorila" id="gorila" aria-labelledby="gorila-h">
+      <div class="gorila__sticky" id="gorilaStage">
+        <div class="gorila__frame">
+          <!-- El IFrame API de YouTube reemplaza este div por el <iframe> del video -->
+          <div id="gorilaPlayer"></div>
+        </div>
+        <div class="gorila__scrim" aria-hidden="true"></div>
+
+        <div class="gorila__caption" id="gorilaCaption">
+          <p class="gorila__kicker">Una prueba más</p>
+          <h2 class="gorila__line" id="gorila-h">Contá los pases del equipo de blanco.</h2>
+          <p class="gorila__sub">Mirá el video con atención. Arranca solo.</p>
+        </div>
+
+        <button class="gorila__sound" id="gorilaSound" type="button"
+                aria-pressed="false" aria-label="Activar el sonido del video">
+          <svg class="gorila__sound-off" viewBox="0 0 24 24" width="20" height="20" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="3 9 7 9 12 4 12 20 7 15 3 15" />
+            <line x1="16" y1="9" x2="22" y2="15" /><line x1="22" y1="9" x2="16" y2="15" />
+          </svg>
+          <svg class="gorila__sound-on" viewBox="0 0 24 24" width="20" height="20" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="3 9 7 9 12 4 12 20 7 15 3 15" />
+            <path d="M16 8a5 5 0 0 1 0 8" /><path d="M19 5a9 9 0 0 1 0 14" />
+          </svg>
+          <span class="gorila__sound-txt">Sonido</span>
+        </button>
+
+        <p class="gorila__cue" aria-hidden="true">Cuando termine, seguí bajando</p>
       </div>
     </section>
 

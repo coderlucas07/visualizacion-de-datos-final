@@ -21,7 +21,8 @@ aparece ya adentro y un **puntito crece con el scroll hasta tragarte**. Hay **me
 izquierda; **E1 es interactivo** (imagen ⇄ gráfico con barras que crecen con el scroll) y **cada gráfico
 cita su fuente**.
 
-- ✅ **Módulo 1 — Percepción** (E1–E5, con E3 snakes full-bleed + E3b waffle).
+- ✅ **Módulo 1 — Percepción** (E1–E5, con E3 snakes full-bleed + E3b waffle + **video del gorila a pantalla
+  completa antes del cierre**, que arranca solo cuando llena el viewport).
 - ✅ **Módulo 2 — Decisión** (E6–E9).
 - ✅ **Módulo 3 — Sesgos** (E10–E13) + **cierre** (Checker Shadow) + **pie** (créditos/fuentes).
 - ⬜ **Pendiente:** completar los nombres de autores en el pie y pulido fino mobile/performance.

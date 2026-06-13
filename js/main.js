@@ -47,6 +47,7 @@ async function init() {
   setupInteractions();
   cacheScrubRefs();
   setupCover();
+  setupGorila();
   setupScroll();
 
   try {
@@ -75,7 +76,7 @@ async function loadData() {
    queda con su celeste propio. */
 function setupModuleColors() {
   const mods = {
-    '#9333EA': ['portal1', 'e1', 'e2', 'e3', 'e3b', 'e4', 'e5'],        // Percepción
+    '#9333EA': ['portal1', 'e1', 'e2', 'e3', 'e3b', 'e4', 'gorila', 'e5'],  // Percepción
     '#2563EB': ['portal2', 'e6', 'e7', 'e8', 'e9'],                      // Decisión
     '#E11D48': ['portal3', 'sesgos-intro', 'e10', 'e11', 'e12', 'e13', 'cierre'],  // Sesgos
   };
@@ -324,6 +325,91 @@ function setupCover() {
   };
   placeReplay();
   window.addEventListener('resize', placeReplay);
+}
+
+/* =====================================================================
+   GORILA — test de atención selectiva (Simons & Chabris), video original.
+   El video de YouTube ocupa toda la pantalla y ARRANCA SOLO cuando la
+   sección queda perfectamente alineada (cuando llena el viewport): un
+   IntersectionObserver lo reproduce al superar el 90% de cobertura y lo
+   pausa al salir. Empieza muteado (así el autoplay nunca lo bloquea el
+   navegador); el botón de sonido activa el audio original. Con
+   prefers-reduced-motion NO hay autoplay: se muestran los controles
+   nativos para reproducirlo a mano.
+   ===================================================================== */
+function setupGorila() {
+  const stage = document.getElementById('gorilaStage');
+  const mount = document.getElementById('gorilaPlayer');
+  const soundBtn = document.getElementById('gorilaSound');
+  if (!stage || !mount) return;
+
+  const VIDEO_ID = 'vJG698U2Mvo';   // youtu.be/vJG698U2Mvo — "selective attention test"
+  let player = null, ready = false, wantPlay = false;
+
+  const play = () => { try { player.playVideo(); } catch { /* aún no listo */ } };
+  const pause = () => { try { player.pauseVideo(); } catch { /* noop */ } };
+
+  const build = () => {
+    player = new YT.Player(mount, {
+      width: '100%', height: '100%',
+      videoId: VIDEO_ID,
+      playerVars: {
+        controls: REDUCED ? 1 : 0,   // sin chrome para la inmersión; con reduced, controles nativos
+        disablekb: 1, modestbranding: 1, rel: 0, fs: 0,
+        playsinline: 1, iv_load_policy: 3, mute: 1,
+      },
+      events: {
+        onReady: () => {
+          ready = true;
+          try { player.mute(); } catch { /* noop */ }
+          if (wantPlay) play();   // si ya estaba alineado mientras cargaba el API
+        },
+        onStateChange: (e) => {
+          // La consigna se repliega mientras corre el video y vuelve al pausar/terminar.
+          if (e.data === YT.PlayerState.PLAYING) stage.classList.add('is-playing');
+          else if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED) stage.classList.remove('is-playing');
+        },
+      },
+    });
+  };
+
+  // Carga del IFrame API de YouTube una sola vez; si ya está, construye al toque.
+  if (window.YT && window.YT.Player) build();
+  else {
+    const prev = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => { if (typeof prev === 'function') prev(); build(); };
+    if (!document.querySelector('script[src*="youtube.com/iframe_api"]')) {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
+    }
+  }
+
+  // Botón de sonido: arranca muteado (autoplay seguro) → activa el audio original.
+  if (soundBtn) soundBtn.addEventListener('click', () => {
+    if (!ready) return;
+    const muted = player.isMuted();
+    if (muted) { player.unMute(); player.setVolume(100); }
+    else player.mute();
+    soundBtn.classList.toggle('is-on', muted);
+    soundBtn.setAttribute('aria-pressed', String(muted));
+  });
+
+  // Con reduced-motion no autoreproducimos: quedan los controles nativos.
+  if (REDUCED) return;
+
+  // Arranca SOLO cuando el escenario llena la pantalla (alineado al viewport)
+  // y se pausa al salir. La franja de thresholds da una transición estable.
+  const io = new IntersectionObserver(
+    (entries) => entries.forEach((e) => {
+      const fills = e.intersectionRatio >= 0.9;
+      wantPlay = fills;
+      if (!ready) return;
+      fills ? play() : pause();
+    }),
+    { threshold: [0, 0.25, 0.5, 0.75, 0.9, 1] }
+  );
+  io.observe(stage);
 }
 
 /* Scroll animado propio (suave y con duración controlada).
