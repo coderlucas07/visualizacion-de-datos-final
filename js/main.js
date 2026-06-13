@@ -77,7 +77,7 @@ function setupModuleColors() {
   const mods = {
     '#9333EA': ['portal1', 'e1', 'e2', 'e3', 'e3b', 'e4', 'e5'],        // Percepción
     '#2563EB': ['portal2', 'e6', 'e7', 'e8', 'e9'],                      // Decisión
-    '#E11D48': ['portal3', 'e10', 'e11', 'e12', 'e13', 'cierre'],        // Sesgos
+    '#E11D48': ['portal3', 'sesgos-intro', 'e10', 'e11', 'e12', 'e13', 'cierre'],  // Sesgos
   };
   const soft = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`; };
   for (const [hex, ids] of Object.entries(mods)) {

@@ -792,6 +792,18 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .annotated__frase { font-family: var(--font-display); font-style: italic; font-size: clamp(1rem, 0.95rem + 0.4vw, 1.25rem); color: var(--ink); margin: 0; max-width: none; }
 .annotated__tech { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.04em; margin: 0.25rem 0 0; color: var(--accent); }
 
+/* ----------------------------- Intro de Sesgos (diana) ----------------------------- */
+.bias-intro { width: min(50vh, 78%); margin: 0; }
+.bias-intro svg { width: 100%; height: auto; display: block; }
+.bias-intro g circle { animation: biasIn 0.5s var(--ease) both; transform-box: fill-box; transform-origin: center; }
+.viz__layer.is-active .bias-intro g circle:nth-child(1) { animation-delay: 0.05s; }
+.viz__layer.is-active .bias-intro g circle:nth-child(2) { animation-delay: 0.12s; }
+.viz__layer.is-active .bias-intro g circle:nth-child(3) { animation-delay: 0.19s; }
+.viz__layer.is-active .bias-intro g circle:nth-child(4) { animation-delay: 0.26s; }
+.viz__layer.is-active .bias-intro g circle:nth-child(5) { animation-delay: 0.33s; }
+.viz__layer.is-active .bias-intro g circle:nth-child(6) { animation-delay: 0.4s; }
+@keyframes biasIn { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: none; } }
+
 /* ----------------------------- Pareidolia (E12) ----------------------------- */
 .faces { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(8px, 1.2vw, 14px); width: 100%; max-width: 820px; }
 .faces img {
