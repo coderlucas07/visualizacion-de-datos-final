@@ -37,6 +37,7 @@ const state = { first: null, e2rotate: true };
 const progressBar = document.getElementById('progressBar');
 
 async function init() {
+  setupModuleColors();
   setupMenu();
   setupReveal();
   setupSpiral();
@@ -66,6 +67,26 @@ async function loadData() {
   return res.json();
 }
 
+/* ----------------------------- Color por módulo -----------------------------
+   Cada módulo tiene su acento: percepción púrpura, decisión azul cobalto,
+   sesgos carmesí. Se setea --accent en cada sección ANTES de que los gráficos
+   se inicialicen, así charts.js (accentOf) lo hereda solo. La portada (video)
+   queda con su celeste propio. */
+function setupModuleColors() {
+  const mods = {
+    '#9333EA': ['portal1', 'e1', 'e2', 'e3', 'e3b', 'e4', 'e5'],        // Percepción
+    '#2563EB': ['portal2', 'e6', 'e7', 'e8', 'e9'],                      // Decisión
+    '#E11D48': ['portal3', 'e10', 'e11', 'e12', 'e13', 'cierre'],        // Sesgos
+  };
+  const soft = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`; };
+  for (const [hex, ids] of Object.entries(mods)) {
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (el) { el.style.setProperty('--accent', hex); el.style.setProperty('--accent-soft', soft(hex, 0.16)); }
+    }
+  }
+}
+
 /* ----------------------------- Menú de módulos ----------------------------- */
 function setupMenu() {
   const btn = document.getElementById('menuBtn');
@@ -88,6 +109,8 @@ function setupMenu() {
   btn.addEventListener('click', open);
   if (closeBtn) closeBtn.addEventListener('click', shut);
   panel.querySelectorAll('a').forEach((a) => a.addEventListener('click', shut));
+  // Cerrar al tocar AFUERA del panel (el backdrop es #menu; el panel es hijo).
+  panel.addEventListener('click', (e) => { if (e.target === panel) shut(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') shut(); });
 }
 
@@ -482,9 +505,12 @@ function tick() {
   // E2: la figura gira con el scroll (si toca girar) y aparecen las marcas
   if (e2Fig && e2Step) {
     const p = stepScrub(e2Step);
-    const deg = state.e2rotate ? (REDUCED ? 90 : easeOut(p) * 90) : 0;
+    // El conejo aparece cerca de los 45°: girar 90° era demasiado y mostraba
+    // las marcas muy rápido. Tope en 45° y curva más pausada.
+    const MAXDEG = 45;
+    const deg = state.e2rotate ? (REDUCED ? MAXDEG : easeOut(p) * MAXDEG) : 0;
     e2Fig.style.setProperty('--rot', deg.toFixed(1) + 'deg');
-    if (e2Sec) e2Sec.classList.toggle('cues-on', p > (state.e2rotate ? 0.55 : 0.3));
+    if (e2Sec) e2Sec.classList.toggle('cues-on', p > (state.e2rotate ? 0.6 : 0.35));
   }
 
   // E3 (snakes): el notch negro sube con el scroll normal; con la pantalla

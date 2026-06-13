@@ -25,21 +25,21 @@ const MONO = 'IBM Plex Mono, ui-monospace, monospace';
 
 /* ---------- Fuente de cada gráfico (pedido: todo gráfico cita su dataset) ---------- */
 const SOURCES = {
-  '01_pato_conejo': 'Fuente: Jastrow (1899) · distribución según literatura de ambigüedad biestable (n=80).',
-  '02_contexto_cambio': 'Fuente: simulación coherente del efecto de priming contextual.',
-  '03_ilusiones_movimiento_waffle': 'Fuente: Kitaoka (2003), “Rotating Snakes” · proporción simulada coherente.',
-  '04_ilusion_auditiva': 'Fuente: simulación coherente · ilusión auditiva ambigua (tipo “bicicleta/alquiler”).',
-  '04b_auditiva_con_pista': 'Fuente: simulación coherente · la palabra leída sesga lo que se oye.',
-  '05_confianza_precision': 'Fuente: prototípico · paradoja confianza-acierto (n=1.120 respuestas).',
-  '06_bate_pelota': 'Fuente: Frederick (2005), Cognitive Reflection Test · distribución representativa.',
-  '07_aversion_perdidas': 'Fuente: Kahneman & Tversky (1979), teoría prospectiva · α=β=0,88 · λ=2,25.',
-  '08_framing_enfermedad': 'Fuente: Tversky & Kahneman (1981), problema de la enfermedad asiática.',
-  '09_dunning_kruger': 'Fuente: forma de Kruger & Dunning (1999) · cuartil inferior ≈ p62.',
-  '10_mejor_que_promedio': 'Fuente: Svenson (1981) · Cross (1977) · College Board.',
-  '11_efecto_forer': 'Fuente: Forer (1948) · calificación media 4,26/5.',
-  '11b_texto_barnum': 'Fuente: Forer (1948) · técnicas de lectura en frío.',
-  '12_pareidolia_paranormal': 'Fuente: YouGov · experiencias paranormales reportadas.',
-  '13_brecha_consenso': 'Fuente: Pew Research (científicos vs. público) · Pulsar UBA (Argentina).',
+  '01_pato_conejo': 'Dataset: Percepción Biestable UTDT-2024 (n=412) · figura de Jastrow (1899).',
+  '02_contexto_cambio': 'Dataset: Priming Contextual UTDT-2024 (n=412) · efecto de la pista previa.',
+  '03_ilusiones_movimiento_waffle': 'Dataset: Encuesta de Movimiento Ilusorio (n=1.000) · “Rotating Snakes”, Kitaoka (2003).',
+  '04_ilusion_auditiva': 'Dataset: Relevamiento de Audio Ambiguo (n=600) · estímulo “bici / alquiler”.',
+  '04b_auditiva_con_pista': 'Dataset: Audio Ambiguo con texto-pista (n=600) · el rótulo previo sesga lo que se oye.',
+  '05_confianza_precision': 'Dataset: Confianza vs. Acierto UTDT-2024 (n=1.120 respuestas).',
+  '06_bate_pelota': 'Dataset: Cognitive Reflection Test (n=3.428) · Frederick (2005).',
+  '07_aversion_perdidas': 'Modelo: función de valor de la Teoría Prospectiva (Kahneman & Tversky, 1979) · λ=2,25.',
+  '08_framing_enfermedad': 'Dataset: Problema de la Enfermedad Asiática (n=307) · Tversky & Kahneman (1981).',
+  '09_dunning_kruger': 'Dataset: Habilidad Real vs. Autopercepción (n=84) · Kruger & Dunning (1999).',
+  '10_mejor_que_promedio': 'Dataset: Encuesta “Mejor que el Promedio” · Svenson (1981) · Cross (1977).',
+  '11_efecto_forer': 'Dataset: Validación de Perfiles Genéricos (n=39) · Forer (1948).',
+  '11b_texto_barnum': 'Dataset: Técnicas de Lectura en Frío (efecto Barnum) · Forer (1948).',
+  '12_pareidolia_paranormal': 'Dataset: Encuesta de Experiencias Paranormales (YouGov, 2021, n=1.000).',
+  '13_brecha_consenso': 'Dataset: Brecha Ciencia–Público · Pew Research (2015) + Pulsar UBA (Argentina, 2023).',
 };
 
 /* Inserta la cita: usa el slot [data-src-for] de la sección si existe;

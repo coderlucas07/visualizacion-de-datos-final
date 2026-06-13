@@ -124,28 +124,42 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .menu-btn__icon { display: inline-flex; flex-direction: column; gap: 4px; }
 .menu-btn__icon span { width: 16px; height: 1.5px; background: currentColor; transition: transform 0.3s var(--ease); }
 
+/* Drawer: se desliza desde la izquierda y queda a la izquierda; el resto de
+   la pantalla es un backdrop translúcido que cierra el menú al tocarlo. */
 .menu {
   position: fixed; inset: 0; z-index: 125;
-  background: rgba(7, 10, 13, 0.94);
-  backdrop-filter: blur(14px);
-  display: grid; place-items: center;
+  background: rgba(5, 7, 10, 0.5);
   opacity: 0; visibility: hidden;
-  transition: opacity 0.35s var(--ease), visibility 0.35s var(--ease);
+  transition: opacity 0.3s var(--ease), visibility 0.3s var(--ease);
 }
 .menu.is-open { opacity: 1; visibility: visible; }
-.menu__list { list-style: none; margin: 0; padding: 0 var(--pad-x); width: min(46rem, 100%); }
+.menu__panel {
+  position: absolute; top: 0; left: 0; height: 100%;
+  width: min(23rem, 86vw);
+  background: rgba(8, 11, 15, 0.98);
+  backdrop-filter: blur(16px);
+  border-right: 1px solid var(--line);
+  box-shadow: 30px 0 80px rgba(0, 0, 0, 0.5);
+  padding: 5.4rem var(--pad-x) 2.5rem;
+  overflow-y: auto;
+  display: flex; flex-direction: column; justify-content: center;
+  transform: translateX(-100%);
+  transition: transform 0.42s var(--ease);
+}
+.menu.is-open .menu__panel { transform: translateX(0); }
+.menu__list { list-style: none; margin: 0; padding: 0; width: 100%; }
 .menu__item { border-bottom: 1px solid var(--line-soft); padding: 1.1rem 0; }
 .menu__item:first-child { border-top: 1px solid var(--line-soft); }
 .menu__link {
   display: flex; align-items: baseline; gap: 1.3rem;
   color: var(--ink); text-decoration: none;
   font-family: var(--font-display); font-weight: 500;
-  font-size: clamp(1.5rem, 1.1rem + 2vw, 2.6rem);
+  font-size: clamp(1.35rem, 1rem + 1vw, 1.8rem);
   transition: color 0.25s var(--ease), transform 0.3s var(--ease);
 }
-.menu__link:hover { color: var(--accent); transform: translateX(8px); }
-.menu__num { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-faint); letter-spacing: 0.1em; }
-.menu__scenes { margin: 0.5rem 0 0 3rem; display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; }
+.menu__link:hover { color: var(--accent); transform: translateX(6px); }
+.menu__num { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-faint); letter-spacing: 0.1em; }
+.menu__scenes { margin: 0.45rem 0 0 2.1rem; display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; }
 .menu__scene {
   font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em;
   color: var(--ink-dim); text-decoration: none;
