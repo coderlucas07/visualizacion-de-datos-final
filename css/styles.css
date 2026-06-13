@@ -762,6 +762,16 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .gamble__row--win span { color: var(--gain); }
 .gamble__row--lose span { color: var(--loss); }
 
+/* Bifurcación del encuadre (E8): mismo resultado, dos formas de contarlo */
+.framing-fork { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin: 1.4rem auto; max-width: 30rem; }
+.framing-opt { border: 1px solid var(--line); border-radius: var(--radius); padding: 0.95rem 0.9rem; display: flex; flex-direction: column; gap: 0.25rem; text-align: left; }
+.framing-opt span { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-dim); }
+.framing-opt b { font-family: var(--font-display); font-style: italic; font-size: clamp(1rem, 0.9rem + 0.4vw, 1.25rem); }
+.framing-opt--gain { border-color: rgba(63, 167, 110, 0.5); }
+.framing-opt--gain b { color: var(--gain); }
+.framing-opt--loss { border-color: rgba(229, 72, 77, 0.5); }
+.framing-opt--loss b { color: var(--loss); }
+
 /* ----------------------------- Forer / Barnum (E11) ----------------------------- */
 .reading { max-width: 40rem; padding: 0 1rem; }
 .reading__quote {

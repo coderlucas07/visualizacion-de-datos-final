@@ -394,6 +394,16 @@ function setupInteractions() {
       scrollToNextStep(b);
     }));
   }
+
+  // E6 (bate y pelota): elegir un precio marca el botón y auto-avanza al gráfico.
+  const e6 = document.getElementById('e6');
+  if (e6) {
+    const btns = e6.querySelectorAll('[data-choice]');
+    btns.forEach((b) => b.addEventListener('click', () => {
+      btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      scrollToNextStep(b);
+    }));
+  }
 }
 
 /* Lleva suavemente al siguiente paso (no hace falta scrollear a mano). */

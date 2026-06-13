@@ -358,12 +358,12 @@
           <div class="portal__head-in">
             <p class="portal__kicker">Módulo II</p>
             <h2 class="portal__name">Decisión</h2>
-            <p class="portal__sub">Elegir también es interpretar.</p>
+            <p class="portal__sub">Creés que pensás cada elección. Casi nunca.</p>
           </div>
         </div>
         <div class="portal__dot" aria-hidden="true"></div>
         <div class="portal__after">
-          <p>Tampoco elegís lo que creés que <em>elegís</em>.</p>
+          <p>Elegís con <em>atajos</em> —y los atajos se pueden empujar.</p>
         </div>
       </div>
     </section>
@@ -376,21 +376,23 @@
             <div class="statement">
               <p class="statement__eyebrow" id="e6-h">Un atajo que casi nunca falla</p>
               <div class="batball" aria-hidden="true">
-                <svg viewBox="0 0 460 310" fill="none">
-                  <g transform="translate(62 246) rotate(-27)">
-                    <path d="M0 -27 C-36 -27 -36 27 0 27 L30 25.5 C140 20 230 14 318 11 L318 -11 C230 -14 140 -20 30 -25.5 Z"
-                          fill="rgba(228,234,239,0.07)" stroke="#E4EAEF" stroke-width="2.5" stroke-linejoin="round" />
-                    <circle cx="334" cy="0" r="16" fill="rgba(228,234,239,0.07)" stroke="#E4EAEF" stroke-width="2.5" />
-                    <path d="M52 -25 C56 -8 56 8 52 25" stroke="#8FD8FF" stroke-width="2" />
-                    <path d="M66 -24 C70 -8 70 8 66 24" stroke="#8FD8FF" stroke-width="2" opacity="0.6" />
-                    <path d="M30 -8 C120 -10 220 -7 300 -4" stroke="#E4EAEF" stroke-width="1" opacity="0.25" />
-                    <path d="M26 9 C120 11 210 8 295 5" stroke="#E4EAEF" stroke-width="1" opacity="0.18" />
+                <svg viewBox="0 0 480 300" fill="none">
+                  <!-- Bate de madera: mango fino abajo-izq, barril grueso arriba-der -->
+                  <g transform="translate(60 232) rotate(-29)">
+                    <path d="M0 -8 C-14 -8 -14 8 0 8 L26 7 C150 2 290 -6 420 -14 C452 -16 452 -54 420 -56 C290 -48 150 -42 26 -37 L0 -38 C-2 -28 -2 -18 0 -8 Z"
+                          fill="#C9B488" stroke="#85714A" stroke-width="2.5" stroke-linejoin="round" />
+                    <path d="M30 6 C150 1 290 -7 420 -15 C448 -17 448 -34 430 -37 C300 -29 160 -23 32 -19 Z" fill="#A8915F" opacity="0.45" />
+                    <ellipse cx="-7" cy="0" rx="9" ry="13" fill="#BFA976" stroke="#85714A" stroke-width="2.5" />
+                    <path d="M42 -34 v40 M54 -35 v42" stroke="#85714A" stroke-width="2" opacity="0.8" />
                   </g>
-                  <circle cx="238" cy="212" r="46" fill="#E4EAEF" />
-                  <path d="M210 176 q22 36 0 72" stroke="#8FD8FF" stroke-width="2.5" />
-                  <path d="M266 176 q-22 36 0 72" stroke="#8FD8FF" stroke-width="2.5" />
-                  <path d="M205 183 q19 30 0 58" stroke="#8FD8FF" stroke-width="5" stroke-dasharray="1.5 7" opacity="0.85" />
-                  <path d="M271 183 q-19 30 0 58" stroke="#8FD8FF" stroke-width="5" stroke-dasharray="1.5 7" opacity="0.85" />
+                  <!-- Pelota de béisbol con costuras rojas -->
+                  <circle cx="250" cy="208" r="50" fill="#F2EFE8" stroke="#CFC8B8" stroke-width="2" />
+                  <path d="M216 170 q26 38 0 76" fill="none" stroke="#D14B3C" stroke-width="2.6" />
+                  <path d="M284 170 q-26 38 0 76" fill="none" stroke="#D14B3C" stroke-width="2.6" />
+                  <g stroke="#D14B3C" stroke-width="1.6">
+                    <path d="M222 178 l8 5 M220 190 l9 4 M219 202 l9 3 M220 214 l9 -2 M223 226 l8 -5" />
+                    <path d="M278 178 l-8 5 M280 190 l-9 4 M281 202 l-9 3 M280 214 l-9 -2 M277 226 l-8 -5" />
+                  </g>
                 </svg>
               </div>
               <p class="statement__line">Un bate y una pelota cuestan <strong>$1,10</strong>.</p>
@@ -407,13 +409,18 @@
         <div class="step is-active" data-layer="0">
           <div class="step__card">
             <p class="kicker">Tercera prueba</p>
-            <p class="lede">Respondé rápido, sin lápiz ni papel. Después seguí bajando.</p>
+            <p class="lede">Respondé rápido, sin lápiz ni papel: ¿cuánto cuesta la pelota?</p>
+            <div class="choices" role="group" aria-label="¿Cuánto cuesta la pelota?">
+              <button class="choice" data-choice="010" aria-pressed="false"><span>$0,10</span></button>
+              <button class="choice" data-choice="005" aria-pressed="false"><span>$0,05</span></button>
+              <button class="choice" data-choice="100" aria-pressed="false"><span>$1,00</span></button>
+            </div>
           </div>
         </div>
         <div class="step" data-layer="1">
           <div class="step__card">
-            <p class="lede">Si pensaste $0,10, te pasó lo mismo que a la mayoría. Está mal.</p>
-            <p class="muted">La pelota cuesta <strong>$0,05</strong> (y el bate, $1,05). Tu cabeza tiene un sistema rápido —casi siempre alcanza— y uno lento, que casi nunca encendés.</p>
+            <p class="lede">Si pensaste $0,10, te pasó lo mismo que a la mayoría. Está mal: la pelota cuesta <strong>$0,05</strong>.</p>
+            <p class="muted">Respondió tu <strong>Sistema 1</strong> —rápido, automático, intuitivo—; el <strong>Sistema 2</strong>, lento y analítico, ni se molestó en revisar. Pensar cuesta energía, y el cerebro ahorra.</p>
           </div>
         </div>
       </div>
@@ -439,8 +446,9 @@
       <div class="scrolly__steps">
         <div class="step is-active" data-layer="0">
           <div class="step__card">
-            <p class="kicker">Una apuesta justa</p>
-            <p class="lede">Ganás y perdés exactamente lo mismo. Decidí con la panza y seguí bajando.</p>
+            <p class="kicker">Ahora, un juego</p>
+            <h3>Una apuesta simple.</h3>
+            <p class="lede">Tiro una moneda. Cara o ceca, ganás o perdés lo mismo. Mirá las reglas de al lado y decidí: ¿aceptás?</p>
           </div>
         </div>
         <div class="step" data-layer="1">
@@ -451,8 +459,9 @@
         </div>
         <div class="step" data-layer="1">
           <div class="step__card">
+            <p class="kicker">Aversión a las pérdidas</p>
             <p class="stat-line"><span class="stat-line__num">λ = 2,25×</span></p>
-            <p class="muted">Perder $50 duele 2,25 veces más de lo que alegra ganarlos. El sistema que grita ante la pérdida (amígdala, ínsula) le gana al de la recompensa.</p>
+            <p class="muted">Perder $50 duele 2,25 veces más de lo que alegra ganarlos. Se llama <strong>aversión a las pérdidas</strong>: el sistema que grita ante una pérdida (amígdala, ínsula) le gana al de la recompensa.</p>
           </div>
         </div>
       </div>
@@ -464,10 +473,13 @@
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
             <div class="statement">
-              <p class="statement__eyebrow" id="e8-h">El mismo problema, dos respuestas</p>
-              <p class="statement__big">600</p>
-              <p class="statement__line">personas en riesgo por una enfermedad.</p>
-              <p class="statement__line">Dos programas. <strong>El mismo resultado</strong>, contado de dos maneras.</p>
+              <p class="statement__eyebrow" id="e8-h">Un brote amenaza a 600 personas</p>
+              <p class="statement__line">Hay que elegir un plan. El resultado es el mismo… pero te lo cuento de dos formas:</p>
+              <div class="framing-fork">
+                <div class="framing-opt framing-opt--gain"><span>Te lo cuento en</span><b>vidas salvadas</b></div>
+                <div class="framing-opt framing-opt--loss"><span>Te lo cuento en</span><b>muertes</b></div>
+              </div>
+              <p class="statement__q">¿Cambia lo que elegís?</p>
             </div>
           </div>
           <div class="viz__layer" data-layer="1">
@@ -479,7 +491,8 @@
         <div class="step is-active" data-layer="0">
           <div class="step__card">
             <p class="kicker">El encuadre</p>
-            <p class="lede">Leé el planteo. Ahora mirá qué pasa cuando lo único que cambia es <em>cómo se cuenta</em>.</p>
+            <h3>Una enfermedad amenaza a 600 personas.</h3>
+            <p class="lede">Tenés que elegir un plan para enfrentarla. Lo único que va a cambiar es <em>cómo te lo cuento</em>.</p>
           </div>
         </div>
         <div class="step" data-layer="1">
