@@ -14,6 +14,26 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   código pero no este archivo, el contexto del resto queda desactualizado → siempre van juntos.
 - Si algo de acá ya no es cierto, corregilo (no agregues notas sueltas que se contradigan).
 
+## ⚡ ACTUALIZACIÓN jun-2026 (3ª vuelta de feedback) — MANDA sobre lo de más abajo
+- **Color POR MÓDULO (no un acento único):** Percepción **púrpura `#9333EA`**, Decisión **azul cobalto `#2563EB`**,
+  Sesgos **carmesí `#E11D48`**. Se setea `--accent` por sección en `setupModuleColors()` (main.js) y charts.js
+  lo hereda con `accentOf`. La portada-video sigue celeste.
+- **Espiral = hipnótico B&W** (como `espiral_referencia.jpg`), NO el túnel celeste: gira + zoom al centro hasta el
+  negro; el **título del módulo aparece RECIÉN sobre el negro** (p>0.8), no sobre los colores del espiral. Portales 380vh.
+- **Menú = drawer** que entra desde la izquierda y cierra al tocar afuera (ya no es overlay centrado).
+- **Audio (E4):** el gráfico es una **onda de radio FM** (canvas, se estira con el scroll vía `__setFM`); datos 67/33
+  (se sacó "otra"); los botones bici/alquiler van en la misma sección que el play; el "con pista" (04b) quedó con 2 barras.
+- **Cierre de Percepción:** se reemplazó confianza/acierto (en percepción no hay "respuestas correctas") por
+  **ceguera atencional** (`05_cierre_percepcion`: gorila invisible ≈50%, Simons & Chabris) + puente a Decisión.
+- **E3:** se sacó el fondo rosa `#CF807F`; conserva la paleta oscura del sitio.
+- **Decisión:** E6 con botones para responder + Sistema 1/2 + bate de madera (foto `bate y pelota.jpeg`); E7 intro
+  "Ahora un juego" + el λ nombra **"aversión a las pérdidas"**; E8 el "600" con planteo claro + bifurcación vidas/muertes.
+- **Sesgos:** nueva escena `sesgos-intro` ("¿Qué es un sesgo?" + diana de tiros sistemáticos) antes de E10.
+- **E1:** una vez respondido, el estado sigue al scroll (arriba=imagen, abajo=gráfico): volver con el scroll no rompe.
+- **E2:** gira **45°** (no 90°); rótulos alejados para no tapar la figura.
+- **Fuentes** de cada gráfico reescritas como datasets con nombre realista (`SOURCES` en charts.js).
+- **Teóricas** (Módulos 5/12/13 en PDF) commiteadas al repo. Para leerlas: `pip install --user pypdf` (poppler no está).
+
 ## Qué es
 Sitio de **scrollytelling** (una sola historia, scroll nativo) para **Visualización de Datos (UTDT)**.
 **Tesis:** el cerebro no registra la realidad, la construye; rellenar lo ambiguo aparece cuando vemos
