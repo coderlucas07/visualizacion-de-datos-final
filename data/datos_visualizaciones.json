@@ -531,24 +531,17 @@
   "rows": [
    [
     "Bicicleta",
-    194,
-    47.1,
-    412,
-    "194 de 412 escuchan 'bicicleta'."
+    402,
+    67,
+    600,
+    "402 de 600 oyen 'bicicleta'."
    ],
    [
     "Alquiler",
-    181,
-    43.9,
-    412,
-    "181 de 412 escuchan 'alquiler'."
-   ],
-   [
-    "Otra / cambia según escucho",
-    37,
-    9.0,
-    412,
-    "37 oscilan o reportan otra palabra."
+    198,
+    33,
+    600,
+    "198 de 600 oyen 'alquiler'."
    ]
   ]
  },
@@ -560,12 +553,6 @@
    "nota"
   ],
   "rows": [
-   [
-    "Sin texto en pantalla",
-    47.0,
-    44.0,
-    "Audio solo: la lectura se reparte casi 50/50."
-   ],
    [
     "Leyendo 'BICICLETA'",
     81.0,

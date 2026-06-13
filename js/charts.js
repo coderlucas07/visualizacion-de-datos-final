@@ -195,45 +195,92 @@ export const CHARTS = {
     if (opts.reduced) container.__setWaffle(1);
   },
 
-  /* ---------- G4 · Ilusión auditiva (E4) ---------- */
+  /* ---------- G4 · Ilusión auditiva (E4) — ONDA FM (canvas), se estira con el scroll ----------
+     Onda de radio FM: amplitud constante, frecuencia que varía. La señal es
+     una sola; cada cerebro la "sintoniza" distinto. El tramo izquierdo (67%)
+     va en el acento = bicicleta; el derecho (33%) en gris = alquiler. Expone
+     container.__setFM(p): al scrollear, las ondas se ALARGAN. */
   '04_ilusion_auditiva'(container, data, opts) {
     const rows = rowsToObjects(data['04_ilusion_auditiva']);
     const accent = accentOf(container);
-    const max = Math.max(...rows.map((r) => r.porcentaje));
-    const ordered = rows.slice().reverse();
-    const option = {
-      ...baseOption(accent),
-      title: titleBlock('El mismo audio, distinta palabra', 'Qué escucha la gente al reproducir el mismo sonido'),
-      grid: { left: 6, right: 40, top: 96, bottom: 24, containLabel: true },
-      xAxis: valAxis({ max: 60, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
-      yAxis: catAxis({ data: ordered.map((r) => r.palabra_escuchada), axisLabel: { color: INK, fontSize: 14, width: 150, overflow: 'truncate' } }),
-      tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong><br>${p.data.tip}` },
-      series: [{
-        type: 'bar', barWidth: '50%',
-        data: ordered.map((r) => ({ value: r.porcentaje, tip: r.tooltip, itemStyle: { color: r.porcentaje === max ? accent : hexA(accent, 0.45), borderRadius: [0, 8, 8, 0] } })),
-        label: { show: true, position: 'right', color: INK, fontFamily: DISPLAY, fontSize: 18, fontWeight: 600, formatter: (p) => `${p.value}%` },
-        animationDuration: 1100, animationEasing: 'cubicOut', animationDelay: (i) => i * 160,
-      }],
+    const second = INK_DIM;
+    const bici = rows.find((r) => /Bicicleta/i.test(r.palabra_escuchada)) || rows[0];
+    const alq = rows.find((r) => /Alquiler/i.test(r.palabra_escuchada)) || rows[1];
+    const pBici = bici.porcentaje, pAlq = alq.porcentaje;
+    const splitX = pBici / (pBici + pAlq);
+
+    container.classList.add('fmwave');
+    container.innerHTML = `
+      <p class="fmwave__title">El mismo audio, dos estaciones</p>
+      <p class="fmwave__sub">Una sola señal; cada cerebro la sintoniza distinto</p>
+      <canvas class="fmwave__canvas"></canvas>
+      <div class="fmdial">
+        <div class="fmdial__seg fmdial__seg--bici" style="flex:${pBici}"><span>Bicicleta</span><b>${pBici}%</b></div>
+        <div class="fmdial__seg fmdial__seg--alq"  style="flex:${pAlq}"><span>Alquiler</span><b>${pAlq}%</b></div>
+      </div>`;
+    const canvas = container.querySelector('.fmwave__canvas');
+    const ctx = canvas.getContext('2d');
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let W = 0, H = 0, lastP = opts.reduced ? 1 : 0;
+
+    function draw(p) {
+      lastP = p;
+      ctx.clearRect(0, 0, W, H);
+      if (!W || !H) return;
+      const midY = H / 2, amp = H * 0.34;
+      const base = 30 * (1 - 0.5 * p);   // menos ondas (más largas) al scrollear
+      const depth = 0.62, sigCycles = 1.7;
+      const grad = ctx.createLinearGradient(0, 0, W, 0);
+      grad.addColorStop(0, accent); grad.addColorStop(Math.max(0, splitX - 0.002), accent);
+      grad.addColorStop(Math.min(1, splitX + 0.002), second); grad.addColorStop(1, second);
+      ctx.strokeStyle = grad; ctx.lineWidth = 2.6; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+      ctx.beginPath();
+      let phase = 0; const step = 2;
+      for (let x = 0; x <= W; x += step) {
+        const t = x / W;
+        const inst = base * (1 + depth * Math.sin(2 * Math.PI * sigCycles * t));
+        phase += (inst / W) * step * 2 * Math.PI;
+        const y = midY + amp * Math.sin(phase);
+        if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(228,234,239,0.16)'; ctx.lineWidth = 1; ctx.setLineDash([4, 5]);
+      ctx.beginPath(); ctx.moveTo(splitX * W, 8); ctx.lineTo(splitX * W, H - 8); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    const resize = () => {
+      const r = canvas.getBoundingClientRect();
+      W = Math.max(1, r.width); H = Math.max(1, r.height);
+      canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      draw(lastP);
     };
-    mountChart(container, option, opts);
+    container.__setFM = (p) => draw(p);
+    new ResizeObserver(resize).observe(canvas);
+    requestAnimationFrame(resize);
   },
 
-  /* ---------- G4b · Leer la palabra cambia lo que oís (E4) ---------- */
+  /* ---------- G4b · Leer la palabra cambia lo que oís (E4) — claro y directo, 2 barras ---------- */
   '04b_auditiva_con_pista'(container, data, opts) {
     const rows = rowsToObjects(data['04b_auditiva_con_pista']);
     const accent = accentOf(container);
+    const items = rows.map((r) => {
+      const leeBici = /BICICLETA/i.test(r.condicion);
+      return { label: leeBici ? 'Leés «bicicleta»' : 'Leés «alquiler»', value: leeBici ? r.ve_bicicleta_pct : r.ve_alquiler_pct, nota: r.nota };
+    }).reverse();
     const option = {
       ...baseOption(accent),
-      title: titleBlock('La palabra que ves cambia lo que oís', 'Qué se oye según la palabra mostrada antes del audio'),
-      grid: { left: 6, right: 16, top: 118, bottom: 24, containLabel: true },
-      legend: { data: ['Oye “bicicleta”', 'Oye “alquiler”'], top: 74, textStyle: { color: INK_DIM }, icon: 'roundRect' },
-      xAxis: catAxis({ data: rows.map((r) => r.condicion), axisLabel: { color: INK, fontSize: 12, interval: 0, width: 130, overflow: 'break' } }),
-      yAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
-      tooltip: { ...baseOption(accent).tooltip, trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (ps) => `<strong>${ps[0].name}</strong><br>${rows[ps[0].dataIndex].nota}` },
-      series: [
-        { name: 'Oye “bicicleta”', type: 'bar', data: rows.map((r) => r.ve_bicicleta_pct), itemStyle: { color: accent, borderRadius: [4, 4, 0, 0] }, animationDelay: (i) => i * 120 },
-        { name: 'Oye “alquiler”', type: 'bar', data: rows.map((r) => r.ve_alquiler_pct), itemStyle: { color: hexA(accent, 0.4), borderRadius: [4, 4, 0, 0] }, animationDelay: (i) => i * 120 + 60 },
-      ],
+      title: titleBlock('Leés una palabra y la oís', 'Con el MISMO audio, % que oye justo la palabra que vio antes'),
+      grid: { left: 6, right: 56, top: 96, bottom: 24, containLabel: true },
+      xAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
+      yAxis: catAxis({ data: items.map((i) => i.label), axisLabel: { color: INK, fontSize: 15 } }),
+      tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong><br>${items[p.dataIndex].nota}` },
+      series: [{
+        type: 'bar', barWidth: '46%',
+        data: items.map((i) => ({ value: i.value, itemStyle: { color: accent, borderRadius: [0, 8, 8, 0] } })),
+        label: { show: true, position: 'right', color: INK, fontFamily: DISPLAY, fontSize: 18, fontWeight: 600, formatter: '{c}%' },
+        animationDuration: 1000, animationEasing: 'cubicOut', animationDelay: (i) => i * 150,
+      }],
     };
     mountChart(container, option, opts);
   },

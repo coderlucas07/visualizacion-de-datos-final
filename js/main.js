@@ -32,6 +32,7 @@ let introEl = null, duoEl = null;
 let e2Sec = null, e2Fig = null, e2Step = null;
 let e3Img = null, e3Step = null, e3TitleCard = null, e3TitleStep = null, e3FinalCard = null;
 let e3bSec = null, waffleEl = null, e3CountEl = null;
+let fmEl = null, e4FmStep = null;
 
 const state = { first: null, e2rotate: true };
 const progressBar = document.getElementById('progressBar');
@@ -453,6 +454,8 @@ function cacheScrubRefs() {
   e3bSec = document.getElementById('e3b');
   waffleEl = document.getElementById('e3Waffle');
   e3CountEl = document.getElementById('e3Count');
+  fmEl = document.querySelector('#e4 [data-chart="04_ilusion_auditiva"]');
+  e4FmStep = document.querySelector('#e4 .step[data-layer="1"]');
 }
 
 /* ----------------------------- Motor de scroll ----------------------------- */
@@ -537,6 +540,11 @@ function tick() {
     const p = clamp((sectionProgress(e3bSec) - 0.08) / 0.72);
     waffleEl.__setWaffle(p);
     if (e3CountEl) e3CountEl.textContent = Math.round(p * 96);
+  }
+
+  // E4 (onda FM): las ondas se alargan a medida que scrolleás el resultado
+  if (!REDUCED && fmEl && fmEl.__setFM && e4FmStep) {
+    fmEl.__setFM(stepScrub(e4FmStep));
   }
 }
 
