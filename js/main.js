@@ -34,7 +34,7 @@ let e3Img = null, e3Step = null, e3TitleCard = null, e3TitleStep = null, e3Final
 let e3bSec = null, waffleEl = null, e3CountEl = null;
 let fmEl = null, e4FmStep = null;
 
-const state = { first: null, e2rotate: true };
+const state = { first: null, e2rotate: true, e1answered: false };
 const progressBar = document.getElementById('progressBar');
 
 async function init() {
@@ -355,6 +355,7 @@ function setupIntro() {
   intro.querySelectorAll('.choice').forEach((b) => b.addEventListener('click', () => {
     intro.querySelectorAll('.choice').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
     state.first = b.dataset.choice;
+    state.e1answered = true;          // a partir de acá el estado sigue al scroll
     configureE2(state.first);
     intro.dataset.state = 'chart';
     // Arrancar el scrub desde el inicio de la sección: las barras crecen al bajar.
@@ -362,8 +363,12 @@ function setupIntro() {
     window.scrollTo({ top: top + 8, behavior: REDUCED ? 'auto' : 'smooth' });
   }));
 
+  // "Volver a la imagen": scrollea al tope de la escena → tick() pone estado "img".
   const back = document.getElementById('backToImg');
-  if (back) back.addEventListener('click', () => { intro.dataset.state = 'img'; });
+  if (back) back.addEventListener('click', () => {
+    const top = intro.getBoundingClientRect().top + window.scrollY;
+    animateScrollTo(top, 600);
+  });
 }
 
 /* ----------------------------- Interacciones (E4) ----------------------------- */
@@ -502,6 +507,12 @@ function tick() {
     }
     if (pt.dot) pt.dot.style.opacity = '0';   // el zoom del espiral ya te mete adentro
     if (pt.after) pt.after.style.opacity = afterIn.toFixed(3);
+  }
+
+  // E1: una vez respondido, el estado SIGUE al scroll (arriba = imagen, abajo =
+  // gráfico). Así volver con el scroll no rompe la escena ni hace desaparecer la figura.
+  if (introEl && state.e1answered && !REDUCED) {
+    introEl.dataset.state = introEl.getBoundingClientRect().top > 60 ? 'img' : 'chart';
   }
 
   // E1: en estado gráfico, las barras crecen de 0 al % esperado con el scroll
