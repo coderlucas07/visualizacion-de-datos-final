@@ -319,7 +319,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 /* el título aparece cuando ya estás ADENTRO; abajo nace un puntito que  */
 /* crece hasta tragarte; en el negro, la frase del módulo.               */
 /* ===================================================================== */
-.portal { position: relative; height: 300vh; }
+.portal { position: relative; height: 380vh; }
 .portal__sticky {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
   background: var(--bg);

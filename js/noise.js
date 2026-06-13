@@ -335,102 +335,58 @@ export class SpiralPortal {
     const reduced = this.opts.reduced;
     const p = reduced ? this.targetProgress : this.progress;
     const t = reduced ? 0 : (now - this.t0) * 0.001;
-    const GLOW = this.opts.glow, GRAY = this.opts.gray;
+    const cx = w / 2, cy = h / 2;
+    const R = Math.hypot(w, h) / 2 + 4;
+    const ink = '#0A0D10';     // negro del sitio
+    const paper = '#ECEEF2';   // blanco hueso
 
-    const cx = w / 2, cy = h * 0.5;
-    const diag = Math.hypot(w, h);
-    // "enter": la cámara avanza hacia el fondo del túnel con el scroll
-    const eRaw = clamp(p / 0.55);
-    const enter = eRaw * eRaw * (3 - 2 * eRaw); // smoothstep
-    const maxR = diag * (0.62 + 0.85 * enter);
-    const spin = t * 0.045 + p * 2.6;
-
-    // Fondo: gris profundo con leve luz al centro
-    const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, diag * 0.7);
-    bg.addColorStop(0, '#0D1217');
-    bg.addColorStop(1, '#06080B');
-    ctx.fillStyle = bg;
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = ink;
     ctx.fillRect(0, 0, w, h);
 
-    // Gradiente común de los trazos: celeste en el núcleo → gris en el borde
-    const strokeGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxR);
-    strokeGrad.addColorStop(0, `rgba(${GLOW}, 0.85)`);
-    strokeGrad.addColorStop(0.22, `rgba(${GLOW}, 0.4)`);
-    strokeGrad.addColorStop(0.55, `rgba(${GRAY}, 0.16)`);
-    strokeGrad.addColorStop(1, `rgba(${GRAY}, 0.03)`);
-    ctx.strokeStyle = strokeGrad;
+    // Te metés hacia el centro: zoom acelerado + giro continuo.
+    const zoom = 1 + Math.pow(clamp(p / 0.85), 1.7) * 11;
+    const spin = t * 0.5 + p * Math.PI * 3.2;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(spin);
+    ctx.scale(zoom, zoom);
+
+    // Disco de papel y, encima, el brazo del espiral (Arquímedes): estela
+    // negra con huecos blancos del mismo ancho → ilusión hipnótica B&W.
+    ctx.beginPath();
+    ctx.arc(0, 0, R, 0, Math.PI * 2);
+    ctx.fillStyle = paper;
+    ctx.fill();
+
+    const turns = 13;
+    const pitch = R / turns;
+    const steps = turns * 64;
+    ctx.beginPath();
+    for (let i = 0; i <= steps; i++) {
+      const th = (i / steps) * turns * Math.PI * 2;
+      const r = (pitch * th) / (Math.PI * 2);
+      const x = Math.cos(th) * r, y = Math.sin(th) * r;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.lineWidth = pitch * 0.5;
     ctx.lineCap = 'round';
+    ctx.strokeStyle = ink;
+    ctx.stroke();
+    ctx.restore();
 
-    // Anillos de profundidad: vienen hacia vos (avance continuo + scroll)
-    const drift = t * 0.5 + p * 9;
-    const f = drift - Math.floor(drift);
-    for (let i = 0; i < 16; i++) {
-      const z = i + (1 - f);
-      const r = maxR * Math.pow(0.78, z);
-      if (r < 2) break;
-      ctx.globalAlpha = 0.05 + 0.16 * Math.min(1, z / 4);
-      ctx.lineWidth = Math.max(0.6, r * 0.012);
-      ctx.beginPath();
-      ctx.ellipse(cx, cy, r, r * 0.965, spin * 0.18 + i * 0.5, 0, Math.PI * 2);
-      ctx.stroke();
-    }
-    ctx.globalAlpha = 1;
-
-    // Brazos del espiral (logarítmico, 3 brazos), grosor en perspectiva:
-    // gruesos cerca tuyo, finos hundiéndose hacia el núcleo.
-    const ARMS = 3, SEG = 26, STEP = 0.24;
-    ctx.globalAlpha = 0.9;
-    for (let a = 0; a < ARMS; a++) {
-      const ph = spin + (a * Math.PI * 2) / ARMS;
-      let th = 0;
-      for (let s = 0; s < SEG; s++) {
-        ctx.beginPath();
-        for (let k = 0; k <= 4; k++) {
-          const ang = th + k * STEP;
-          const r = maxR * Math.exp(-0.16 * ang);
-          const x = cx + Math.cos(ang + ph) * r;
-          const y = cy + Math.sin(ang + ph) * r * 0.965;
-          if (k === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-        }
-        const rMid = maxR * Math.exp(-0.16 * (th + 2 * STEP));
-        ctx.lineWidth = Math.max(0.5, rMid * 0.16);
-        ctx.stroke();
-        th += 4 * STEP;
-      }
-    }
-    ctx.globalAlpha = 1;
-
-    // Polvo orbitando hacia el centro (se acelera al acercarse)
-    ctx.fillStyle = `rgba(${GLOW}, 0.8)`;
-    for (const d of this.dust) {
-      const rr = (((d.r - (t * 0.012 + p * 0.3)) % 1) + 1) % 1;
-      const ang = d.a + t * d.sp + p * 2.2 + (1 - rr) * 2.4;
-      const rad = maxR * 0.66 * Math.pow(rr, 1.5) + 6;
-      ctx.globalAlpha = (1 - rr) * 0.5 + 0.06;
-      ctx.fillRect(cx + Math.cos(ang) * rad, cy + Math.sin(ang) * rad * 0.965, d.sz, d.sz);
-    }
-    ctx.globalAlpha = 1;
-
-    // Núcleo: la luz celeste al fondo del túnel (late despacio)
-    const pulse = reduced ? 0 : Math.sin(t * 1.4) * 0.06;
-    const coreR = maxR * (0.1 + 0.16 * enter);
-    const core = ctx.createRadialGradient(cx, cy, 0, cx, cy, coreR * 3);
-    core.addColorStop(0, `rgba(214, 240, 255, ${clamp(0.5 + 0.25 * enter + pulse)})`);
-    core.addColorStop(0.35, `rgba(${GLOW}, ${clamp(0.2 + 0.2 * enter)})`);
-    core.addColorStop(1, `rgba(${GLOW}, 0)`);
-    ctx.fillStyle = core;
+    // El centro se va volviendo negro y se traga la pantalla a medida que entrás.
+    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * 0.72);
+    g.addColorStop(0, `rgba(10,13,16,${clamp(0.2 + p * 1.2)})`);
+    g.addColorStop(clamp(0.5 - p * 0.45), `rgba(10,13,16,${clamp(p * 0.8)})`);
+    g.addColorStop(1, 'rgba(10,13,16,0)');
+    ctx.fillStyle = g;
     ctx.fillRect(0, 0, w, h);
 
-    // Viñeta: hunde los bordes (sensación de estar adentro)
-    const vg = ctx.createRadialGradient(cx, cy, diag * 0.24, cx, cy, diag * 0.62);
-    vg.addColorStop(0, 'rgba(4, 6, 8, 0)');
-    vg.addColorStop(1, 'rgba(4, 6, 8, 0.55)');
-    ctx.fillStyle = vg;
-    ctx.fillRect(0, 0, w, h);
-
-    // Apagado final de respaldo (el puntito HTML ya cubrió casi todo)
-    if (p > 0.86) {
-      ctx.fillStyle = `rgba(4, 6, 8, ${clamp((p - 0.86) / 0.12)})`;
+    // Tramo final: negro pleno (acá aparece el título del módulo, por HTML).
+    if (p > 0.78) {
+      ctx.fillStyle = `rgba(10,13,16,${clamp((p - 0.78) / 0.18)})`;
       ctx.fillRect(0, 0, w, h);
     }
   }

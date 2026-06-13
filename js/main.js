@@ -492,21 +492,16 @@ function tick() {
     if (!pt.section) continue;
     const prog = sectionProgress(pt.section);
     pt.sp.setProgress(prog);
+    // El espiral gira y te mete al centro (zoom); cerca del final queda todo
+    // negro y RECIÉN AHÍ aparece el título del módulo (legible sobre negro).
+    const headIn = REDUCED ? 1 : clamp((prog - 0.8) / 0.08);
+    const afterIn = clamp((prog - 0.92) / 0.06);
     if (pt.head) {
-      const tIn = REDUCED ? 1 : clamp((prog - 0.3) / 0.14);
-      const tOut = 1 - clamp((prog - 0.8) / 0.12);
-      pt.head.style.opacity = (easeOut(tIn) * tOut).toFixed(3);
-      pt.head.style.transform = `translateY(${(18 * (1 - easeOut(tIn))).toFixed(1)}px)`;
+      pt.head.style.opacity = (easeOut(headIn) * (1 - afterIn)).toFixed(3);
+      pt.head.style.transform = `translateY(${(16 * (1 - easeOut(headIn))).toFixed(1)}px)`;
     }
-    if (pt.dot) {
-      const appear = clamp((prog - 0.5) / 0.05);
-      const grow = clamp((prog - 0.5) / 0.42);
-      const dotMax = Math.hypot(window.innerWidth, window.innerHeight) / 8;
-      const s = appear * (1 + Math.pow(grow, 2.7) * dotMax);
-      pt.dot.style.opacity = appear.toFixed(3);
-      pt.dot.style.transform = `translate(-50%, -50%) scale(${s.toFixed(2)})`;
-    }
-    if (pt.after) pt.after.style.opacity = clamp((prog - 0.9) / 0.08).toFixed(3);
+    if (pt.dot) pt.dot.style.opacity = '0';   // el zoom del espiral ya te mete adentro
+    if (pt.after) pt.after.style.opacity = afterIn.toFixed(3);
   }
 
   // E1: en estado gráfico, las barras crecen de 0 al % esperado con el scroll
