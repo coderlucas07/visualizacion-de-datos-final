@@ -14,6 +14,37 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   código pero no este archivo, el contexto del resto queda desactualizado → siempre van juntos.
 - Si algo de acá ya no es cierto, corregilo (no agregues notas sueltas que se contradigan).
 
+## ⚡ ACTUALIZACIÓN jun-2026 (5ª vuelta — Decisión: narrativa + colores) — MANDA sobre todo lo de abajo
+- **NARRATIVA = objetivo principal** (junto con gráficos/colores/tipografía/scroll): cada módulo conecta con el
+  anterior. La teórica (Módulo 12) lo dice literal: abre con "¿cómo hace el cerebro para decidir qué es lo que
+  ve?" (pato/conejo = ilusión biestable) y cita a Sigman: *"el mismo órgano que mira… es el que toma todas
+  nuestras decisiones… siguen los mismos principios"*. Eso es el eje: el mismo cerebro que **construye lo que
+  ves** (y lo que NO ves: el gorila) **construye lo que elegís**; el contexto que cambiaba la percepción ahora
+  cambia la decisión (framing).
+- **Decisión ya NO es cobalto:** usa **naranja `#F7943D`** (cálido, combina con el celeste/gris; distinto del
+  carmesí de Sesgos). Set en `setupModuleColors()`. El glow del título de portal usa `var(--accent-soft)` (cada
+  módulo brilla con su color).
+- **Color semántico del módulo:** ganancia/alegría = **verde `#3FA76E`** (`GAIN`), pérdida/dolor/muerte = **rojo
+  `#E5484D`** (`LOSS`), definidos en charts.js. El naranja es la identidad (portal, kickers, botones, bate);
+  verde/rojo solo para datos gan/pérd. NO usar el rojo/verde viejos chillones.
+- **Portal 2:** conector GENERAL como pregunta: "Lo que viste lo construyó tu cerebro. ¿Pasa lo mismo con tus
+  decisiones?"
+- **E6 bate:** foto REAL (`assets/bate_pelota.jpeg`) en tarjeta de papel (`.batball-photo` + `.figure-card`),
+  completa y nítida (se descartó el SVG cortado). Sin eyebrow. **El primer paso es SOLO para responder** (la
+  pregunta + botones); la explicación de los **dos motores** (Sistema 1 rápido / Sistema 2 lento) va recién en
+  el paso del gráfico.
+- **E7 apuesta:** moneda 50/50 + **botones** (Acepto / No juego). Gráfico G7 = **balanza emocional** (verde corta
+  = alegría de ganar; roja al doble = dolor de perder) con línea espejo "igual que ganar". **SIN λ ni "×2"** (el
+  2,25 se usa desde `params`, no se muestra). El lede NO dice "en promedio no ganás ni perdés".
+- **E8 framing (reordenado por scroll):** a la DERECHA el planteo grande y simple (`.statement--framing`: 600
+  personas + 2 `plan-card` **A/B SIN pista** de seguro/arriesgado; opción B explicada con la moneda "1 de cada 3
+  se salvan las 600…"). **NO dar pistas** ni decir "salvan lo mismo". A la IZQUIERDA primero la tarea + botones
+  (Plan A/Plan B), después scroll → gráfico + explicación (el truco vidas/muertes, el vuelco 72→22). Sin pato-conejo.
+- **E9 Dunning-Kruger:** abre con INTRO (¿cuánto te das cuenta de lo que no sabés?). El gráfico **se DIBUJA con el
+  scroll**: `__setProgress(p)` (scrubeado en `tick()` por `sectionProgress(#e9)`) avanza la línea de "Peores" a
+  "Mejores" a medida que bajás por la teórica (cumple el objetivo "scroll protagonista"). xAxis de valor 0-3
+  densificado a N puntos; endLabels **CREEN**/**SABEN** + brecha en "Peores" (+50 pts).
+
 ## ⚡ ACTUALIZACIÓN jun-2026 (4ª vuelta — Percepción) — MANDA sobre todo lo de abajo
 - **REGLA DE DATOS (vale para SIEMPRE, todos los gráficos):** si un cambio de gráfico necesita tocar los
   números, **se actualiza el database**: primero `data/datos_visualizaciones.json` (es el motor: charts.js

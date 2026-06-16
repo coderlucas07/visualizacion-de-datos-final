@@ -18,6 +18,8 @@ export function accentOf(el) {
 const INK = '#E4EAEF';
 const INK_DIM = '#94A1AC';
 const INK_FAINT = '#5C6873';
+const GAIN = '#3FA76E';   // ganancias / alegría (semántico, coherente con --gain del CSS)
+const LOSS = '#E5484D';   // pérdidas / dolor (coherente con --loss del CSS)
 const LINE = 'rgba(228,234,239,0.10)';
 const FONT = 'Hanken Grotesk, system-ui, sans-serif';
 const DISPLAY = 'Spectral, Georgia, serif';
@@ -33,7 +35,7 @@ const SOURCES = {
   '05_cierre_percepcion': 'Dataset: Ceguera atencional — Simons & Chabris (1999), “gorilas invisibles”.',
   '05_confianza_precision': 'Dataset: Confianza vs. Acierto UTDT-2024 (n=1.120 respuestas).',
   '06_bate_pelota': 'Dataset: Cognitive Reflection Test (n=3.428) · Frederick (2005).',
-  '07_aversion_perdidas': 'Modelo: función de valor de la Teoría Prospectiva (Kahneman & Tversky, 1979) · λ=2,25.',
+  '07_aversion_perdidas': 'Modelo: Teoría Prospectiva (Kahneman & Tversky, 1979) · perder pesa ≈ el doble que ganar lo mismo.',
   '08_framing_enfermedad': 'Dataset: Problema de la Enfermedad Asiática (n=307) · Tversky & Kahneman (1981).',
   '09_dunning_kruger': 'Dataset: Habilidad Real vs. Autopercepción (n=84) · Kruger & Dunning (1999).',
   '10_mejor_que_promedio': 'Dataset: Encuesta “Mejor que el Promedio” · Svenson (1981) · Cross (1977).',
@@ -387,121 +389,167 @@ export const CHARTS = {
     mountChart(container, option, opts);
   },
 
-  /* ---------- G7 · Aversión a las pérdidas — función de valor (E7) ----------
-     Réplica de aversion_referencia.jpeg pero SIN sombras bajo la curva. */
+  /* ---------- G7 · Aversión a las pérdidas — BALANZA EMOCIONAL (E7) ----------
+     Reemplaza la función de valor (con λ, poco intuitiva) por una balanza: dos
+     barras que salen del centro ($50 en juego). La de ARRIBA es la alegría de
+     ganar $50; la de ABAJO, el dolor de perder los mismos $50 → casi el doble.
+     Sin jerga ("λ"): se lee de un vistazo. Usa la asimetría real de la curva. */
   '07_aversion_perdidas'(container, data, opts) {
     const sheet = data['07_aversion_perdidas'];
     const rows = rowsToObjects(sheet);
-    const loss = '#E24B4A', gain = '#1D9E75';
-    const lossPts = rows.filter((r) => r.resultado_monetario <= 0).map((r) => [r.resultado_monetario, r.valor_subjetivo]);
-    const gainPts = rows.filter((r) => r.resultado_monetario >= 0).map((r) => [r.resultado_monetario, r.valor_subjetivo]);
-    const grid05 = 'rgba(228,234,239,0.05)';
+    const at = (m) => { const r = rows.find((x) => x.resultado_monetario === m); return r ? Math.abs(r.valor_subjetivo) : 0; };
+    const joy = at(50) || 35;          // alegría de ganar $50
+    const pain = at(-50) || 79;        // dolor de perder $50 (≈ 2,25× la alegría)
+    const lim = pain * 1.95;           // deja aire en los extremos para los rótulos
     const option = {
-      ...baseOption(loss),
-      title: titleBlock('Perder pesa más que ganar', 'Valor psicológico de cada resultado monetario · λ = 2,25'),
-      grid: { left: 8, right: 18, top: 100, bottom: 40, containLabel: true },
+      ...baseOption(GAIN),
+      title: titleBlock('Perder pesa el doble que ganar', 'Cuánto pesa, para tu cerebro, ganar o perder los mismos $50'),
+      grid: { left: 12, right: 12, top: 104, bottom: 30, containLabel: true },
       xAxis: {
-        type: 'value', min: -110, max: 110, interval: 50,
-        name: 'resultado monetario', nameLocation: 'middle', nameGap: 30, nameTextStyle: { color: INK_DIM, fontSize: 11 },
-        axisLine: { show: true, lineStyle: { color: LINE } }, axisTick: { show: false },
-        splitLine: { lineStyle: { color: grid05 } },
-        axisLabel: { color: INK_DIM, fontSize: 11, formatter: (v) => (v > 0 ? `+$${v}` : `$${v}`) },
+        type: 'value', min: -lim, max: lim,
+        axisLine: { show: false }, axisTick: { show: false }, splitLine: { show: false },
+        axisLabel: { show: false },
       },
       yAxis: {
-        type: 'value', min: -130, max: 65, interval: 30,
-        name: 'valor subjetivo', nameTextStyle: { color: INK_DIM, fontSize: 11, align: 'left' },
-        axisLine: { show: true, lineStyle: { color: LINE } }, axisTick: { show: false },
-        splitLine: { lineStyle: { color: grid05 } },
-        axisLabel: { color: INK_DIM, fontSize: 11 },
+        type: 'category', data: ['Perdés $50', 'Ganás $50'],  // índice 0 = abajo
+        axisLine: { show: false }, axisTick: { show: false }, axisLabel: { show: false },
       },
       tooltip: {
-        ...baseOption(loss).tooltip, trigger: 'axis',
-        formatter: (ps) => {
-          const p = ps[0]; const x = p.data[0], y = p.data[1];
-          const cuanto = x > 0 ? `Ganar $${x}` : x < 0 ? `Perder $${-x}` : 'Punto de referencia';
-          return `<strong>${cuanto}</strong><br>vale ${y.toFixed(0)} en valor psicológico subjetivo.`;
-        },
+        ...baseOption(GAIN).tooltip, trigger: 'item',
+        formatter: (p) => (p.dataIndex === 1
+          ? '<strong>Ganar $50</strong><br>Se siente bien… pero moderado.'
+          : '<strong>Perder $50</strong><br>Duele casi el <strong>doble</strong> de lo que alegra ganarlos.'),
       },
-      series: [
-        {
-          name: 'Pérdidas', type: 'line', smooth: true, symbol: 'none', data: lossPts,
-          lineStyle: { width: 3.5, color: loss }, z: 3,
-          markLine: { silent: true, symbol: 'none', label: { show: false }, lineStyle: { color: 'rgba(228,234,239,0.28)', width: 1 }, data: [{ xAxis: 0 }, { yAxis: 0 }] },
-          markPoint: {
-            symbolSize: 8,
-            data: [
-              { coord: [-100, lossPts[0][1]], itemStyle: { color: loss }, label: { show: true, formatter: 'PÉRDIDAS', position: 'top', color: loss, fontFamily: DISPLAY, fontWeight: 600, fontSize: 12 } },
-              { coord: [0, 0], itemStyle: { color: INK }, label: { show: true, formatter: 'marco de\nreferencia', position: 'bottom', distance: 8, color: INK_DIM, fontSize: 11, lineHeight: 13 } },
-            ],
+      series: [{
+        type: 'bar', barWidth: 44,
+        label: {
+          show: true, fontFamily: DISPLAY, fontSize: 14, lineHeight: 18,
+          rich: {
+            t: { fontFamily: DISPLAY, fontWeight: 600, fontSize: 15, color: INK, lineHeight: 19 },
+            g: { fontFamily: FONT, fontSize: 12, color: GAIN, lineHeight: 16 },
+            l: { fontFamily: FONT, fontSize: 12, color: LOSS, lineHeight: 16 },
           },
-          animationDuration: 1500, animationEasing: 'cubicOut',
         },
-        {
-          name: 'Ganancias', type: 'line', smooth: true, symbol: 'none', data: gainPts,
-          lineStyle: { width: 3.5, color: gain }, z: 3,
-          markPoint: {
-            symbolSize: 8,
-            data: [{ coord: [100, gainPts[gainPts.length - 1][1]], itemStyle: { color: gain }, label: { show: true, formatter: 'GANANCIAS', position: 'left', color: gain, fontFamily: DISPLAY, fontWeight: 600, fontSize: 12 } }],
-          },
-          animationDuration: 1500, animationEasing: 'cubicOut',
+        data: [
+          { value: -pain, itemStyle: { color: LOSS, borderRadius: [6, 0, 0, 6] },       // Perdés → izquierda
+            label: { position: 'left', formatter: '{t|Perdés $50}\n{l|casi el DOBLE de dolor}' } },
+          { value: joy, itemStyle: { color: GAIN, borderRadius: [0, 6, 6, 0] },          // Ganás → derecha
+            label: { position: 'right', formatter: '{t|Ganás $50}\n{g|la alegría de ganar}' } },
+        ],
+        markLine: {
+          silent: true, symbol: 'none',
+          lineStyle: { color: 'rgba(228,234,239,0.35)', type: 'dashed', width: 1.5 },
+          label: { show: true, fontFamily: MONO, fontSize: 11 },
+          data: [
+            { xAxis: 0, label: { position: 'insideEndTop', formatter: 'mismos $50', color: INK_DIM } },
+            // línea espejo: hasta acá el dolor sería "igual" que la alegría; la barra
+            // roja la pasa de largo → el resto es el dolor de más (lo hace el doble).
+            { xAxis: -joy, lineStyle: { color: hexA(GAIN, 0.7), type: 'dashed', width: 1.5 },
+              label: { position: 'insideEndBottom', formatter: 'igual que ganar', color: GAIN } },
+          ],
         },
-      ],
+        animationDuration: 1300, animationEasing: 'elasticOut', animationDelay: (i) => i * 220,
+      }],
     };
     mountChart(container, option, opts);
   },
 
-  /* ---------- G8 · Encuadre / framing (E8) ---------- */
+  /* ---------- G8 · Encuadre / framing (E8) — el VUELCO ----------
+     Es el MISMO plan seguro en los dos casos; lo único que cambia es si se
+     cuenta en "vidas salvadas" o en "muertes". El % que lo elige se desploma de
+     72% a 22%. Dos barras (verde = vidas / rojo = muertes) lo dejan a la vista. */
   '08_framing_enfermedad'(container, data, opts) {
     const rows = rowsToObjects(data['08_framing_enfermedad']);
-    const accent = accentOf(container);
-    const frames = ['Ganancia (vidas salvadas)', 'Pérdida (muertes)'];
-    const find = (f, o) => rows.find((r) => r.encuadre === f && r.opcion === o) || { porcentaje: 0, descripcion: '' };
-    const segura = frames.map((f) => find(f, 'Segura').porcentaje);
-    const riesgosa = frames.map((f) => find(f, 'Riesgosa').porcentaje);
+    const find = (f, o) => rows.find((r) => r.encuadre.includes(f) && r.opcion === o) || { porcentaje: 0, descripcion: '' };
+    const items = [
+      { label: 'Contado en\n«vidas salvadas»', value: find('vidas', 'Segura').porcentaje, color: GAIN, desc: find('vidas', 'Segura').descripcion },
+      { label: 'Contado en\n«muertes»', value: find('muertes', 'Segura').porcentaje, color: LOSS, desc: find('muertes', 'Segura').descripcion },
+    ];
     const option = {
-      ...baseOption(accent),
-      title: titleBlock('La misma cuenta, decisión opuesta', '% que elige la opción segura, según cómo se enuncia'),
-      grid: { left: 6, right: 16, top: 118, bottom: 30, containLabel: true },
-      legend: { data: ['Elige lo seguro', 'Prefiere arriesgar'], top: 74, textStyle: { color: INK_DIM }, icon: 'roundRect' },
-      xAxis: catAxis({ data: ['Te lo cuentan en\nvidas salvadas', 'Te lo cuentan en\nmuertes'], axisLabel: { color: INK, fontSize: 13, lineHeight: 16, interval: 0 } }),
+      ...baseOption(GAIN),
+      title: titleBlock('El mismo plan, decisión opuesta', '% que elige el plan SEGURO según cómo se cuenta el resultado'),
+      grid: { left: 6, right: 16, top: 104, bottom: 40, containLabel: true },
+      xAxis: catAxis({ data: items.map((i) => i.label), axisLabel: { color: INK, fontSize: 13, lineHeight: 17, interval: 0 } }),
       yAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
       tooltip: {
-        ...baseOption(accent).tooltip, trigger: 'axis', axisPointer: { type: 'shadow' },
-        formatter: (ps) => { const i = ps[0].dataIndex; const seg = find(frames[i], 'Segura'), rie = find(frames[i], 'Riesgosa'); return `<strong>${frames[i]}</strong><br>Seguro (${seg.descripcion}): ${seg.porcentaje}%<br>Arriesgar (${rie.descripcion}): ${rie.porcentaje}%`; },
+        ...baseOption(GAIN).tooltip, trigger: 'axis', axisPointer: { type: 'shadow' },
+        formatter: (ps) => { const it = items[ps[0].dataIndex]; return `<strong>Plan seguro</strong> · ${it.desc}<br>Lo elige el <strong>${it.value}%</strong>`; },
       },
-      series: [
-        { name: 'Elige lo seguro', type: 'bar', barWidth: '30%', data: segura, itemStyle: { color: accent, borderRadius: [4, 4, 0, 0] }, label: { show: true, position: 'top', color: INK, fontFamily: DISPLAY, fontSize: 20, fontWeight: 600, formatter: '{c}%' }, animationDuration: 1100, animationDelay: (i) => i * 150 },
-        { name: 'Prefiere arriesgar', type: 'bar', barWidth: '30%', data: riesgosa, itemStyle: { color: hexA(accent, 0.3), borderRadius: [4, 4, 0, 0] }, label: { show: true, position: 'top', color: INK_DIM, fontFamily: DISPLAY, fontSize: 14, formatter: '{c}%' }, animationDuration: 1100, animationDelay: (i) => i * 150 + 80 },
-      ],
+      series: [{
+        type: 'bar', barWidth: '42%',
+        data: items.map((i) => ({ value: i.value, itemStyle: { color: i.color, borderRadius: [6, 6, 0, 0] } })),
+        label: { show: true, position: 'top', color: INK, fontFamily: DISPLAY, fontSize: 30, fontWeight: 600, formatter: '{c}%' },
+        markLine: {
+          silent: true, symbol: ['none', 'none'],
+          lineStyle: { color: 'rgba(228,234,239,0.25)', type: 'dashed', width: 1 },
+          label: { show: true, position: 'middle', formatter: 'mismo plan', color: INK_DIM, fontFamily: MONO, fontSize: 10 },
+          data: [[{ coord: [0, items[0].value] }, { coord: [1, items[1].value] }]],
+        },
+        animationDuration: 1100, animationEasing: 'cubicOut', animationDelay: (i) => i * 220,
+      }],
     };
     mountChart(container, option, opts);
   },
 
-  /* ---------- G9 · Dunning-Kruger (E9) ---------- */
+  /* ---------- G9 · Dunning-Kruger (E9) — se DIBUJA con el scroll ----------
+     Dos líneas: lo que la gente CREE que sabe (naranja, casi plana) vs. lo que
+     REALMENTE sabe (gris, sube). A medida que bajás por la teórica, las líneas
+     AVANZAN de "Peores" a "Mejores" (container.__setProgress(p)). En los peores
+     la brecha es enorme: se creen mucho mejores de lo que son. */
   '09_dunning_kruger'(container, data, opts) {
     const rows = rowsToObjects(data['09_dunning_kruger']);
     const accent = accentOf(container);
-    const cats = rows.map((r) => r.cuartil_real);
     const real = rows.map((r) => r.competencia_real_pct);
     const self = rows.map((r) => r.autopercepcion_pct);
+    const gap = Math.round(self[0] - real[0]);
+    const labelFor = { 0: 'Peores', 1: '2º', 2: '3º', 3: 'Mejores' };
+    // Densifico los 4 cuartiles (x = 0..3) a N puntos para que la línea avance suave.
+    const N = 37;
+    const dense = (arr) => Array.from({ length: N }, (_, i) => {
+      const x = (i * 3) / (N - 1);
+      const k = Math.min(2, Math.floor(x)); const t = x - k;
+      return [x, +(arr[k] + (arr[k + 1] - arr[k]) * t).toFixed(2)];
+    });
+    const selfD = dense(self), realD = dense(real);
     const option = {
-      ...baseOption(accent),
-      title: titleBlock('Los que menos saben, más se creen', 'Habilidad real frente a la autopercepción, por cuartil'),
-      grid: { left: 10, right: 28, top: 118, bottom: 28, containLabel: true },
+      ...baseOption(accent), animation: false,
+      title: titleBlock('Los que menos saben, más se creen', 'Lo que la gente cree que sabe vs. lo que realmente sabe'),
+      grid: { left: 10, right: 72, top: 118, bottom: 30, containLabel: true },
       legend: { data: ['Lo que creen que saben', 'Lo que realmente saben'], top: 74, textStyle: { color: INK_DIM }, icon: 'roundRect' },
-      xAxis: catAxis({
-        data: cats, boundaryGap: false,
-        axisLabel: { color: INK, fontSize: 12, interval: 0, formatter: (v) => ({ 'Inferior (peores)': 'Peores', '2do cuartil': '2º', '3er cuartil': '3º', 'Superior (mejores)': 'Mejores' }[v] || v) },
-        name: 'habilidad real (peor → mejor)', nameLocation: 'middle', nameGap: 32, nameTextStyle: { color: INK_DIM, fontSize: 11 },
-      }),
-      yAxis: valAxis({ min: 0, max: 100, axisLabel: { formatter: '{value}', color: INK_DIM, fontSize: 12 }, name: 'percentil', nameTextStyle: { color: INK_DIM, fontSize: 11, align: 'left' } }),
-      tooltip: { ...baseOption(accent).tooltip, trigger: 'axis', formatter: (ps) => `<strong>${ps[0].name}</strong><br>${rows[ps[0].dataIndex].tooltip}` },
+      xAxis: {
+        type: 'value', min: 0, max: 3, interval: 1,
+        axisLine: { lineStyle: { color: LINE } }, axisTick: { show: false }, splitLine: { show: false },
+        axisLabel: { color: INK, fontSize: 12, formatter: (v) => labelFor[v] || '' },
+      },
+      yAxis: valAxis({ min: 0, max: 100, axisLabel: { formatter: '{value}', color: INK_DIM, fontSize: 12 }, name: 'nivel', nameTextStyle: { color: INK_DIM, fontSize: 11, align: 'left' } }),
+      tooltip: { ...baseOption(accent).tooltip, trigger: 'axis', formatter: (ps) => { const qi = Math.round(ps[0].data[0]); return `<strong>${labelFor[qi]}</strong><br>${rows[qi].tooltip}`; } },
       series: [
-        { name: 'Lo que creen que saben', type: 'line', smooth: true, symbolSize: 9, data: self, lineStyle: { width: 3, color: accent }, itemStyle: { color: accent, borderColor: '#0A0D10', borderWidth: 2 }, animationDuration: 1400, animationEasing: 'cubicOut' },
-        { name: 'Lo que realmente saben', type: 'line', smooth: true, symbolSize: 9, data: real, lineStyle: { width: 3, color: INK_DIM, type: 'dashed' }, itemStyle: { color: INK_DIM }, animationDuration: 1400, animationEasing: 'cubicOut' },
+        {
+          name: 'Lo que creen que saben', type: 'line', smooth: true, symbol: 'none', data: selfD,
+          lineStyle: { width: 3.5, color: accent }, z: 3,
+          endLabel: { show: true, formatter: 'CREEN', color: accent, fontFamily: DISPLAY, fontWeight: 600, fontSize: 13, distance: 8 },
+          markLine: {
+            silent: true, symbol: ['none', 'arrow'], symbolSize: 7,
+            lineStyle: { color: accent, width: 1.5, opacity: 0.6 },
+            label: { show: true, position: 'middle', formatter: `se creen\n+${gap} pts`, color: INK, fontFamily: FONT, fontSize: 11, lineHeight: 14, backgroundColor: 'rgba(10,13,16,0.85)', padding: [3, 5], borderRadius: 4 },
+            data: [[{ coord: [0, real[0]] }, { coord: [0, self[0]] }]],
+          },
+        },
+        {
+          name: 'Lo que realmente saben', type: 'line', smooth: true, symbol: 'none', data: realD,
+          lineStyle: { width: 3, color: INK_DIM, type: 'dashed' },
+          endLabel: { show: true, formatter: 'SABEN', color: INK_DIM, fontFamily: DISPLAY, fontWeight: 600, fontSize: 13, distance: 8 },
+        },
       ],
     };
-    mountChart(container, option, opts);
+    const chart = mountChart(container, option, opts);
+    let lastK = -1;
+    container.__setProgress = (p) => {
+      const k = Math.max(1, Math.round(Math.max(0, Math.min(1, p)) * (N - 1)));
+      if (k === lastK) return; lastK = k;
+      chart.setOption({ series: [{ data: selfD.slice(0, k + 1) }, { data: realD.slice(0, k + 1) }] });
+    };
+    container.__setProgress(opts.reduced ? 1 : 0.0001);
   },
 
   /* ===================== ACTO 3 · SESGOS (acento violeta) ===================== */

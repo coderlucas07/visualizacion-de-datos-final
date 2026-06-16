@@ -363,7 +363,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   text-transform: uppercase; letter-spacing: 0.1em;
   font-size: clamp(1.9rem, 1.2rem + 3.6vw, 4.4rem);
   color: var(--ink); margin: 0;
-  text-shadow: 0 0 50px rgba(143, 216, 255, 0.25);
+  text-shadow: 0 0 55px var(--accent-soft);   /* glow del color de cada módulo */
 }
 .portal__sub {
   font-family: var(--font-display); font-style: italic;
@@ -871,20 +871,47 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   color: var(--ink); margin-top: 1.5rem;
 }
 
-/* Bate + pelota (E6) — ilustración basada en la foto de referencia */
-.batball { width: min(34vw, 420px); margin: 0 auto 1.6rem; }
-.batball svg { width: 100%; height: auto; display: block; }
+/* Bate + pelota (E6) — foto real en tarjeta de papel, completa y nítida */
+.batball-photo { width: min(32vw, 360px); margin: 0 auto 1.6rem; }
+.batball-photo img { width: 100%; height: auto; display: block; }
 
 /* Apuesta de la moneda (E7) */
 .gamble__row {
   display: flex; justify-content: space-between; align-items: baseline;
-  gap: 1.5rem; width: min(17rem, 80%); margin: 0.6rem auto;
-  padding-bottom: 0.45rem; border-bottom: 1px solid var(--line);
-  font-family: var(--font-display); font-size: 1.45rem; color: var(--ink);
+  gap: 1.2rem; width: min(22rem, 88%); margin: 0.7rem auto;
+  padding-bottom: 0.5rem; border-bottom: 1px solid var(--line);
+  font-family: var(--font-display); font-size: clamp(1.15rem, 1rem + 0.6vw, 1.45rem); color: var(--ink);
 }
-.gamble__row span { font-weight: 600; font-variant-numeric: tabular-nums; }
+.gamble__row small { font-family: var(--font-mono); font-size: 0.66em; color: var(--ink-dim); letter-spacing: 0.04em; }
+.gamble__row span { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .gamble__row--win span { color: var(--gain); }
 .gamble__row--lose span { color: var(--loss); }
+
+/* Planteo grande del encuadre (E8): el problema y los dos planes, a la derecha */
+.statement--framing { max-width: 30rem; }
+.framing-head {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2.4rem); line-height: 1.12;
+  color: var(--ink); margin: 0 0 1.4rem;
+}
+.framing-head strong { color: var(--accent); }
+.plan-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin: 0 auto; text-align: left; }
+.plan-card {
+  border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 1.1rem 1rem; background: rgba(228, 234, 239, 0.025);
+}
+.plan-card__tag {
+  font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 0.5rem;
+}
+.plan-card__txt { font-size: clamp(0.98rem, 0.9rem + 0.35vw, 1.18rem); color: var(--ink); margin: 0; line-height: 1.4; }
+.plan-card__txt strong { color: var(--ink); }
+.framing-foot {
+  font-family: var(--font-display); font-style: italic;
+  font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.35rem);
+  color: var(--ink-dim); margin: 1.3rem auto 0;
+}
+.framing-foot strong { color: var(--ink); font-style: normal; }
 
 /* Bifurcación del encuadre (E8): mismo resultado, dos formas de contarlo */
 .framing-fork { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin: 1.4rem auto; max-width: 30rem; }

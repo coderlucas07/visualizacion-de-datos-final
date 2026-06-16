@@ -34,6 +34,7 @@ let e3Img = null, e3Step = null, e3TitleCard = null, e3TitleStep = null, e3Final
 let e3bSec = null, waffleEl = null, e3CountEl = null;
 let fmEl = null, e4FmStep = null;
 let e5Sec = null, gorilaStatEl = null;
+let e9Sec = null, dkEl = null;
 
 const state = { first: null, e2rotate: true, e1answered: false };
 const progressBar = document.getElementById('progressBar');
@@ -77,7 +78,7 @@ async function loadData() {
    hereda el celeste global #8FD8FF (el mismo azul del título de portada). */
 function setupModuleColors() {
   const mods = {
-    '#2563EB': ['portal2', 'e6', 'e7', 'e8', 'e9'],                      // Decisión
+    '#F7943D': ['portal2', 'e6', 'e7', 'e8', 'e9'],                      // Decisión (naranja cálido)
     '#E11D48': ['portal3', 'sesgos-intro', 'e10', 'e11', 'e12', 'e13', 'cierre'],  // Sesgos
   };
   const soft = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`; };
@@ -496,15 +497,16 @@ function setupInteractions() {
     }));
   }
 
-  // E6 (bate y pelota): elegir un precio marca el botón y auto-avanza al gráfico.
-  const e6 = document.getElementById('e6');
-  if (e6) {
-    const btns = e6.querySelectorAll('[data-choice]');
+  // E6 (bate), E7 (apuesta) y E8 (framing): elegir marca el botón y auto-avanza.
+  ['e6', 'e7', 'e8'].forEach((id) => {
+    const sec = document.getElementById(id);
+    if (!sec) return;
+    const btns = sec.querySelectorAll('[data-choice]');
     btns.forEach((b) => b.addEventListener('click', () => {
       btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
       scrollToNextStep(b);
     }));
-  }
+  });
 }
 
 /* Lleva suavemente al siguiente paso (no hace falta scrollear a mano). */
@@ -571,6 +573,8 @@ function cacheScrubRefs() {
   e4FmStep = document.querySelector('#e4 .step[data-layer="1"]');
   e5Sec = document.getElementById('e5');
   gorilaStatEl = document.querySelector('#e5 [data-chart="05_cierre_percepcion"]');
+  e9Sec = document.getElementById('e9');
+  dkEl = document.querySelector('#e9 [data-chart="09_dunning_kruger"]');
 }
 
 /* ----------------------------- Motor de scroll ----------------------------- */
@@ -668,6 +672,13 @@ function tick() {
   if (!REDUCED && gorilaStatEl && gorilaStatEl.__setGorila && e5Sec) {
     const p = clamp((sectionProgress(e5Sec) - 0.06) / 0.5);
     gorilaStatEl.__setGorila(easeOut(p));
+  }
+
+  // E9 (Dunning-Kruger): la línea avanza de "Peores" a "Mejores" a medida que
+  // bajás por la teórica (el scroll dibuja el gráfico).
+  if (!REDUCED && dkEl && dkEl.__setProgress && e9Sec) {
+    const p = clamp((sectionProgress(e9Sec) - 0.05) / 0.7);
+    dkEl.__setProgress(p);
   }
 }
 

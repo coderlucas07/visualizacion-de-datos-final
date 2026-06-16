@@ -403,12 +403,12 @@
           <div class="portal__head-in">
             <p class="portal__kicker">Módulo II</p>
             <h2 class="portal__name">Decisión</h2>
-            <p class="portal__sub">Creés que pensás cada elección. Casi nunca.</p>
+            <p class="portal__sub">El mismo cerebro que armó lo que veías ahora elige por vos.</p>
           </div>
         </div>
         <div class="portal__dot" aria-hidden="true"></div>
         <div class="portal__after">
-          <p>Elegís con <em>atajos</em> —y los atajos se pueden empujar.</p>
+          <p>Lo que viste lo <em>construyó</em> tu cerebro. ¿Pasa lo mismo con tus <em>decisiones</em>?</p>
         </div>
       </div>
     </section>
@@ -419,30 +419,13 @@
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
             <div class="statement">
-              <p class="statement__eyebrow" id="e6-h">Un atajo que casi nunca falla</p>
-              <div class="batball" aria-hidden="true">
-                <svg viewBox="0 0 480 300" fill="none">
-                  <!-- Bate de madera: mango fino abajo-izq, barril grueso arriba-der -->
-                  <g transform="translate(60 232) rotate(-29)">
-                    <path d="M0 -8 C-14 -8 -14 8 0 8 L26 7 C150 2 290 -6 420 -14 C452 -16 452 -54 420 -56 C290 -48 150 -42 26 -37 L0 -38 C-2 -28 -2 -18 0 -8 Z"
-                          fill="#C9B488" stroke="#85714A" stroke-width="2.5" stroke-linejoin="round" />
-                    <path d="M30 6 C150 1 290 -7 420 -15 C448 -17 448 -34 430 -37 C300 -29 160 -23 32 -19 Z" fill="#A8915F" opacity="0.45" />
-                    <ellipse cx="-7" cy="0" rx="9" ry="13" fill="#BFA976" stroke="#85714A" stroke-width="2.5" />
-                    <path d="M42 -34 v40 M54 -35 v42" stroke="#85714A" stroke-width="2" opacity="0.8" />
-                  </g>
-                  <!-- Pelota de béisbol con costuras rojas -->
-                  <circle cx="250" cy="208" r="50" fill="#F2EFE8" stroke="#CFC8B8" stroke-width="2" />
-                  <path d="M216 170 q26 38 0 76" fill="none" stroke="#D14B3C" stroke-width="2.6" />
-                  <path d="M284 170 q-26 38 0 76" fill="none" stroke="#D14B3C" stroke-width="2.6" />
-                  <g stroke="#D14B3C" stroke-width="1.6">
-                    <path d="M222 178 l8 5 M220 190 l9 4 M219 202 l9 3 M220 214 l9 -2 M223 226 l8 -5" />
-                    <path d="M278 178 l-8 5 M280 190 l-9 4 M281 202 l-9 3 M280 214 l-9 -2 M277 226 l-8 -5" />
-                  </g>
-                </svg>
-              </div>
-              <p class="statement__line">Un bate y una pelota cuestan <strong>$1,10</strong>.</p>
+              <figure class="batball-photo figure-card">
+                <img src="./assets/bate_pelota.jpeg"
+                     alt="Un bate de béisbol de madera junto a una pelota blanca con costuras rojas." />
+              </figure>
+              <p class="statement__line">Un bate y una pelota cuestan <strong>$1,10</strong> en total.</p>
               <p class="statement__line">El bate cuesta <strong>$1 más</strong> que la pelota.</p>
-              <p class="statement__q">¿Cuánto cuesta la pelota?</p>
+              <p class="statement__q" id="e6-h">¿Cuánto cuesta la pelota?</p>
             </div>
           </div>
           <div class="viz__layer" data-layer="1">
@@ -454,7 +437,8 @@
         <div class="step is-active" data-layer="0">
           <div class="step__card">
             <p class="kicker">Tercera prueba</p>
-            <p class="lede">Respondé rápido, sin lápiz ni papel: ¿cuánto cuesta la pelota?</p>
+            <h3>Respondé sin pensarlo.</h3>
+            <p class="lede">Rápido, sin lápiz ni papel. Mirá el problema de al lado y elegí lo primero que te salga:</p>
             <div class="choices" role="group" aria-label="¿Cuánto cuesta la pelota?">
               <button class="choice" data-choice="010" aria-pressed="false"><span>$0,10</span></button>
               <button class="choice" data-choice="005" aria-pressed="false"><span>$0,05</span></button>
@@ -464,8 +448,8 @@
         </div>
         <div class="step" data-layer="1">
           <div class="step__card">
-            <p class="lede">Si pensaste $0,10, te pasó lo mismo que a la mayoría. Está mal: la pelota cuesta <strong>$0,05</strong>.</p>
-            <p class="muted">Respondió tu <strong>Sistema 1</strong> —rápido, automático, intuitivo—; el <strong>Sistema 2</strong>, lento y analítico, ni se molestó en revisar. Pensar cuesta energía, y el cerebro ahorra.</p>
+            <p class="lede">Si pensaste <strong>$0,10</strong>, te pasó lo mismo que a la mayoría. Está mal: la pelota cuesta <strong>$0,05</strong>.</p>
+            <p class="muted">Es que tu cabeza tiene <strong>dos motores</strong>: uno <strong>rápido y automático</strong> (el Sistema 1) y otro <strong>lento y analítico</strong> (el Sistema 2). Como pensar gasta energía, contestó el rápido… y el lento ni se molestó en revisar.</p>
           </div>
         </div>
       </div>
@@ -477,36 +461,39 @@
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
             <div class="statement gamble">
-              <p class="statement__eyebrow" id="e7-h">Tiro una moneda</p>
-              <p class="gamble__row gamble__row--win">Sale cara <span>+$50</span></p>
-              <p class="gamble__row gamble__row--lose">Sale ceca <span>−$50</span></p>
-              <p class="statement__q">¿Aceptás el juego?</p>
+              <p class="statement__eyebrow" id="e7-h">Una moneda al aire</p>
+              <p class="gamble__row gamble__row--win">Sale <strong>cara</strong> <small>(50%)</small> → ganás <span>+$50</span></p>
+              <p class="gamble__row gamble__row--lose">Sale <strong>ceca</strong> <small>(50%)</small> → perdés <span>−$50</span></p>
+              <p class="statement__q">¿Aceptás jugar?</p>
             </div>
           </div>
           <div class="viz__layer" data-layer="1">
-            <div class="viz__chart"><div class="chart" data-chart="07_aversion_perdidas" role="img" aria-label="La rama de pérdidas cae más rápido de lo que sube la de ganancias: perder pesa 2,25 veces más."></div></div>
+            <div class="viz__chart"><div class="chart" data-chart="07_aversion_perdidas" role="img" aria-label="El dolor de perder $50 es casi el doble que la alegría de ganar los mismos $50."></div></div>
           </div>
         </div>
       </div>
       <div class="scrolly__steps">
         <div class="step is-active" data-layer="0">
           <div class="step__card">
-            <p class="kicker">Ahora, un juego</p>
-            <h3>Una apuesta simple.</h3>
-            <p class="lede">Tiro una moneda. Cara o ceca, ganás o perdés lo mismo. Mirá las reglas de al lado y decidí: ¿aceptás?</p>
+            <p class="kicker">Cuarta prueba</p>
+            <h3>Una apuesta justa.</h3>
+            <p class="lede">Tiramos una moneda. Misma chance de ganar $50 que de perderlos. Decidí:</p>
+            <div class="choices" role="group" aria-label="¿Aceptás la apuesta?">
+              <button class="choice" data-choice="acepto" aria-pressed="false"><span>Acepto</span></button>
+              <button class="choice" data-choice="no" aria-pressed="false"><span>No juego</span></button>
+            </div>
           </div>
         </div>
         <div class="step" data-layer="1">
           <div class="step__card">
-            <p class="lede">Casi nadie acepta. Para tu cerebro, el juego no es justo.</p>
-            <p class="muted">La rama de las pérdidas se hunde más rápido de lo que sube la de las ganancias.</p>
+            <p class="lede">Casi nadie acepta —y vos probablemente tampoco. La apuesta es <strong>justa</strong>, pero no se <em>siente</em> justa.</p>
+            <p class="muted">Mirá el gráfico: ganar y perder los mismos $50 no pesan igual en tu cabeza.</p>
           </div>
         </div>
         <div class="step" data-layer="1">
           <div class="step__card">
-            <p class="kicker">Aversión a las pérdidas</p>
-            <p class="stat-line"><span class="stat-line__num">λ = 2,25×</span></p>
-            <p class="muted">Perder $50 duele 2,25 veces más de lo que alegra ganarlos. Se llama <strong>aversión a las pérdidas</strong>: el sistema que grita ante una pérdida (amígdala, ínsula) le gana al de la recompensa.</p>
+            <p class="lede">Perder $50 <strong>duele casi el doble</strong> de lo que alegra ganarlos.</p>
+            <p class="muted">Se llama <strong>aversión a las pérdidas</strong>: el sistema rápido que se asusta ante una pérdida (la amígdala, el miedo) le gana al que celebra una ganancia. Por eso una apuesta 50 y 50 se siente como un mal negocio.</p>
           </div>
         </div>
       </div>
@@ -517,33 +504,49 @@
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
-            <div class="statement">
-              <p class="statement__eyebrow" id="e8-h">Un brote amenaza a 600 personas</p>
-              <p class="statement__line">Hay que elegir un plan. El resultado es el mismo… pero te lo cuento de dos formas:</p>
-              <div class="framing-fork">
-                <div class="framing-opt framing-opt--gain"><span>Te lo cuento en</span><b>vidas salvadas</b></div>
-                <div class="framing-opt framing-opt--loss"><span>Te lo cuento en</span><b>muertes</b></div>
+            <div class="statement statement--framing">
+              <p class="statement__eyebrow" id="e8-h">Sos quien decide</p>
+              <p class="framing-head">Una enfermedad amenaza a<br /><strong>600 personas</strong>.</p>
+              <div class="plan-cards">
+                <div class="plan-card">
+                  <span class="plan-card__tag">Plan A</span>
+                  <p class="plan-card__txt">Se salvan <strong>200 personas</strong>, seguro.</p>
+                </div>
+                <div class="plan-card">
+                  <span class="plan-card__tag">Plan B</span>
+                  <p class="plan-card__txt">Una moneda: <strong>1 de cada 3 veces</strong> se salvan las 600; las otras <strong>2 de 3</strong>, no se salva nadie.</p>
+                </div>
               </div>
-              <p class="statement__q">¿Cambia lo que elegís?</p>
             </div>
           </div>
           <div class="viz__layer" data-layer="1">
-            <div class="viz__chart"><div class="chart" data-chart="08_framing_enfermedad" role="img" aria-label="En vidas salvadas 72% elige lo seguro; en muertes, solo 22%."></div></div>
+            <div class="viz__chart"><div class="chart" data-chart="08_framing_enfermedad" role="img" aria-label="Contado en vidas salvadas, 72% elige el plan seguro; contado en muertes, solo 22%."></div></div>
           </div>
         </div>
       </div>
       <div class="scrolly__steps">
         <div class="step is-active" data-layer="0">
           <div class="step__card">
-            <p class="kicker">El encuadre</p>
-            <h3>Una enfermedad amenaza a 600 personas.</h3>
-            <p class="lede">Tenés que elegir un plan para enfrentarla. Lo único que va a cambiar es <em>cómo te lo cuento</em>.</p>
+            <p class="kicker">Quinta prueba</p>
+            <h3>Tu tarea: elegir un plan.</h3>
+            <p class="lede">Leé los dos planes de al lado y elegí el que te parezca mejor:</p>
+            <div class="choices" role="group" aria-label="¿Qué plan elegís?">
+              <button class="choice" data-choice="A" aria-pressed="false"><span>Plan A</span></button>
+              <button class="choice" data-choice="B" aria-pressed="false"><span>Plan B</span></button>
+            </div>
           </div>
         </div>
         <div class="step" data-layer="1">
           <div class="step__card">
-            <p class="lede">Contado en <strong>vidas salvadas</strong>, elegís lo seguro. En <strong>muertes</strong> —lo mismo— te arriesgás.</p>
-            <p class="muted">Es el pato-conejo otra vez: el mismo estímulo, leído distinto según el contexto.</p>
+            <p class="kicker">Acá está el truco</p>
+            <p class="lede">A la mitad de la gente le conté esos mismos planes hablando de <strong>vidas salvadas</strong>. A la otra mitad, de <strong>muertes</strong>.</p>
+            <p class="muted">Mismos planes, mismos números. Lo único distinto fue la palabra.</p>
+          </div>
+        </div>
+        <div class="step" data-layer="1">
+          <div class="step__card">
+            <p class="lede">Y la palabra dio vuelta la decisión: contado en <strong>vidas</strong>, el 72% eligió el plan seguro; contado en <strong>muertes</strong>, solo el 22%.</p>
+            <p class="muted">¿Por qué? Por lo que ya viste con la moneda: <strong>perder pesa más</strong>. Dicho en muertes, el plan seguro suena a una pérdida fija —400 muertos— y, con tal de esquivarla, la gente se anima a arriesgar. La misma aversión a las pérdidas, ahora decidiendo vidas.</p>
           </div>
         </div>
       </div>
@@ -561,14 +564,21 @@
       <div class="scrolly__steps">
         <div class="step is-active" data-layer="0">
           <div class="step__card">
-            <h2 id="e9-h">Los que menos saben,<br />más seguros están.</h2>
-            <p class="lede">No les alcanza la habilidad ni para darse cuenta de lo que les falta.</p>
+            <p class="kicker">Para cerrar el módulo</p>
+            <h2 id="e9-h">¿Y cuánto te das cuenta<br />de lo que no sabés?</h2>
+            <p class="lede">Te hicimos decidir un precio, una apuesta y un plan. Falta una pregunta: ¿qué tan bien medís tu propia cabeza? En un test, a la gente se le comparó <strong>lo que cree que sabe</strong> con <strong>lo que realmente sabe</strong>.</p>
           </div>
         </div>
         <div class="step" data-layer="0">
           <div class="step__card">
-            <p class="lede">Y los mejores se subestiman.</p>
-            <p class="muted">Es <em>la misma curva de la confianza</em> que ya viste. Esa seguridad de más es, justo, la palanca que en el próximo tramo alguien va a aprovechar.</p>
+            <p class="lede">Mirá la línea naranja: casi no se mueve. <strong>Todos se creen parecido de buenos</strong>, sepan mucho o poco.</p>
+            <p class="muted">Por eso los <strong>peores</strong> (a la izquierda) se creen muchísimo mejores de lo que son: no les alcanza la habilidad ni para darse cuenta de lo que les falta.</p>
+          </div>
+        </div>
+        <div class="step" data-layer="0">
+          <div class="step__card">
+            <p class="lede">Y los <strong>mejores</strong> (a la derecha) se subestiman.</p>
+            <p class="muted">La seguridad no acompaña a la habilidad. Esa confianza de más es, justo, la palanca que en el próximo módulo alguien va a aprovechar.</p>
           </div>
         </div>
       </div>
