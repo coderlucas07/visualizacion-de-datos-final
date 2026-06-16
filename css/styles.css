@@ -198,6 +198,18 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
     radial-gradient(18% 22% at 90% 83%, rgba(4, 6, 8, 0.75), transparent 72%),
     radial-gradient(135% 135% at 50% 40%, transparent 52%, rgba(4, 6, 8, 0.6) 100%);
 }
+/* Máscara del watermark de Gemini (abajo-derecha del video): disco oscuro con
+   feather, siempre presente. El JS (placeReplay) lo planta sobre el sparkle con
+   la misma cuenta de object-fit:cover, así tapa el logo en cualquier pantalla. */
+.cover__patch {
+  position: absolute; z-index: 4; pointer-events: none;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle,
+    #06080B 0 42%,
+    rgba(6, 8, 11, 0.96) 58%,
+    rgba(6, 8, 11, 0) 80%);
+}
 /* Fundido a negro del final (la opacidad la maneja el JS) */
 .cover__dark {
   position: absolute; inset: 0; z-index: 3;
@@ -323,6 +335,13 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .portal__sticky {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
   background: var(--bg);
+}
+/* Portal 1 (Percepción): sin espiral, solo el título. Ocupa UN viewport (sin
+   scroll vacío de más): se pasa de largo como cualquier pantalla. */
+.portal--plain { height: 100vh; }
+.portal--plain .portal__sticky { position: relative; }
+.portal__head--static {
+  position: absolute; inset: 0; opacity: 1; transform: none;
 }
 .portal__canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
 .portal__head {
@@ -735,33 +754,38 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .flip-figure { width: 100%; margin: 0; position: relative; }
 .figure-card img { width: 100%; display: block; }
 
-/* E2 — la figura gira con el scroll. Las marcas viven DENTRO de la figura
-   (coordenadas en % de la imagen) y giran con ella; el texto del rótulo se
-   contra-rota para quedar siempre horizontal. */
-#e2 .viz__media { width: min(44vh, 60%); }
+/* E2 — la figura gira con el scroll. Los PUNTOS marcan la anatomía (coords en
+   % de la imagen) y giran con ella; los RÓTULOS viven en el wrapper (no rotan)
+   y se ubican FUERA del recuadro de la figura para no taparla. */
+.e2-figwrap { position: relative; width: min(44vh, 60%); }
+#e2 .viz__media { width: 100%; }
 #e2 .flip-figure { transition: transform 0.1s linear; transform: rotate(var(--rot, 0deg)); transform-origin: center; }
 .annot {
   position: absolute;
-  width: 10px; height: 10px; border-radius: 50%;
+  width: 11px; height: 11px; border-radius: 50%;
   background: var(--accent);
   box-shadow: 0 0 0 3px rgba(143, 216, 255, 0.25);
   transform: translate(-50%, -50%);
   opacity: 0;
   transition: opacity 0.5s var(--ease);
 }
-.annot::after {
-  content: attr(data-label);
-  position: absolute; left: 50%; bottom: 26px;
-  transform: translateX(-50%) rotate(calc(-1 * var(--rot, 0deg)));
+/* Rótulo fuera de la figura (posición la pone el JS según el rasgo) */
+.annot-label {
+  position: absolute; z-index: 3;
   background: rgba(10, 13, 16, 0.92);
   color: var(--ink);
   border: 1px solid var(--accent);
   border-radius: 999px;
-  padding: 0.28rem 0.75rem;
-  font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.05em;
+  padding: 0.3rem 0.8rem;
+  font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.04em;
   white-space: nowrap;
+  opacity: 0; transform: translateY(4px);
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+  pointer-events: none;
 }
-#e2.cues-on .annot { opacity: 1; }
+#e2.cues-on .annot,
+#e2.cues-on .annot-label { opacity: 1; transform: none; }
+#e2.cues-on .annot { transform: translate(-50%, -50%); }
 
 /* ----------------------------- Onda de audio (E4) ----------------------------- */
 .audio-stage { display: flex; flex-direction: column; align-items: center; gap: 2.2rem; }
@@ -871,6 +895,48 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .framing-opt--gain b { color: var(--gain); }
 .framing-opt--loss { border-color: rgba(229, 72, 77, 0.5); }
 .framing-opt--loss b { color: var(--loss); }
+
+/* ----------------------------- Gorila / ceguera atencional (E5) -----------------------------
+   Anillo que se llena con el scroll + número que cuenta de 0% al 50%. */
+.gorilla { text-align: center; max-width: 34rem; padding: 0 1rem; display: grid; justify-items: center; gap: 1.6rem; }
+.gorilla__title {
+  font-family: var(--font-display); font-weight: 600; font-size: clamp(1.4rem, 1.1rem + 1.4vw, 2.1rem);
+  color: var(--ink); margin: 0;
+}
+.gorilla__ring {
+  position: relative;
+  width: min(58vw, 320px); aspect-ratio: 1;
+  border-radius: 50%;
+  /* el sector lleno (var --deg) va en acento; el resto, tenue */
+  background:
+    conic-gradient(var(--accent) 0 var(--deg, 0deg), rgba(228,234,239,0.10) var(--deg, 0deg) 360deg);
+  display: grid; place-items: center;
+  transition: filter 0.4s var(--ease);
+}
+/* agujero del anillo (dona) */
+.gorilla__ring::before {
+  content: ''; position: absolute; inset: 16%;
+  background: var(--bg); border-radius: 50%;
+}
+.gorilla__icon {
+  position: absolute; z-index: 0;
+  width: 46%; height: 46%;
+  color: var(--ink); opacity: 0.08;
+}
+.gorilla__num {
+  position: relative; z-index: 1;
+  font-family: var(--font-display); font-weight: 600;
+  font-size: clamp(3rem, 2rem + 5vw, 5rem); line-height: 1;
+  color: var(--ink); font-variant-numeric: tabular-nums;
+}
+.gorilla__lbl {
+  position: relative; z-index: 1;
+  font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--ink-dim); margin-top: 0.5rem;
+}
+.gorilla.is-full { filter: drop-shadow(0 0 26px var(--accent-soft)); }
+.gorilla.is-full .gorilla__num { color: var(--accent); }
+.gorilla__cap { color: var(--ink-dim); font-size: 1rem; max-width: 32ch; margin: 0; }
 
 /* ----------------------------- Forer / Barnum (E11) ----------------------------- */
 .reading { max-width: 40rem; padding: 0 1rem; }

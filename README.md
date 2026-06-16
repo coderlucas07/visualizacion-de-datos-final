@@ -36,11 +36,13 @@ Detalle escena por escena y convenciones: en [`CLAUDE.md`](CLAUDE.md).
 Necesita un server estático (el `fetch` del JSON no funciona con `file://`):
 
 ```bash
-# Mac / Linux
-python3 -m http.server 8000
-#   (en Windows: python -m http.server 8000)
+# Server SIN CACHÉ (recomendado): cada reload normal trae el último CSS/JS
+python3 serve.py            # → http://localhost:8000
+python3 serve.py 8090       # otro puerto si el 8000 está ocupado
 ```
-Abrir **http://localhost:8000** y refrescar con **Cmd/Ctrl + Shift + R** después de cada cambio.
+Abrir **http://localhost:8000**. Con `serve.py` alcanza un **reload normal** (Cmd/Ctrl + R)
+después de cada cambio: no hace falta levantar un server nuevo ni hacer hard-reload.
+(Evitá `python -m http.server`: cachea CSS/JS viejos y parece que los cambios "no se aplican".)
 
 ---
 

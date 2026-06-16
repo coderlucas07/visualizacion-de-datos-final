@@ -33,6 +33,7 @@ let e2Sec = null, e2Fig = null, e2Step = null;
 let e3Img = null, e3Step = null, e3TitleCard = null, e3TitleStep = null, e3FinalCard = null;
 let e3bSec = null, waffleEl = null, e3CountEl = null;
 let fmEl = null, e4FmStep = null;
+let e5Sec = null, gorilaStatEl = null;
 
 const state = { first: null, e2rotate: true, e1answered: false };
 const progressBar = document.getElementById('progressBar');
@@ -70,13 +71,12 @@ async function loadData() {
 }
 
 /* ----------------------------- Color por módulo -----------------------------
-   Cada módulo tiene su acento: percepción púrpura, decisión azul cobalto,
-   sesgos carmesí. Se setea --accent en cada sección ANTES de que los gráficos
-   se inicialicen, así charts.js (accentOf) lo hereda solo. La portada (video)
-   queda con su celeste propio. */
+   Cada módulo tiene su acento: decisión azul cobalto, sesgos carmesí. Se setea
+   --accent en cada sección ANTES de que los gráficos se inicialicen, así
+   charts.js (accentOf) lo hereda solo. PERCEPCIÓN no se setea acá a propósito:
+   hereda el celeste global #8FD8FF (el mismo azul del título de portada). */
 function setupModuleColors() {
   const mods = {
-    '#9333EA': ['portal1', 'e1', 'e2', 'e3', 'e3b', 'e4', 'gorila', 'e5'],  // Percepción
     '#2563EB': ['portal2', 'e6', 'e7', 'e8', 'e9'],                      // Decisión
     '#E11D48': ['portal3', 'sesgos-intro', 'e10', 'e11', 'e12', 'e13', 'cierre'],  // Sesgos
   };
@@ -207,6 +207,7 @@ function setupCover() {
   const video = document.getElementById('coverVideo');
   const dark = document.getElementById('coverDark');
   const replay = document.getElementById('coverReplay');
+  const patch = document.getElementById('coverPatch');
   if (!coverEl || !video) return;
 
   const SCRUB_END = 0.74;  // fracción de la sección en la que el video completa
@@ -311,17 +312,26 @@ function setupCover() {
   // El sparkle está centrado en (1743, 902) del frame de 1920×1080; acá se
   // replica la cuenta del object-fit: cover para cualquier pantalla.
   const placeReplay = () => {
-    if (!replay) return;
     const vw = window.innerWidth, vh = window.innerHeight;
     const s = Math.max(vw / 1920, vh / 1080);
     const x = 1743 * s - (1920 * s - vw) / 2;
     const y = 902 * s - (1080 * s - vh) / 2;
     const d = Math.round(Math.max(64, 92 * s)); // el sparkle mide ~80px @1080p; el disco lo tapa entero
-    replay.style.left = x.toFixed(0) + 'px';
-    replay.style.top = y.toFixed(0) + 'px';
-    replay.style.right = 'auto';
-    replay.style.bottom = 'auto';
-    replay.style.width = replay.style.height = d + 'px';
+    if (replay) {
+      replay.style.left = x.toFixed(0) + 'px';
+      replay.style.top = y.toFixed(0) + 'px';
+      replay.style.right = 'auto';
+      replay.style.bottom = 'auto';
+      replay.style.width = replay.style.height = d + 'px';
+    }
+    // La máscara del watermark va en el mismo centro, más grande y con feather:
+    // tapa el logo de Gemini SIEMPRE (no solo cuando aparece el botón ↺).
+    if (patch) {
+      const pd = Math.round(d * 2.3);
+      patch.style.left = x.toFixed(0) + 'px';
+      patch.style.top = y.toFixed(0) + 'px';
+      patch.style.width = patch.style.height = pd + 'px';
+    }
   };
   placeReplay();
   window.addEventListener('resize', placeReplay);
@@ -516,26 +526,28 @@ function configureE2(firstChoice) {
   const ledeEl = document.querySelector('#e2 [data-e2-lede]');
   const a1 = document.getElementById('e2Annot1');
   const a2 = document.getElementById('e2Annot2');
-  if (!titleEl || !ledeEl || !a1 || !a2) return;
+  const l1 = document.getElementById('e2Label1');
+  const l2 = document.getElementById('e2Label2');
+  if (!titleEl || !ledeEl || !a1 || !a2 || !l1 || !l2) return;
   const target = firstChoice === 'conejo' ? 'pato' : 'conejo';
   state.e2rotate = target === 'conejo';
 
-  const place = (el, label, left, top) => {
-    el.dataset.label = label;
-    el.style.left = left + '%';
-    el.style.top = top + '%';
-  };
+  // El punto marca la anatomía (en % de la imagen, gira con ella).
+  const dot = (el, left, top) => { el.style.left = left + '%'; el.style.top = top + '%'; };
+  // El rótulo va FUERA del recuadro de la figura (no rota): se ubica por bordes
+  // del wrapper y trae una flecha que apunta hacia adentro.
+  const label = (el, text, css) => { el.textContent = text; el.removeAttribute('style'); Object.assign(el.style, css); };
 
   if (target === 'conejo') {
     titleEl.textContent = 'Dale vuelta la cabeza.';
-    ledeEl.innerHTML = 'Seguí bajando: la figura gira. Eso que era un pico ahora son <strong>dos orejas</strong>. ¿Aparece el conejo?';
-    place(a1, 'las orejas', 20, 22);
-    place(a2, 'el hocico', 92, 51);
+    ledeEl.innerHTML = 'Seguí bajando: la figura gira. Eso que era un pico ahora son <strong>dos orejas</strong>, y atrás aparece el <strong>hocico</strong>. ¿Ves el conejo?';
+    dot(a1, 20, 22);   label(l1, 'las orejas ↘', { left: '-6%', bottom: '110%' });
+    dot(a2, 92, 51);   label(l2, '↑ el hocico',  { left: '46%', top: '112%' });
   } else {
     titleEl.textContent = 'Mirá otra vez.';
-    ledeEl.innerHTML = 'Eso que parecían orejas es un <strong>pico</strong>, y el ojo mira hacia el agua. ¿Aparece el pato?';
-    place(a1, 'el pico', 20, 22);
-    place(a2, 'el ojo', 68.5, 30);
+    ledeEl.innerHTML = 'Eso que parecían <strong>orejas</strong> es un <strong>pico</strong>, y el ojo mira hacia el agua. ¿Aparece el pato?';
+    dot(a1, 20, 22);     label(l1, 'el pico ↘', { left: '-6%', bottom: '110%' });
+    dot(a2, 68.5, 30);   label(l2, 'el ojo ↓',  { left: '62%', bottom: '110%' });
   }
 }
 
@@ -557,6 +569,8 @@ function cacheScrubRefs() {
   e3CountEl = document.getElementById('e3Count');
   fmEl = document.querySelector('#e4 [data-chart="04_ilusion_auditiva"]');
   e4FmStep = document.querySelector('#e4 .step[data-layer="1"]');
+  e5Sec = document.getElementById('e5');
+  gorilaStatEl = document.querySelector('#e5 [data-chart="05_cierre_percepcion"]');
 }
 
 /* ----------------------------- Motor de scroll ----------------------------- */
@@ -628,10 +642,11 @@ function tick() {
   }
   if (e3Img && e3Step && !REDUCED) {
     const raw = stepScrub(e3Step);
-    // Mantiene el zoom máximo el primer tramo (estás ADENTRO del círculo,
-    // todo rosa) y recién después suelta; el deszoom termina al 80% del paso.
+    // Deszoom suave que NO pixela: el PNG es 3840px; magnificarlo 200× (como
+    // antes) lo serruchaba. Tope ~3× (por debajo del umbral de upscaling),
+    // así la imagen se mantiene nítida en TODO el recorrido.
     const p = clamp((raw - 0.16) / 0.64);
-    const z = 1 + 200 * Math.pow(1 - p, 3);   // 120× adentro del círculo → 1× final
+    const z = 1 + 2 * Math.pow(1 - p, 2);   // ~3× (zoom suave) → 1× final, sin pixelar
     e3Img.style.setProperty('--snake-zoom', z.toFixed(3));
     // El texto final aparece SOLO con la imagen ya en su tamaño mínimo.
     if (e3FinalCard) e3FinalCard.style.opacity = clamp((raw - 0.84) / 0.1).toFixed(3);
@@ -647,6 +662,12 @@ function tick() {
   // E4 (onda FM): las ondas se alargan a medida que scrolleás el resultado
   if (!REDUCED && fmEl && fmEl.__setFM && e4FmStep) {
     fmEl.__setFM(stepScrub(e4FmStep));
+  }
+
+  // E5 (gorila): el anillo se llena y el número cuenta de 0% al 50% con el scroll
+  if (!REDUCED && gorilaStatEl && gorilaStatEl.__setGorila && e5Sec) {
+    const p = clamp((sectionProgress(e5Sec) - 0.06) / 0.5);
+    gorilaStatEl.__setGorila(easeOut(p));
   }
 }
 

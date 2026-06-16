@@ -84,6 +84,9 @@
                muted playsinline preload="auto" disablepictureinpicture
                aria-label="Un hombre grita y su cabeza se fragmenta en una red de neuronas celestes."></video>
         <div class="cover__vignette" aria-hidden="true"></div>
+        <!-- Máscara que tapa el watermark de Gemini (abajo-derecha): el JS la
+             planta sobre el sparkle con la misma cuenta de object-fit:cover. -->
+        <div class="cover__patch" id="coverPatch" aria-hidden="true"></div>
         <div class="cover__dark" id="coverDark" aria-hidden="true"></div>
 
         <div class="cover__content">
@@ -92,7 +95,6 @@
             <span class="t1">Tu cerebro no te cuenta</span>
             <span class="t2">toda la verdad</span>
           </h1>
-          <p class="cover__q">¿Y si nada de lo que ves, elegís y creés fuera tan tuyo como pensás?</p>
           <p class="cover__go">Seguí bajando</p>
         </div>
 
@@ -107,22 +109,17 @@
       </div>
     </section>
 
-    <!-- ====================== PORTAL 1 · espiral → Percepción ======================
-         El título aparece recién cuando ya estás ADENTRO del espiral; abajo
-         del título nace un puntito que crece con el scroll hasta tragarte. -->
-    <section class="portal" id="portal1">
+    <!-- ====================== PORTAL 1 · título de Percepción (SIN espiral) ======================
+         Era mucha intro antes de los gráficos: quedó como título plano sobre
+         negro, sin el espiral. Los portales 2 y 3 sí conservan el espiral. -->
+    <section class="portal portal--plain" id="portal1">
       <div class="portal__sticky">
-        <canvas class="portal__canvas" data-spiral aria-hidden="true"></canvas>
-        <div class="portal__head">
+        <div class="portal__head portal__head--static">
           <div class="portal__head-in">
             <p class="portal__kicker">Módulo I</p>
             <h2 class="portal__name">Percepción</h2>
             <p class="portal__sub">No ves lo que creés que ves.</p>
           </div>
-        </div>
-        <div class="portal__dot" aria-hidden="true"></div>
-        <div class="portal__after">
-          <p>Lo que ves no está en tus ojos: está en tu <em>cerebro</em>.</p>
         </div>
       </div>
     </section>
@@ -165,13 +162,13 @@
 
         <div class="intro__stage intro__stage--chart">
           <header class="chart-head">
-            <h3>Se reparten casi por la mitad</h3>
+            <h3>Más gente ve pato que conejo</h3>
             <p>Qué vio la gente al mirar la figura por primera vez · seguí bajando: las barras crecen con tu scroll</p>
           </header>
           <div class="chart" data-chart="01_pato_conejo" id="duoChart" role="img"
-               aria-label="La gente se reparte casi por la mitad entre pato y conejo."></div>
+               aria-label="Casi 6 de cada 10 personas ven primero un pato; el resto, un conejo."></div>
           <div class="intro__after">
-            <p class="lede">La mitad lo ve pato; la otra mitad, conejo.</p>
+            <p class="lede">Casi 6 de cada 10 ven pato; el resto, conejo.</p>
             <p class="muted">La imagen es siempre la misma. Lo que cambia es el cerebro que la mira.</p>
             <p class="chart-src chart-src--static" data-src-for="01_pato_conejo"></p>
             <button class="ghost-btn" id="backToImg">← Volver a la imagen</button>
@@ -186,13 +183,18 @@
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
-            <figure class="flip-figure viz__media" id="e2Fig">
-              <div class="figure-card">
-                <img src="./assets/840_560.jpg" alt="La misma figura; al girar y marcar sus rasgos aparece el otro animal." />
-              </div>
-              <span class="annot" id="e2Annot1"></span>
-              <span class="annot" id="e2Annot2"></span>
-            </figure>
+            <div class="e2-figwrap">
+              <figure class="flip-figure viz__media" id="e2Fig">
+                <div class="figure-card">
+                  <img src="./assets/840_560.jpg" alt="La misma figura; al girar y marcar sus rasgos aparece el otro animal." />
+                </div>
+                <span class="annot" id="e2Annot1"></span>
+                <span class="annot" id="e2Annot2"></span>
+              </figure>
+              <!-- Rótulos FUERA del recuadro de la figura (no rotan) -->
+              <span class="annot-label" id="e2Label1"></span>
+              <span class="annot-label" id="e2Label2"></span>
+            </div>
           </div>
           <div class="viz__layer" data-layer="1">
             <div class="viz__chart"><div class="chart" data-chart="02_contexto_cambio" role="img" aria-label="Con una pista de contexto, la mayoría pasa a ver el otro animal."></div></div>
@@ -237,7 +239,7 @@
         <div class="step step--center step--tall is-active" data-layer="0">
           <div class="step__card" id="e3TitleCard">
             <h2 id="e3-h">No todas las ilusiones<br />son ambiguas.</h2>
-            <p class="lede">Algunas inventan movimiento donde no hay ninguno. Seguí bajando.</p>
+            <p class="lede">Mirá el centro un segundo. Seguí bajando.</p>
           </div>
         </div>
         <div class="step step--tall" data-layer="1">
@@ -319,8 +321,8 @@
         </div>
         <div class="step" data-layer="2">
           <div class="step__card">
-            <p class="lede">Y si te muestro la palabra antes, el mismo audio cambia.</p>
-            <p class="muted">Leer “bicicleta” hace que 8 de cada 10 oigan bicicleta. El mismo truco del contexto —ahora en tus oídos.</p>
+            <p class="lede">Y si te muestro una palabra antes, el mismo audio cambia.</p>
+            <p class="muted">Con esa pista, 85% oye justo esa palabra; sin pista, apenas 15%. El mismo truco del contexto —ahora en tus oídos.</p>
           </div>
         </div>
       </div>
@@ -367,12 +369,12 @@
       </div>
     </section>
 
-    <!-- ====================== E5 · Confianza ≠ acierto (cierre del módulo) ====================== -->
+    <!-- ====================== E5 · Cierre del módulo · el gorila invisible ====================== -->
     <section class="scrolly" id="e5" aria-labelledby="e5-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
-            <div class="bigstat" data-chart="05_cierre_percepcion" role="img" aria-label="La mitad de las personas no ve un gorila en plena pantalla por ceguera atencional."></div>
+            <div class="viz__chart"><div class="chart" data-chart="05_cierre_percepcion" role="img" aria-label="La mitad de las personas no ve un gorila que cruza la pantalla mientras cuenta pases."></div></div>
           </div>
         </div>
       </div>
@@ -381,13 +383,13 @@
           <div class="step__card">
             <p class="kicker">Para cerrar</p>
             <h2 id="e5-h">No ves lo que<br />no estás mirando.</h2>
-            <p class="lede">Tu atención es un reflector: ilumina una porción mínima del mundo. Lo que queda al lado, simplemente no lo registrás.</p>
+            <p class="lede">Mirá el número de al lado mientras bajás. Esa es la mitad que no registró un gorila cruzando la pantalla por estar contando pases.</p>
           </div>
         </div>
         <div class="step" data-layer="0">
           <div class="step__card">
-            <p class="lede">No percibís el mundo: percibís lo que mirás.</p>
-            <p class="muted">Y el cerebro que recorta y completa lo que ves es el mismo que, en un rato, va a recortar y completar <em>qué te conviene</em>.</p>
+            <p class="lede">Tu atención es un reflector: ilumina una porción mínima del mundo y deja el resto a oscuras.</p>
+            <p class="muted">El mismo cerebro que recorta lo que ves es el que, en un rato, va a recortar <em>qué te conviene</em>.</p>
           </div>
         </div>
       </div>

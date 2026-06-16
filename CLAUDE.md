@@ -14,6 +14,31 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   código pero no este archivo, el contexto del resto queda desactualizado → siempre van juntos.
 - Si algo de acá ya no es cierto, corregilo (no agregues notas sueltas que se contradigan).
 
+## ⚡ ACTUALIZACIÓN jun-2026 (4ª vuelta — Percepción) — MANDA sobre todo lo de abajo
+- **REGLA DE DATOS (vale para SIEMPRE, todos los gráficos):** si un cambio de gráfico necesita tocar los
+  números, **se actualiza el database**: primero `data/datos_visualizaciones.json` (es el motor: charts.js
+  SIEMPRE lee de ahí, nunca hardcodear) y, si se puede, también `data/datos_visualizaciones.xlsx` (espejo
+  para inspección). Nunca dejar el copy y el JSON diciendo cosas distintas.
+- **Percepción ya NO es violeta:** usa el **celeste `#8FD8FF`** (el mismo azul del título de portada). Se logra
+  **no** seteándole override en `setupModuleColors()` → hereda el `--accent` global. Decisión sigue cobalto, Sesgos carmesí.
+- **Portada:** se sacó la pregunta "¿Y si nada de lo que ves…" (`.cover__q`) → título más impactante, menos texto.
+  El **logo de Gemini** (abajo-derecha del video) se **enmascara** con `#coverPatch` (disco oscuro feather, lo
+  posiciona `placeReplay()` en main.js con la misma cuenta de object-fit; siempre visible, no solo al final).
+- **Portal 1 (Percepción) SIN espiral:** era mucha intro antes de los gráficos. Quedó como **título plano**
+  (`.portal--plain`, 110vh, sin canvas/dot/after; head siempre visible). Portales 2 y 3 conservan el espiral.
+- **G1 (pato/conejo):** el dato ya es Pato 57,5% / Conejo 42,5% → el copy dice "**más** lo ve pato que conejo"
+  (NO "mitad y mitad").
+- **E2 anotaciones AFUERA:** los puntos `.annot` siguen marcando la anatomía (giran con la imagen), pero los
+  rótulos `.annot-label` viven en `.e2-figwrap` (NO rotan) y se ubican **fuera** del recuadro de la figura, con
+  flecha. La pista nombra **orejas Y hocico** (antes solo orejas).
+- **G2 (contexto):** título reescrito para que se entienda solo (% que pasa a ver la otra perspectiva con la pista).
+- **E3 (snakes):** lede sin spoiler (se sacó "inventan movimiento"); el deszoom ya **no se pixela** (zoom máx
+  ~3×, antes 200× → magnificaba el PNG y serruchaba; `tick()` usa `z = 1 + 2*(1-p)²`).
+- **G post-audio (04b):** ahora **Con contexto 85% vs Sin contexto 15%** (suma 100). Cambió la hoja
+  `04b_auditiva_con_pista` en el JSON y el handler (2 barras).
+- **E5 (cierre Percepción):** el ≈50% del gorila se muestra como **gráfico real** (dona ECharts, `05_cierre_percepcion`
+  reescrita a 2 grupos 50/50), una sola tarjeta de texto (se sacó el paso repetido y el texto-por-scroll) → pasa directo a Decisión.
+
 ## ⚡ ACTUALIZACIÓN jun-2026 (3ª vuelta de feedback) — MANDA sobre lo de más abajo
 - **Color POR MÓDULO (no un acento único):** Percepción **púrpura `#9333EA`**, Decisión **azul cobalto `#2563EB`**,
   Sesgos **carmesí `#E11D48`**. Se setea `--accent` por sección en `setupModuleColors()` (main.js) y charts.js
@@ -64,9 +89,13 @@ a lo que respondiste, pero no persiste nada).
 
 ## Cómo correr (necesita server estático; el fetch del JSON no anda con file://)
 ```
-python3 -m http.server 8000     # en la carpeta del proyecto
-# abrir http://localhost:8000
+python3 serve.py            # server SIN CACHÉ + multi-hilo → http://localhost:8000
+python3 serve.py 8090       # (opcional) otro puerto si el 8000 está ocupado
+# abrir http://localhost:8000  →  con UN reload normal (Cmd/Ctrl+R) ya ves los cambios
 ```
+> ⚠️ **Usar `serve.py`, NO `python -m http.server`.** El `http.server` deja que el navegador
+> cachee CSS/JS viejos (parece que "no se aplican los cambios"). `serve.py` manda `Cache-Control:
+> no-store`, así cada reload trae lo último sin levantar un server nuevo ni hacer hard-reload.
 
 ## Stack y estructura
 HTML + CSS + JS vanilla con **módulos ES**. ECharts vía CDN para barras/líneas/curva.

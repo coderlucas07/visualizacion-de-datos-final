@@ -1,1218 +1,1210 @@
 {
- "01_pato_conejo": {
-  "headers": [
-   "respuesta",
-   "conteo",
-   "porcentaje",
-   "n_total",
-   "tooltip"
-  ],
-  "rows": [
-   [
-    "Pato",
-    46,
-    57.5,
-    80,
-    "46 de 80 personas vieron primero un pato."
-   ],
-   [
-    "Conejo",
-    34,
-    42.5,
-    80,
-    "34 de 80 personas vieron primero un conejo."
-   ]
-  ]
- },
- "02_contexto_cambio": {
-  "headers": [
-   "estado",
-   "ve_pato_pct",
-   "ve_conejo_pct",
-   "nota"
-  ],
-  "rows": [
-   [
-    "Sin contexto",
-    74.0,
-    26.0,
-    "Primera mirada, sin pista."
-   ],
-   [
-    "Con contexto",
-    26.0,
-    74.0,
-    "Tras la pista de contexto que orienta hacia el conejo."
-   ]
-  ]
- },
- "02b_resumen_cambio": {
-  "headers": [
-   "categoria",
-   "porcentaje",
-   "n_total",
-   "tooltip"
-  ],
-  "rows": [
-   [
-    "Cambió de interpretación",
-    70,
-    100,
-    "70 de cada 100 cambian lo que ven cuando reciben una pista de contexto."
-   ],
-   [
-    "Mantuvo su interpretación",
-    30,
-    100,
-    "Solo 30 de cada 100 sostienen su primera lectura."
-   ]
-  ]
- },
- "03_ilusiones_movimiento_waffle": {
-  "headers": [
-   "persona_id",
-   "ve_movimiento"
-  ],
-  "rows": [
-   [
-    1,
-    1
-   ],
-   [
-    2,
-    1
-   ],
-   [
-    3,
-    1
-   ],
-   [
-    4,
-    1
-   ],
-   [
-    5,
-    1
-   ],
-   [
-    6,
-    1
-   ],
-   [
-    7,
-    1
-   ],
-   [
-    8,
-    1
-   ],
-   [
-    9,
-    1
-   ],
-   [
-    10,
-    1
-   ],
-   [
-    11,
-    1
-   ],
-   [
-    12,
-    1
-   ],
-   [
-    13,
-    1
-   ],
-   [
-    14,
-    1
-   ],
-   [
-    15,
-    1
-   ],
-   [
-    16,
-    1
-   ],
-   [
-    17,
-    1
-   ],
-   [
-    18,
-    1
-   ],
-   [
-    19,
-    1
-   ],
-   [
-    20,
-    1
-   ],
-   [
-    21,
-    1
-   ],
-   [
-    22,
-    1
-   ],
-   [
-    23,
-    1
-   ],
-   [
-    24,
-    1
-   ],
-   [
-    25,
-    1
-   ],
-   [
-    26,
-    1
-   ],
-   [
-    27,
-    1
-   ],
-   [
-    28,
-    1
-   ],
-   [
-    29,
-    1
-   ],
-   [
-    30,
-    1
-   ],
-   [
-    31,
-    1
-   ],
-   [
-    32,
-    1
-   ],
-   [
-    33,
-    1
-   ],
-   [
-    34,
-    1
-   ],
-   [
-    35,
-    1
-   ],
-   [
-    36,
-    1
-   ],
-   [
-    37,
-    1
-   ],
-   [
-    38,
-    1
-   ],
-   [
-    39,
-    1
-   ],
-   [
-    40,
-    1
-   ],
-   [
-    41,
-    1
-   ],
-   [
-    42,
-    1
-   ],
-   [
-    43,
-    1
-   ],
-   [
-    44,
-    1
-   ],
-   [
-    45,
-    1
-   ],
-   [
-    46,
-    1
-   ],
-   [
-    47,
-    1
-   ],
-   [
-    48,
-    1
-   ],
-   [
-    49,
-    1
-   ],
-   [
-    50,
-    1
-   ],
-   [
-    51,
-    1
-   ],
-   [
-    52,
-    1
-   ],
-   [
-    53,
-    1
-   ],
-   [
-    54,
-    1
-   ],
-   [
-    55,
-    1
-   ],
-   [
-    56,
-    1
-   ],
-   [
-    57,
-    1
-   ],
-   [
-    58,
-    1
-   ],
-   [
-    59,
-    1
-   ],
-   [
-    60,
-    1
-   ],
-   [
-    61,
-    1
-   ],
-   [
-    62,
-    1
-   ],
-   [
-    63,
-    1
-   ],
-   [
-    64,
-    1
-   ],
-   [
-    65,
-    1
-   ],
-   [
-    66,
-    1
-   ],
-   [
-    67,
-    1
-   ],
-   [
-    68,
-    1
-   ],
-   [
-    69,
-    1
-   ],
-   [
-    70,
-    1
-   ],
-   [
-    71,
-    1
-   ],
-   [
-    72,
-    1
-   ],
-   [
-    73,
-    1
-   ],
-   [
-    74,
-    1
-   ],
-   [
-    75,
-    1
-   ],
-   [
-    76,
-    1
-   ],
-   [
-    77,
-    1
-   ],
-   [
-    78,
-    1
-   ],
-   [
-    79,
-    1
-   ],
-   [
-    80,
-    1
-   ],
-   [
-    81,
-    1
-   ],
-   [
-    82,
-    1
-   ],
-   [
-    83,
-    1
-   ],
-   [
-    84,
-    1
-   ],
-   [
-    85,
-    1
-   ],
-   [
-    86,
-    1
-   ],
-   [
-    87,
-    1
-   ],
-   [
-    88,
-    1
-   ],
-   [
-    89,
-    1
-   ],
-   [
-    90,
-    1
-   ],
-   [
-    91,
-    1
-   ],
-   [
-    92,
-    1
-   ],
-   [
-    93,
-    1
-   ],
-   [
-    94,
-    1
-   ],
-   [
-    95,
-    1
-   ],
-   [
-    96,
-    1
-   ],
-   [
-    97,
-    0
-   ],
-   [
-    98,
-    0
-   ],
-   [
-    99,
-    0
-   ],
-   [
-    100,
-    0
-   ]
-  ],
-  "resumen": {
-   "ven_movimiento": 96,
-   "no_ven": 4,
-   "ilusion": "Rotating Snakes (Kitaoka)"
+  "01_pato_conejo": {
+    "headers": [
+      "respuesta",
+      "conteo",
+      "porcentaje",
+      "n_total",
+      "tooltip"
+    ],
+    "rows": [
+      [
+        "Pato",
+        46,
+        57.5,
+        80,
+        "46 de 80 personas vieron primero un pato."
+      ],
+      [
+        "Conejo",
+        34,
+        42.5,
+        80,
+        "34 de 80 personas vieron primero un conejo."
+      ]
+    ]
+  },
+  "02_contexto_cambio": {
+    "headers": [
+      "estado",
+      "ve_pato_pct",
+      "ve_conejo_pct",
+      "nota"
+    ],
+    "rows": [
+      [
+        "Sin contexto",
+        74.0,
+        26.0,
+        "Primera mirada, sin pista."
+      ],
+      [
+        "Con contexto",
+        26.0,
+        74.0,
+        "Tras la pista de contexto que orienta hacia el conejo."
+      ]
+    ]
+  },
+  "02b_resumen_cambio": {
+    "headers": [
+      "categoria",
+      "porcentaje",
+      "n_total",
+      "tooltip"
+    ],
+    "rows": [
+      [
+        "Cambió de interpretación",
+        70,
+        100,
+        "70 de cada 100 cambian lo que ven cuando reciben una pista de contexto."
+      ],
+      [
+        "Mantuvo su interpretación",
+        30,
+        100,
+        "Solo 30 de cada 100 sostienen su primera lectura."
+      ]
+    ]
+  },
+  "03_ilusiones_movimiento_waffle": {
+    "headers": [
+      "persona_id",
+      "ve_movimiento"
+    ],
+    "rows": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        3,
+        1
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        5,
+        1
+      ],
+      [
+        6,
+        1
+      ],
+      [
+        7,
+        1
+      ],
+      [
+        8,
+        1
+      ],
+      [
+        9,
+        1
+      ],
+      [
+        10,
+        1
+      ],
+      [
+        11,
+        1
+      ],
+      [
+        12,
+        1
+      ],
+      [
+        13,
+        1
+      ],
+      [
+        14,
+        1
+      ],
+      [
+        15,
+        1
+      ],
+      [
+        16,
+        1
+      ],
+      [
+        17,
+        1
+      ],
+      [
+        18,
+        1
+      ],
+      [
+        19,
+        1
+      ],
+      [
+        20,
+        1
+      ],
+      [
+        21,
+        1
+      ],
+      [
+        22,
+        1
+      ],
+      [
+        23,
+        1
+      ],
+      [
+        24,
+        1
+      ],
+      [
+        25,
+        1
+      ],
+      [
+        26,
+        1
+      ],
+      [
+        27,
+        1
+      ],
+      [
+        28,
+        1
+      ],
+      [
+        29,
+        1
+      ],
+      [
+        30,
+        1
+      ],
+      [
+        31,
+        1
+      ],
+      [
+        32,
+        1
+      ],
+      [
+        33,
+        1
+      ],
+      [
+        34,
+        1
+      ],
+      [
+        35,
+        1
+      ],
+      [
+        36,
+        1
+      ],
+      [
+        37,
+        1
+      ],
+      [
+        38,
+        1
+      ],
+      [
+        39,
+        1
+      ],
+      [
+        40,
+        1
+      ],
+      [
+        41,
+        1
+      ],
+      [
+        42,
+        1
+      ],
+      [
+        43,
+        1
+      ],
+      [
+        44,
+        1
+      ],
+      [
+        45,
+        1
+      ],
+      [
+        46,
+        1
+      ],
+      [
+        47,
+        1
+      ],
+      [
+        48,
+        1
+      ],
+      [
+        49,
+        1
+      ],
+      [
+        50,
+        1
+      ],
+      [
+        51,
+        1
+      ],
+      [
+        52,
+        1
+      ],
+      [
+        53,
+        1
+      ],
+      [
+        54,
+        1
+      ],
+      [
+        55,
+        1
+      ],
+      [
+        56,
+        1
+      ],
+      [
+        57,
+        1
+      ],
+      [
+        58,
+        1
+      ],
+      [
+        59,
+        1
+      ],
+      [
+        60,
+        1
+      ],
+      [
+        61,
+        1
+      ],
+      [
+        62,
+        1
+      ],
+      [
+        63,
+        1
+      ],
+      [
+        64,
+        1
+      ],
+      [
+        65,
+        1
+      ],
+      [
+        66,
+        1
+      ],
+      [
+        67,
+        1
+      ],
+      [
+        68,
+        1
+      ],
+      [
+        69,
+        1
+      ],
+      [
+        70,
+        1
+      ],
+      [
+        71,
+        1
+      ],
+      [
+        72,
+        1
+      ],
+      [
+        73,
+        1
+      ],
+      [
+        74,
+        1
+      ],
+      [
+        75,
+        1
+      ],
+      [
+        76,
+        1
+      ],
+      [
+        77,
+        1
+      ],
+      [
+        78,
+        1
+      ],
+      [
+        79,
+        1
+      ],
+      [
+        80,
+        1
+      ],
+      [
+        81,
+        1
+      ],
+      [
+        82,
+        1
+      ],
+      [
+        83,
+        1
+      ],
+      [
+        84,
+        1
+      ],
+      [
+        85,
+        1
+      ],
+      [
+        86,
+        1
+      ],
+      [
+        87,
+        1
+      ],
+      [
+        88,
+        1
+      ],
+      [
+        89,
+        1
+      ],
+      [
+        90,
+        1
+      ],
+      [
+        91,
+        1
+      ],
+      [
+        92,
+        1
+      ],
+      [
+        93,
+        1
+      ],
+      [
+        94,
+        1
+      ],
+      [
+        95,
+        1
+      ],
+      [
+        96,
+        1
+      ],
+      [
+        97,
+        0
+      ],
+      [
+        98,
+        0
+      ],
+      [
+        99,
+        0
+      ],
+      [
+        100,
+        0
+      ]
+    ],
+    "resumen": {
+      "ven_movimiento": 96,
+      "no_ven": 4,
+      "ilusion": "Rotating Snakes (Kitaoka)"
+    }
+  },
+  "03b_ilusiones_movimiento_tabla": {
+    "headers": [
+      "ilusion",
+      "tipo",
+      "ve_movimiento_pct",
+      "n_total",
+      "tooltip"
+    ],
+    "rows": [
+      [
+        "Rotating Snakes",
+        "Movimiento ilusorio periférico",
+        96,
+        100,
+        "96 de 100 ven girar los anillos. La imagen es totalmente estática."
+      ],
+      [
+        "Pinna-Brelstaff",
+        "Rotación ilusoria",
+        88,
+        100,
+        "88 de 100 perciben rotación al acercarse/alejarse."
+      ],
+      [
+        "Enigma",
+        "Centelleo/rotación",
+        91,
+        100,
+        "91 de 100 ven flujo en los anillos."
+      ],
+      [
+        "Ouchi",
+        "Vibración relativa",
+        73,
+        100,
+        "73 de 100 ven 'flotar' el disco central."
+      ]
+    ]
+  },
+  "04_ilusion_auditiva": {
+    "headers": [
+      "palabra_escuchada",
+      "conteo",
+      "porcentaje",
+      "n_total",
+      "tooltip"
+    ],
+    "rows": [
+      [
+        "Bicicleta",
+        402,
+        67,
+        600,
+        "402 de 600 oyen 'bicicleta'."
+      ],
+      [
+        "Alquiler",
+        198,
+        33,
+        600,
+        "198 de 600 oyen 'alquiler'."
+      ]
+    ]
+  },
+  "04b_auditiva_con_pista": {
+    "headers": [
+      "condicion",
+      "porcentaje",
+      "nota"
+    ],
+    "rows": [
+      [
+        "Con contexto",
+        85,
+        "Con la palabra escrita delante, 85% oye justo esa palabra."
+      ],
+      [
+        "Sin contexto",
+        15,
+        "Sin pista, solo 15% coincide con esa palabra: el audio solo no alcanza."
+      ]
+    ]
+  },
+  "05_cierre_percepcion": {
+    "headers": [
+      "grupo",
+      "porcentaje",
+      "detalle"
+    ],
+    "rows": [
+      [
+        "No vio el gorila",
+        50,
+        "Concentrada en contar pases, la mitad no registró un gorila que cruzó la pantalla y se golpeó el pecho."
+      ],
+      [
+        "Sí lo vio",
+        50,
+        "La otra mitad sí lo notó."
+      ]
+    ]
+  },
+  "05_confianza_precision": {
+    "headers": [
+      "nivel_confianza",
+      "aciertos_pct",
+      "total_respuestas",
+      "tiempo_medio_seg",
+      "tooltip"
+    ],
+    "rows": [
+      [
+        1,
+        37.8,
+        90,
+        9.2,
+        "Confianza 1/5: 37,8% de acierto."
+      ],
+      [
+        2,
+        44.6,
+        224,
+        7.8,
+        "Confianza 2/5: 44,6%."
+      ],
+      [
+        3,
+        48.0,
+        392,
+        5.9,
+        "Confianza 3/5: 48,0% (el techo)."
+      ],
+      [
+        4,
+        43.9,
+        280,
+        4.2,
+        "Confianza 4/5: 43,9%."
+      ],
+      [
+        5,
+        35.8,
+        134,
+        3.1,
+        "Confianza 5/5: 35,8% — la máxima confianza, el peor acierto."
+      ]
+    ]
+  },
+  "06_bate_pelota": {
+    "headers": [
+      "respuesta",
+      "etiqueta",
+      "porcentaje",
+      "tooltip"
+    ],
+    "rows": [
+      [
+        "$0,10",
+        "Intuitiva (incorrecta)",
+        58,
+        "La mayoría tira '10 centavos': $1,10 se parte fácil en $1 + $0,10."
+      ],
+      [
+        "$0,05",
+        "Correcta",
+        33,
+        "Solo 1 de cada 3 frena y corrige a 5 centavos."
+      ],
+      [
+        "$1,00",
+        "Incorrecta",
+        5,
+        "Confunden el precio del bate con el de la pelota."
+      ],
+      [
+        "$0,01",
+        "Incorrecta",
+        4,
+        "Respuesta de descarte."
+      ]
+    ]
+  },
+  "07_aversion_perdidas": {
+    "headers": [
+      "resultado_monetario",
+      "valor_subjetivo"
+    ],
+    "rows": [
+      [
+        -100,
+        -129.474
+      ],
+      [
+        -95,
+        -123.76
+      ],
+      [
+        -90,
+        -118.009
+      ],
+      [
+        -85,
+        -112.22
+      ],
+      [
+        -80,
+        -106.39
+      ],
+      [
+        -75,
+        -100.516
+      ],
+      [
+        -70,
+        -94.595
+      ],
+      [
+        -65,
+        -88.623
+      ],
+      [
+        -60,
+        -82.595
+      ],
+      [
+        -55,
+        -76.507
+      ],
+      [
+        -50,
+        -70.352
+      ],
+      [
+        -45,
+        -64.122
+      ],
+      [
+        -40,
+        -57.809
+      ],
+      [
+        -35,
+        -51.4
+      ],
+      [
+        -30,
+        -44.88
+      ],
+      [
+        -25,
+        -38.227
+      ],
+      [
+        -20,
+        -31.412
+      ],
+      [
+        -15,
+        -24.386
+      ],
+      [
+        -10,
+        -17.068
+      ],
+      [
+        -5,
+        -9.274
+      ],
+      [
+        0,
+        0.0
+      ],
+      [
+        5,
+        4.122
+      ],
+      [
+        10,
+        7.586
+      ],
+      [
+        15,
+        10.838
+      ],
+      [
+        20,
+        13.961
+      ],
+      [
+        25,
+        16.99
+      ],
+      [
+        30,
+        19.947
+      ],
+      [
+        35,
+        22.844
+      ],
+      [
+        40,
+        25.693
+      ],
+      [
+        45,
+        28.499
+      ],
+      [
+        50,
+        31.268
+      ],
+      [
+        55,
+        34.003
+      ],
+      [
+        60,
+        36.709
+      ],
+      [
+        65,
+        39.388
+      ],
+      [
+        70,
+        42.042
+      ],
+      [
+        75,
+        44.674
+      ],
+      [
+        80,
+        47.285
+      ],
+      [
+        85,
+        49.876
+      ],
+      [
+        90,
+        52.449
+      ],
+      [
+        95,
+        55.004
+      ],
+      [
+        100,
+        57.544
+      ]
+    ],
+    "params": {
+      "alpha": 0.88,
+      "beta": 0.88,
+      "lambda": 2.25,
+      "nota": "Función de valor de la teoría prospectiva (Kahneman-Tversky). Perder $50 'pesa' 2,25x lo que alegra ganar $50."
+    }
+  },
+  "08_framing_enfermedad": {
+    "headers": [
+      "encuadre",
+      "opcion",
+      "descripcion",
+      "porcentaje",
+      "tooltip"
+    ],
+    "rows": [
+      [
+        "Ganancia (vidas salvadas)",
+        "Segura",
+        "Salva a 200 con certeza",
+        72,
+        "Enmarcado en vidas SALVADAS, 72% elige lo seguro."
+      ],
+      [
+        "Ganancia (vidas salvadas)",
+        "Riesgosa",
+        "1/3 de salvar a 600, 2/3 de no salvar a nadie",
+        28,
+        ""
+      ],
+      [
+        "Pérdida (muertes)",
+        "Segura",
+        "Mueren 400 con certeza",
+        22,
+        "El MISMO resultado, dicho en MUERTES: solo 22% elige lo seguro."
+      ],
+      [
+        "Pérdida (muertes)",
+        "Riesgosa",
+        "1/3 de que no muera nadie, 2/3 de que mueran 600",
+        78,
+        "La gente se vuelve arriesgada para evitar una pérdida segura."
+      ]
+    ]
+  },
+  "09_dunning_kruger": {
+    "headers": [
+      "cuartil_real",
+      "competencia_real_pct",
+      "autopercepcion_pct",
+      "tooltip"
+    ],
+    "rows": [
+      [
+        "Inferior (peores)",
+        12,
+        62,
+        "Los peores se ubican cerca del percentil 62: enorme exceso de confianza."
+      ],
+      [
+        "2do cuartil",
+        34,
+        61,
+        "Siguen sobreestimándose."
+      ],
+      [
+        "3er cuartil",
+        63,
+        69,
+        "Casi calibrados."
+      ],
+      [
+        "Superior (mejores)",
+        86,
+        74,
+        "Los mejores se SUBestiman: creen que a otros les fue parecido."
+      ]
+    ]
+  },
+  "10_mejor_que_promedio": {
+    "headers": [
+      "dominio",
+      "muestra",
+      "pct_arriba_del_promedio",
+      "anio",
+      "fuente"
+    ],
+    "rows": [
+      [
+        "Manejar",
+        "Conductores EE.UU.",
+        93,
+        1981,
+        "Svenson, Acta Psychologica"
+      ],
+      [
+        "Manejar",
+        "Conductores Suecia",
+        80,
+        1981,
+        "Svenson"
+      ],
+      [
+        "Dar clases",
+        "Profesores universitarios",
+        94,
+        1977,
+        "Cross"
+      ],
+      [
+        "Ética laboral",
+        "Trabajadores de negocios",
+        75,
+        2007,
+        "Módulo 13 (cátedra)"
+      ],
+      [
+        "Sentido del humor",
+        "Población general",
+        94,
+        2007,
+        "Módulo 13 (cátedra)"
+      ],
+      [
+        "Performance (top 10%)",
+        "Managers",
+        90,
+        2007,
+        "BusinessWeek poll"
+      ],
+      [
+        "Liderazgo",
+        "Estudiantes (N≈1.000.000)",
+        70,
+        1976,
+        "College Board"
+      ]
+    ]
+  },
+  "11_efecto_forer": {
+    "headers": [
+      "item",
+      "valor",
+      "detalle"
+    ],
+    "rows": [
+      [
+        "Precisión percibida (Forer, 1948)",
+        "4,26 / 5",
+        "Estudiantes calificaron un perfil GENÉRICO como casi perfecto para ellos."
+      ],
+      [
+        "Creyó recibir una lectura psíquica acertada",
+        "1 de cada 6",
+        "Aun cuando todos los experimentos científicos de poderes psíquicos fallaron (Módulo 13)."
+      ],
+      [
+        "% que cree que el texto fue escrito 'a su medida'",
+        "87%",
+        "Dato prototípico coherente con la literatura Barnum."
+      ]
+    ]
+  },
+  "11b_texto_barnum": {
+    "headers": [
+      "frase",
+      "tecnica_lectura_en_frio"
+    ],
+    "rows": [
+      [
+        "Tenés una gran necesidad de que los demás te aprecien y admiren.",
+        "Sesgo egocéntrico (halago)"
+      ],
+      [
+        "A veces sos extrovertido y sociable; otras, reservado y cauto.",
+        "Memoria selectiva (afirmaciones opuestas)"
+      ],
+      [
+        "Sentís que todavía no explotaste tu verdadero potencial.",
+        "Apofenia (afirmación ambigua que cada uno completa)"
+      ],
+      [
+        "Tenés tendencia a ser crítico con vos mismo.",
+        "Predictibilidad (rasgo común que parece único)"
+      ]
+    ]
+  },
+  "12_pareidolia_paranormal": {
+    "headers": [
+      "experiencia",
+      "pct_si",
+      "pct_no",
+      "explicacion_cientifica"
+    ],
+    "rows": [
+      [
+        "Sintió una presencia o energía",
+        37,
+        53,
+        "Atribución de agencia + pareidolia"
+      ],
+      [
+        "Escuchó un sonido o música inexplicable",
+        33,
+        58,
+        "Infrasonido (Tandy, 2000)"
+      ],
+      [
+        "Olió un olor inexplicable",
+        30,
+        62,
+        "Posible fuga / sugestión"
+      ],
+      [
+        "Escuchó la voz de alguien que no estaba",
+        29,
+        61,
+        "Alucinación hipnagógica"
+      ],
+      [
+        "Sintió un cambio de temperatura",
+        28,
+        63,
+        "Corrientes de aire + sugestión"
+      ]
+    ]
+  },
+  "13_brecha_consenso": {
+    "headers": [
+      "tema",
+      "pct_cientificos",
+      "pct_publico_usa",
+      "pct_publico_arg",
+      "brecha_pp",
+      "beneficiario_del_hueco"
+    ],
+    "rows": [
+      [
+        "Cambio climático humano",
+        87,
+        50,
+        59,
+        37,
+        "Industria fósil / think tanks negacionistas"
+      ],
+      [
+        "Evolución humana",
+        98,
+        65,
+        53,
+        45,
+        "Movimientos creacionistas"
+      ],
+      [
+        "Transgénicos seguros",
+        88,
+        37,
+        null,
+        51,
+        "Marketing 'orgánico' / grupos anti-Monsanto"
+      ],
+      [
+        "Vacunas (seguras)",
+        98,
+        68,
+        null,
+        30,
+        "Movimiento antivacunas"
+      ],
+      [
+        "'La cura del cáncer está oculta'",
+        0,
+        null,
+        67,
+        67,
+        "Pseudoterapias / desconfianza institucional (dato estrella Argentina)"
+      ]
+    ]
+  },
+  "13b_confianza_vs_ciencia": {
+    "headers": [
+      "afirmacion",
+      "pct_de_acuerdo",
+      "tooltip"
+    ],
+    "rows": [
+      [
+        "'Confío más en mi propia búsqueda que en los científicos'",
+        55,
+        "Más de la mitad pone su intuición por encima del consenso experto."
+      ],
+      [
+        "'La gente más educada se cree más capaz de juzgar la evidencia sola'",
+        null,
+        "Paradoja de Dunning-Kruger a escala social (Módulo 13)."
+      ]
+    ]
+  },
+  "_metodologia": {
+    "headers": [
+      "dataset",
+      "tipo",
+      "fuente / nota"
+    ],
+    "rows": [
+      [
+        "01_pato_conejo",
+        "prototípico",
+        "Distribución basada en literatura de ambigüedad biestable (n=80)."
+      ],
+      [
+        "02_contexto_cambio",
+        "simulado coherente",
+        "Ilustra el efecto del contexto/priming; titular: 70% cambia."
+      ],
+      [
+        "03_ilusiones_movimiento",
+        "simulado coherente",
+        "Rotating Snakes y otras ilusiones de movimiento ilusorio (Kitaoka)."
+      ],
+      [
+        "04_ilusion_auditiva",
+        "simulado coherente",
+        "Ilusión auditiva ambigua tipo bicicleta/alquiler; el texto en pantalla sesga lo que se oye."
+      ],
+      [
+        "05_confianza_precision",
+        "prototípico",
+        "Paradoja confianza-acierto (n=1120 respuestas). Variable hilo del relato."
+      ],
+      [
+        "06_bate_pelota",
+        "representativo (real)",
+        "Frederick 2005: >50% de estudiantes de elite lo erran; '10 centavos' ≈ 86% de los errores. Distribución representativa."
+      ],
+      [
+        "07_aversion_perdidas",
+        "real (modelo)",
+        "Función de valor de la teoría prospectiva, lambda=2.25, alpha=beta=0.88."
+      ],
+      [
+        "08_framing_enfermedad",
+        "real",
+        "Tversky & Kahneman, 1981 (problema de la enfermedad asiática): 72% vs 22%."
+      ],
+      [
+        "09_dunning_kruger",
+        "simulado coherente",
+        "Forma del estudio Kruger & Dunning 1999 (cuartil inferior ~p62)."
+      ],
+      [
+        "10_mejor_que_promedio",
+        "real",
+        "Svenson 1981; Cross 1977; College Board; etc."
+      ],
+      [
+        "11_efecto_forer",
+        "real + prototípico",
+        "Forer 1948 (4,26/5); 1 de cada 6 (Módulo 13)."
+      ],
+      [
+        "12_pareidolia_paranormal",
+        "real",
+        "YouGov, experiencias paranormales + explicación científica (Módulo 13)."
+      ],
+      [
+        "13_brecha_consenso",
+        "real",
+        "Pew (científicos vs público) + Pulsar UBA (Argentina)."
+      ]
+    ]
   }
- },
- "03b_ilusiones_movimiento_tabla": {
-  "headers": [
-   "ilusion",
-   "tipo",
-   "ve_movimiento_pct",
-   "n_total",
-   "tooltip"
-  ],
-  "rows": [
-   [
-    "Rotating Snakes",
-    "Movimiento ilusorio periférico",
-    96,
-    100,
-    "96 de 100 ven girar los anillos. La imagen es totalmente estática."
-   ],
-   [
-    "Pinna-Brelstaff",
-    "Rotación ilusoria",
-    88,
-    100,
-    "88 de 100 perciben rotación al acercarse/alejarse."
-   ],
-   [
-    "Enigma",
-    "Centelleo/rotación",
-    91,
-    100,
-    "91 de 100 ven flujo en los anillos."
-   ],
-   [
-    "Ouchi",
-    "Vibración relativa",
-    73,
-    100,
-    "73 de 100 ven 'flotar' el disco central."
-   ]
-  ]
- },
- "04_ilusion_auditiva": {
-  "headers": [
-   "palabra_escuchada",
-   "conteo",
-   "porcentaje",
-   "n_total",
-   "tooltip"
-  ],
-  "rows": [
-   [
-    "Bicicleta",
-    402,
-    67,
-    600,
-    "402 de 600 oyen 'bicicleta'."
-   ],
-   [
-    "Alquiler",
-    198,
-    33,
-    600,
-    "198 de 600 oyen 'alquiler'."
-   ]
-  ]
- },
- "04b_auditiva_con_pista": {
-  "headers": [
-   "condicion",
-   "ve_bicicleta_pct",
-   "ve_alquiler_pct",
-   "nota"
-  ],
-  "rows": [
-   [
-    "Leyendo 'BICICLETA'",
-    81.0,
-    12.0,
-    "El texto previo fuerza esa interpretación."
-   ],
-   [
-    "Leyendo 'ALQUILER'",
-    15.0,
-    79.0,
-    "El mismo audio, otra palabra impuesta por el contexto."
-   ]
-  ]
- },
- "05_cierre_percepcion": {
-  "headers": [
-   "item",
-   "valor",
-   "detalle"
-  ],
-  "rows": [
-   [
-    "Ceguera atencional (Simons & Chabris, 1999)",
-    "≈50%",
-    "de las personas no ve un gorila que cruza la pantalla mientras está concentrada en contar pases."
-   ],
-   [
-    "reflector",
-    "",
-    "Tu atención es un reflector: ilumina una porción mínima del mundo y deja el resto a oscuras."
-   ],
-   [
-    "construccion",
-    "",
-    "No percibís el mundo: percibís lo que mirás. El resto lo completa tu cerebro con expectativas."
-   ]
-  ]
- },
- "05_confianza_precision": {
-  "headers": [
-   "nivel_confianza",
-   "aciertos_pct",
-   "total_respuestas",
-   "tiempo_medio_seg",
-   "tooltip"
-  ],
-  "rows": [
-   [
-    1,
-    37.8,
-    90,
-    9.2,
-    "Confianza 1/5: 37,8% de acierto."
-   ],
-   [
-    2,
-    44.6,
-    224,
-    7.8,
-    "Confianza 2/5: 44,6%."
-   ],
-   [
-    3,
-    48.0,
-    392,
-    5.9,
-    "Confianza 3/5: 48,0% (el techo)."
-   ],
-   [
-    4,
-    43.9,
-    280,
-    4.2,
-    "Confianza 4/5: 43,9%."
-   ],
-   [
-    5,
-    35.8,
-    134,
-    3.1,
-    "Confianza 5/5: 35,8% — la máxima confianza, el peor acierto."
-   ]
-  ]
- },
- "06_bate_pelota": {
-  "headers": [
-   "respuesta",
-   "etiqueta",
-   "porcentaje",
-   "tooltip"
-  ],
-  "rows": [
-   [
-    "$0,10",
-    "Intuitiva (incorrecta)",
-    58,
-    "La mayoría tira '10 centavos': $1,10 se parte fácil en $1 + $0,10."
-   ],
-   [
-    "$0,05",
-    "Correcta",
-    33,
-    "Solo 1 de cada 3 frena y corrige a 5 centavos."
-   ],
-   [
-    "$1,00",
-    "Incorrecta",
-    5,
-    "Confunden el precio del bate con el de la pelota."
-   ],
-   [
-    "$0,01",
-    "Incorrecta",
-    4,
-    "Respuesta de descarte."
-   ]
-  ]
- },
- "07_aversion_perdidas": {
-  "headers": [
-   "resultado_monetario",
-   "valor_subjetivo"
-  ],
-  "rows": [
-   [
-    -100,
-    -129.474
-   ],
-   [
-    -95,
-    -123.76
-   ],
-   [
-    -90,
-    -118.009
-   ],
-   [
-    -85,
-    -112.22
-   ],
-   [
-    -80,
-    -106.39
-   ],
-   [
-    -75,
-    -100.516
-   ],
-   [
-    -70,
-    -94.595
-   ],
-   [
-    -65,
-    -88.623
-   ],
-   [
-    -60,
-    -82.595
-   ],
-   [
-    -55,
-    -76.507
-   ],
-   [
-    -50,
-    -70.352
-   ],
-   [
-    -45,
-    -64.122
-   ],
-   [
-    -40,
-    -57.809
-   ],
-   [
-    -35,
-    -51.4
-   ],
-   [
-    -30,
-    -44.88
-   ],
-   [
-    -25,
-    -38.227
-   ],
-   [
-    -20,
-    -31.412
-   ],
-   [
-    -15,
-    -24.386
-   ],
-   [
-    -10,
-    -17.068
-   ],
-   [
-    -5,
-    -9.274
-   ],
-   [
-    0,
-    0.0
-   ],
-   [
-    5,
-    4.122
-   ],
-   [
-    10,
-    7.586
-   ],
-   [
-    15,
-    10.838
-   ],
-   [
-    20,
-    13.961
-   ],
-   [
-    25,
-    16.99
-   ],
-   [
-    30,
-    19.947
-   ],
-   [
-    35,
-    22.844
-   ],
-   [
-    40,
-    25.693
-   ],
-   [
-    45,
-    28.499
-   ],
-   [
-    50,
-    31.268
-   ],
-   [
-    55,
-    34.003
-   ],
-   [
-    60,
-    36.709
-   ],
-   [
-    65,
-    39.388
-   ],
-   [
-    70,
-    42.042
-   ],
-   [
-    75,
-    44.674
-   ],
-   [
-    80,
-    47.285
-   ],
-   [
-    85,
-    49.876
-   ],
-   [
-    90,
-    52.449
-   ],
-   [
-    95,
-    55.004
-   ],
-   [
-    100,
-    57.544
-   ]
-  ],
-  "params": {
-   "alpha": 0.88,
-   "beta": 0.88,
-   "lambda": 2.25,
-   "nota": "Función de valor de la teoría prospectiva (Kahneman-Tversky). Perder $50 'pesa' 2,25x lo que alegra ganar $50."
-  }
- },
- "08_framing_enfermedad": {
-  "headers": [
-   "encuadre",
-   "opcion",
-   "descripcion",
-   "porcentaje",
-   "tooltip"
-  ],
-  "rows": [
-   [
-    "Ganancia (vidas salvadas)",
-    "Segura",
-    "Salva a 200 con certeza",
-    72,
-    "Enmarcado en vidas SALVADAS, 72% elige lo seguro."
-   ],
-   [
-    "Ganancia (vidas salvadas)",
-    "Riesgosa",
-    "1/3 de salvar a 600, 2/3 de no salvar a nadie",
-    28,
-    ""
-   ],
-   [
-    "Pérdida (muertes)",
-    "Segura",
-    "Mueren 400 con certeza",
-    22,
-    "El MISMO resultado, dicho en MUERTES: solo 22% elige lo seguro."
-   ],
-   [
-    "Pérdida (muertes)",
-    "Riesgosa",
-    "1/3 de que no muera nadie, 2/3 de que mueran 600",
-    78,
-    "La gente se vuelve arriesgada para evitar una pérdida segura."
-   ]
-  ]
- },
- "09_dunning_kruger": {
-  "headers": [
-   "cuartil_real",
-   "competencia_real_pct",
-   "autopercepcion_pct",
-   "tooltip"
-  ],
-  "rows": [
-   [
-    "Inferior (peores)",
-    12,
-    62,
-    "Los peores se ubican cerca del percentil 62: enorme exceso de confianza."
-   ],
-   [
-    "2do cuartil",
-    34,
-    61,
-    "Siguen sobreestimándose."
-   ],
-   [
-    "3er cuartil",
-    63,
-    69,
-    "Casi calibrados."
-   ],
-   [
-    "Superior (mejores)",
-    86,
-    74,
-    "Los mejores se SUBestiman: creen que a otros les fue parecido."
-   ]
-  ]
- },
- "10_mejor_que_promedio": {
-  "headers": [
-   "dominio",
-   "muestra",
-   "pct_arriba_del_promedio",
-   "anio",
-   "fuente"
-  ],
-  "rows": [
-   [
-    "Manejar",
-    "Conductores EE.UU.",
-    93,
-    1981,
-    "Svenson, Acta Psychologica"
-   ],
-   [
-    "Manejar",
-    "Conductores Suecia",
-    80,
-    1981,
-    "Svenson"
-   ],
-   [
-    "Dar clases",
-    "Profesores universitarios",
-    94,
-    1977,
-    "Cross"
-   ],
-   [
-    "Ética laboral",
-    "Trabajadores de negocios",
-    75,
-    2007,
-    "Módulo 13 (cátedra)"
-   ],
-   [
-    "Sentido del humor",
-    "Población general",
-    94,
-    2007,
-    "Módulo 13 (cátedra)"
-   ],
-   [
-    "Performance (top 10%)",
-    "Managers",
-    90,
-    2007,
-    "BusinessWeek poll"
-   ],
-   [
-    "Liderazgo",
-    "Estudiantes (N≈1.000.000)",
-    70,
-    1976,
-    "College Board"
-   ]
-  ]
- },
- "11_efecto_forer": {
-  "headers": [
-   "item",
-   "valor",
-   "detalle"
-  ],
-  "rows": [
-   [
-    "Precisión percibida (Forer, 1948)",
-    "4,26 / 5",
-    "Estudiantes calificaron un perfil GENÉRICO como casi perfecto para ellos."
-   ],
-   [
-    "Creyó recibir una lectura psíquica acertada",
-    "1 de cada 6",
-    "Aun cuando todos los experimentos científicos de poderes psíquicos fallaron (Módulo 13)."
-   ],
-   [
-    "% que cree que el texto fue escrito 'a su medida'",
-    "87%",
-    "Dato prototípico coherente con la literatura Barnum."
-   ]
-  ]
- },
- "11b_texto_barnum": {
-  "headers": [
-   "frase",
-   "tecnica_lectura_en_frio"
-  ],
-  "rows": [
-   [
-    "Tenés una gran necesidad de que los demás te aprecien y admiren.",
-    "Sesgo egocéntrico (halago)"
-   ],
-   [
-    "A veces sos extrovertido y sociable; otras, reservado y cauto.",
-    "Memoria selectiva (afirmaciones opuestas)"
-   ],
-   [
-    "Sentís que todavía no explotaste tu verdadero potencial.",
-    "Apofenia (afirmación ambigua que cada uno completa)"
-   ],
-   [
-    "Tenés tendencia a ser crítico con vos mismo.",
-    "Predictibilidad (rasgo común que parece único)"
-   ]
-  ]
- },
- "12_pareidolia_paranormal": {
-  "headers": [
-   "experiencia",
-   "pct_si",
-   "pct_no",
-   "explicacion_cientifica"
-  ],
-  "rows": [
-   [
-    "Sintió una presencia o energía",
-    37,
-    53,
-    "Atribución de agencia + pareidolia"
-   ],
-   [
-    "Escuchó un sonido o música inexplicable",
-    33,
-    58,
-    "Infrasonido (Tandy, 2000)"
-   ],
-   [
-    "Olió un olor inexplicable",
-    30,
-    62,
-    "Posible fuga / sugestión"
-   ],
-   [
-    "Escuchó la voz de alguien que no estaba",
-    29,
-    61,
-    "Alucinación hipnagógica"
-   ],
-   [
-    "Sintió un cambio de temperatura",
-    28,
-    63,
-    "Corrientes de aire + sugestión"
-   ]
-  ]
- },
- "13_brecha_consenso": {
-  "headers": [
-   "tema",
-   "pct_cientificos",
-   "pct_publico_usa",
-   "pct_publico_arg",
-   "brecha_pp",
-   "beneficiario_del_hueco"
-  ],
-  "rows": [
-   [
-    "Cambio climático humano",
-    87,
-    50,
-    59,
-    37,
-    "Industria fósil / think tanks negacionistas"
-   ],
-   [
-    "Evolución humana",
-    98,
-    65,
-    53,
-    45,
-    "Movimientos creacionistas"
-   ],
-   [
-    "Transgénicos seguros",
-    88,
-    37,
-    null,
-    51,
-    "Marketing 'orgánico' / grupos anti-Monsanto"
-   ],
-   [
-    "Vacunas (seguras)",
-    98,
-    68,
-    null,
-    30,
-    "Movimiento antivacunas"
-   ],
-   [
-    "'La cura del cáncer está oculta'",
-    0,
-    null,
-    67,
-    67,
-    "Pseudoterapias / desconfianza institucional (dato estrella Argentina)"
-   ]
-  ]
- },
- "13b_confianza_vs_ciencia": {
-  "headers": [
-   "afirmacion",
-   "pct_de_acuerdo",
-   "tooltip"
-  ],
-  "rows": [
-   [
-    "'Confío más en mi propia búsqueda que en los científicos'",
-    55,
-    "Más de la mitad pone su intuición por encima del consenso experto."
-   ],
-   [
-    "'La gente más educada se cree más capaz de juzgar la evidencia sola'",
-    null,
-    "Paradoja de Dunning-Kruger a escala social (Módulo 13)."
-   ]
-  ]
- },
- "_metodologia": {
-  "headers": [
-   "dataset",
-   "tipo",
-   "fuente / nota"
-  ],
-  "rows": [
-   [
-    "01_pato_conejo",
-    "prototípico",
-    "Distribución basada en literatura de ambigüedad biestable (n=80)."
-   ],
-   [
-    "02_contexto_cambio",
-    "simulado coherente",
-    "Ilustra el efecto del contexto/priming; titular: 70% cambia."
-   ],
-   [
-    "03_ilusiones_movimiento",
-    "simulado coherente",
-    "Rotating Snakes y otras ilusiones de movimiento ilusorio (Kitaoka)."
-   ],
-   [
-    "04_ilusion_auditiva",
-    "simulado coherente",
-    "Ilusión auditiva ambigua tipo bicicleta/alquiler; el texto en pantalla sesga lo que se oye."
-   ],
-   [
-    "05_confianza_precision",
-    "prototípico",
-    "Paradoja confianza-acierto (n=1120 respuestas). Variable hilo del relato."
-   ],
-   [
-    "06_bate_pelota",
-    "representativo (real)",
-    "Frederick 2005: >50% de estudiantes de elite lo erran; '10 centavos' ≈ 86% de los errores. Distribución representativa."
-   ],
-   [
-    "07_aversion_perdidas",
-    "real (modelo)",
-    "Función de valor de la teoría prospectiva, lambda=2.25, alpha=beta=0.88."
-   ],
-   [
-    "08_framing_enfermedad",
-    "real",
-    "Tversky & Kahneman, 1981 (problema de la enfermedad asiática): 72% vs 22%."
-   ],
-   [
-    "09_dunning_kruger",
-    "simulado coherente",
-    "Forma del estudio Kruger & Dunning 1999 (cuartil inferior ~p62)."
-   ],
-   [
-    "10_mejor_que_promedio",
-    "real",
-    "Svenson 1981; Cross 1977; College Board; etc."
-   ],
-   [
-    "11_efecto_forer",
-    "real + prototípico",
-    "Forer 1948 (4,26/5); 1 de cada 6 (Módulo 13)."
-   ],
-   [
-    "12_pareidolia_paranormal",
-    "real",
-    "YouGov, experiencias paranormales + explicación científica (Módulo 13)."
-   ],
-   [
-    "13_brecha_consenso",
-    "real",
-    "Pew (científicos vs público) + Pulsar UBA (Argentina)."
-   ]
-  ]
- }
 }

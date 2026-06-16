@@ -146,7 +146,7 @@ export const CHARTS = {
     const accent = accentOf(container);
     const option = {
       ...baseOption(accent),
-      title: titleBlock('Una pista, y la mayoría cambia', '% que ve el conejo, antes y después del contexto'),
+      title: titleBlock('Con la pista, ves la otra figura', '% que logra ver el conejo: sin contexto vs. con la pista'),
       grid: { left: 6, right: 16, top: 100, bottom: 24, containLabel: true },
       xAxis: catAxis({ data: rows.map((r) => r.estado) }),
       yAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
@@ -261,45 +261,64 @@ export const CHARTS = {
     requestAnimationFrame(resize);
   },
 
-  /* ---------- G4b · Leer la palabra cambia lo que oís (E4) — claro y directo, 2 barras ---------- */
+  /* ---------- G4b · Leer la palabra cambia lo que oís (E4) — claro: Con vs Sin contexto (suma 100) ---------- */
   '04b_auditiva_con_pista'(container, data, opts) {
     const rows = rowsToObjects(data['04b_auditiva_con_pista']);
     const accent = accentOf(container);
-    const items = rows.map((r) => {
-      const leeBici = /BICICLETA/i.test(r.condicion);
-      return { label: leeBici ? 'Leés «bicicleta»' : 'Leés «alquiler»', value: leeBici ? r.ve_bicicleta_pct : r.ve_alquiler_pct, nota: r.nota };
-    }).reverse();
+    // Orden asc por valor → la barra más alta queda arriba en eje categórico.
+    const items = rows.map((r) => ({ label: r.condicion, value: r.porcentaje, nota: r.nota }))
+      .sort((a, b) => a.value - b.value);
     const option = {
       ...baseOption(accent),
-      title: titleBlock('Leés una palabra y la oís', 'Con el MISMO audio, % que oye justo la palabra que vio antes'),
-      grid: { left: 6, right: 56, top: 96, bottom: 24, containLabel: true },
+      title: titleBlock('El contexto decide lo que oís', '% que oye la palabra sugerida, con y sin pista de texto'),
+      grid: { left: 6, right: 64, top: 96, bottom: 24, containLabel: true },
       xAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
       yAxis: catAxis({ data: items.map((i) => i.label), axisLabel: { color: INK, fontSize: 15 } }),
-      tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong><br>${items[p.dataIndex].nota}` },
+      tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong>: ${p.value}%<br>${items[p.dataIndex].nota}` },
       series: [{
         type: 'bar', barWidth: '46%',
-        data: items.map((i) => ({ value: i.value, itemStyle: { color: accent, borderRadius: [0, 8, 8, 0] } })),
-        label: { show: true, position: 'right', color: INK, fontFamily: DISPLAY, fontSize: 18, fontWeight: 600, formatter: '{c}%' },
+        data: items.map((i) => ({ value: i.value, itemStyle: { color: /Con/i.test(i.label) ? accent : hexA(accent, 0.32), borderRadius: [0, 8, 8, 0] } })),
+        label: { show: true, position: 'right', color: INK, fontFamily: DISPLAY, fontSize: 20, fontWeight: 600, formatter: '{c}%' },
         animationDuration: 1000, animationEasing: 'cubicOut', animationDelay: (i) => i * 150,
       }],
     };
     mountChart(container, option, opts);
   },
 
-  /* ---------- G5 · Cierre de Percepción — ceguera atencional (E5), HTML big-stat ----------
-     Reemplaza al de confianza/acierto: en percepción no hay "respuestas
-     correctas". El cierre es que la atención recorta lo que ves (gorila invisible). */
-  '05_cierre_percepcion'(container, data) {
+  /* ---------- G5 · Cierre de Percepción — ceguera atencional (E5), ANILLO con scroll ----------
+     Gráfico HTML: un anillo (conic-gradient) que se LLENA con el scroll hasta la
+     mitad y un número gigante que cuenta de 0% al ≈50%. La materia es de gráficos
+     y esto da impacto + scroll: quienes contaban pases, la mitad no vio al gorila
+     (Simons & Chabris, 1999). Expone container.__setGorila(p). */
+  '05_cierre_percepcion'(container, data, opts) {
     const rows = rowsToObjects(data['05_cierre_percepcion']);
     const accent = accentOf(container);
-    const main = rows[0];
-    container.classList.add('bigstat');
+    const noVio = rows.find((r) => /no/i.test(r.grupo)) || rows[0];
+    const target = noVio.porcentaje;   // 50
+    container.classList.add('gorilla');
+    container.style.setProperty('--accent', accent);
     container.innerHTML = `
-      <div class="bigstat__num" style="color:${accent}">${main.valor}</div>
-      <p class="bigstat__cap">${main.detalle}</p>
-      <ul class="bigstat__list">
-        ${rows.slice(1).map((r) => `<li>${r.detalle}</li>`).join('')}
-      </ul>`;
+      <p class="gorilla__title">La mitad no vio al gorila</p>
+      <div class="gorilla__ring" style="--deg:0deg">
+        <svg class="gorilla__icon" viewBox="0 0 64 64" aria-hidden="true">
+          <path fill="currentColor" d="M32 8c-7 0-12 4-13 10-5 1-9 5-9 11 0 4 2 7 5 9 0 8 7 14 17 14s17-6 17-14c3-2 5-5 5-9 0-6-4-10-9-11-1-6-6-10-13-10Zm-9 21a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm18 0a3 3 0 1 1 0 6 3 3 0 0 1 0-6ZM24 44c2 2 5 3 8 3s6-1 8-3c-2 3-5 4-8 4s-6-1-8-4Z"/>
+        </svg>
+        <span class="gorilla__num">0%</span>
+        <span class="gorilla__lbl">no vio al gorila</span>
+      </div>
+      <p class="gorilla__cap">De quienes contaban los pases, la mitad no registró un gorila que cruzó la pantalla y se golpeó el pecho.</p>`;
+    const ring = container.querySelector('.gorilla__ring');
+    const num = container.querySelector('.gorilla__num');
+    let last = -1;
+    container.__setGorila = (p) => {
+      const v = Math.round(Math.max(0, Math.min(1, p)) * target);
+      if (v === last) return;
+      last = v;
+      ring.style.setProperty('--deg', (v / 100 * 360) + 'deg');
+      num.textContent = v + '%';
+      container.classList.toggle('is-full', v >= target);
+    };
+    container.__setGorila(opts.reduced ? 1 : 0);
   },
 
   /* ---------- G5 (viejo) · Confianza vs acierto — ya no se usa en E5 ---------- */
