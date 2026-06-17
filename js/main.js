@@ -28,8 +28,8 @@ const portals = [];   // espirales: { sp, section, head, dot, after }
 
 /* Refs cacheadas para el scrub */
 let coverEl = null;
-let introEl = null, duoEl = null;
-let e2Sec = null, e2Fig = null, e2Step = null;
+let introEl = null, duoEl = null, introAfterEl = null;
+let e2Sec = null, e2Fig = null, e2Step = null, e2ChartEl = null, e2ChartStep = null;
 let e3Img = null, e3Step = null, e3TitleCard = null, e3TitleStep = null, e3FinalCard = null;
 let e3bSec = null, waffleEl = null, e3CountEl = null;
 let fmEl = null, e4FmStep = null;
@@ -78,16 +78,22 @@ async function loadData() {
    charts.js (accentOf) lo hereda solo. PERCEPCIÓN no se setea acá a propósito:
    hereda el celeste global #8FD8FF (el mismo azul del título de portada). */
 function setupModuleColors() {
-  const mods = {
-    '#F7943D': ['portal2', 'e6', 'e7', 'e8', 'e9'],                      // Decisión (naranja cálido)
-    '#E11D48': ['portal3', 'sesgos-intro', 'e10', 'e11', 'e12', 'e13', 'cierre'],  // Sesgos
-  };
+  const DECISION = ['portal2', 'e6', 'e7', 'e8', 'e9'];                          // Decisión (naranja cálido)
+  const SESGOS = ['portal3', 'sesgos-intro', 'e10', 'e11', 'e12', 'e13', 'cierre'];
+  const mods = { '#F7943D': DECISION, '#E11D48': SESGOS };
   const soft = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`; };
   for (const [hex, ids] of Object.entries(mods)) {
     for (const id of ids) {
       const el = document.getElementById(id);
       if (el) { el.style.setProperty('--accent', hex); el.style.setProperty('--accent-soft', soft(hex, 0.16)); }
     }
+  }
+  // Decisión NO usa verde/rojo: gan/pérd se distinguen con TONALIDADES del naranja
+  // del módulo (claro = ganancia, profundo = pérdida). Así moneda, filas de apuesta
+  // y gráficos (G7/G8) heredan la identidad del módulo y no rompen el color.
+  for (const id of DECISION) {
+    const el = document.getElementById(id);
+    if (el) { el.style.setProperty('--gain', '#F6C28A'); el.style.setProperty('--loss', '#D9641B'); }
   }
 }
 
@@ -619,9 +625,12 @@ function cacheScrubRefs() {
   coverEl = document.getElementById('portada');
   introEl = document.getElementById('e1');
   duoEl = document.getElementById('duoChart');
+  introAfterEl = document.querySelector('#e1 .intro__after');
   e2Sec = document.getElementById('e2');
   e2Fig = document.getElementById('e2Fig');
   e2Step = document.querySelector('#e2 .step[data-layer="0"]');
+  e2ChartEl = document.querySelector('#e2 [data-chart="02_contexto_cambio"]');
+  e2ChartStep = document.querySelector('#e2 .step[data-layer="1"]');
   e3Img = document.querySelector('#e3 .snakes');
   e3Step = document.querySelector('#e3 .step[data-layer="1"]');
   e3TitleCard = document.getElementById('e3TitleCard');
@@ -682,10 +691,17 @@ function tick() {
     introEl.dataset.state = introEl.getBoundingClientRect().top > 60 ? 'img' : 'chart';
   }
 
-  // E1: en estado gráfico, las barras crecen de 0 al % esperado con el scroll
-  if (introEl && introEl.dataset.state === 'chart' && duoEl && duoEl.__setDuo && !REDUCED) {
-    const p = clamp((sectionProgress(introEl) - 0.04) / 0.76);
-    duoEl.__setDuo(easeOut(p));
+  // E1: en estado gráfico, las barras crecen de 0 al % esperado con el scroll.
+  // Se llenan RÁPIDO (en el primer tramo del scroll); después el texto de cierre
+  // sube y aparece a medida que seguís bajando (sensación de scroll, no de pared).
+  if (introEl && introEl.dataset.state === 'chart' && !REDUCED) {
+    const prog = sectionProgress(introEl);
+    if (duoEl && duoEl.__setDuo) duoEl.__setDuo(easeOut(clamp((prog - 0.03) / 0.26)));
+    if (introAfterEl) {
+      const a = clamp((prog - 0.30) / 0.34);
+      introAfterEl.style.opacity = (0.25 + 0.75 * a).toFixed(3);
+      introAfterEl.style.transform = `translateY(${(34 * (1 - easeOut(a))).toFixed(1)}px)`;
+    }
   }
 
   // E2: la figura gira con el scroll (si toca girar) y aparecen las marcas
@@ -697,6 +713,14 @@ function tick() {
     const deg = state.e2rotate ? (REDUCED ? MAXDEG : easeOut(p) * MAXDEG) : 0;
     e2Fig.style.setProperty('--rot', deg.toFixed(1) + 'deg');
     if (e2Sec) e2Sec.classList.toggle('cues-on', p > (state.e2rotate ? 0.6 : 0.35));
+  }
+
+  // E2 (gráfico del contexto): al llegar, las barras son IDÉNTICAS al gráfico
+  // anterior (Pato 57,5 / Conejo 42,5); al scrollear un poco se vuelcan a la
+  // distribución con la pista (26 / 74) → se ve el efecto del contexto.
+  if (!REDUCED && e2ChartEl && e2ChartEl.__setMorph && e2ChartStep) {
+    const m = clamp((stepScrub(e2ChartStep) - 0.35) / 0.4);
+    e2ChartEl.__setMorph(easeOut(m));
   }
 
   // E3 (snakes): el notch negro sube con el scroll normal; con la pantalla

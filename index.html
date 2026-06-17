@@ -172,7 +172,7 @@
               </button>
             </div>
           </div>
-          <figure class="intro__fig figure-card">
+          <figure class="intro__fig">
             <img src="./assets/840_560.jpg"
                  alt="Figura ambigua de Jastrow: el mismo trazo puede leerse como un pato mirando a la izquierda o como un conejo." />
           </figure>
@@ -270,8 +270,10 @@
       </div>
     </section>
 
-    <!-- ====================== E3b · Waffle: cuántos ven el movimiento ====================== -->
-    <section class="scrolly scrolly--stage" id="e3b" aria-labelledby="e3b-h">
+    <!-- ====================== E3b · Waffle: cuántos ven el movimiento ======================
+         Dos columnas: el texto (izq.) queda alineado con el waffle (der., sticky)
+         en vez de caer al fondo de la pantalla. -->
+    <section class="scrolly" id="e3b" aria-labelledby="e3b-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -387,8 +389,10 @@
       </div>
     </section>
 
-    <!-- ====================== E5 · Cierre del módulo · el gorila invisible · PANTALLA COMPLETA ====================== -->
-    <section class="scrolly scrolly--stage" id="e5" aria-labelledby="e5-h">
+    <!-- ====================== E5 · Cierre del módulo · el gorila invisible ======================
+         Dos columnas: el anillo (der., sticky) aprovecha el ancho y el texto
+         (izq.) lo acompaña; antes era full-bleed con todo el lado derecho vacío. -->
+    <section class="scrolly" id="e5" aria-labelledby="e5-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -429,8 +433,10 @@
       </div>
     </section>
 
-    <!-- ====================== E6 · Bate y pelota ====================== -->
-    <section class="scrolly scrolly--stage" id="e6" aria-labelledby="e6-h">
+    <!-- ====================== E6 · Bate y pelota ======================
+         Dos columnas: el problema (bate + precios, der.) ocupa el ancho y la
+         tarea/explicación van a la izquierda; antes quedaba todo el lado vacío. -->
+    <section class="scrolly" id="e6" aria-labelledby="e6-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -806,8 +812,10 @@
       <div class="scrolly__steps">
         <div class="step is-active" data-layer="0">
           <div class="step__card">
+            <p class="kicker">Una última ilusión · el tablero de Adelson</p>
             <h2 id="cierre-h">No podés apagar la ilusión.</h2>
-            <p class="lede">El tablero te va a seguir mostrando dos grises distintos aunque ya sepas que son exactamente el mismo color.</p>
+            <p class="lede">El cuadrado “oscuro” a plena luz y el cuadrado “claro” dentro de la sombra son <strong>exactamente el mismo gris</strong>. Tu cerebro, en cambio, te muestra dos.</p>
+            <p class="muted">¿Por qué? Ve que ese cuadrado cae bajo la sombra del cilindro y la <em>descuenta</em>: “si está en sombra y aun así se ve así, en realidad tiene que ser más claro”. Corrige la sombra solo, automáticamente. Y no lo podés desactivar —ni ahora que sabés que son el mismo color.</p>
           </div>
         </div>
         <div class="step" data-layer="0">

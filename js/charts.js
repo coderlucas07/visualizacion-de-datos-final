@@ -15,6 +15,14 @@ export function accentOf(el) {
   return v || '#3AA0FF';
 }
 
+/* Lee una CSS var del contenedor (con fallback). Permite que cada módulo defina
+   sus propias tonalidades (p. ej. Decisión sobrescribe --gain/--loss a naranjas)
+   y que el gráfico las herede en vez de hardcodear verde/rojo. */
+export function cssVar(el, name, fallback) {
+  const v = getComputedStyle(el).getPropertyValue(name).trim();
+  return v || fallback;
+}
+
 const INK = '#E4EAEF';
 const INK_DIM = '#94A1AC';
 const INK_FAINT = '#5C6873';
@@ -142,25 +150,46 @@ export const CHARTS = {
     container.__setDuo(opts.reduced ? 1 : 0);
   },
 
-  /* ---------- G2 · Contexto antes/después (E2) ---------- */
+  /* ---------- G2 · Contexto antes/después (E2) — MISMAS barras que G1, que se VUELCAN con el scroll ----------
+     Idéntico formato a G1 (dos barras Pato/Conejo). Arranca en los valores de la
+     primera mirada (= el gráfico anterior) y, al scrollear, las barras se vuelcan
+     a la distribución CON la pista (26% / 74%): se ve el efecto directo del
+     contexto sobre la percepción. Expone container.__setMorph(p). */
   '02_contexto_cambio'(container, data, opts) {
-    const rows = rowsToObjects(data['02_contexto_cambio']);
-    const accent = accentOf(container);
-    const option = {
-      ...baseOption(accent),
-      title: titleBlock('Con la pista, ves la otra figura', '% que logra ver el conejo: sin contexto vs. con la pista'),
-      grid: { left: 6, right: 16, top: 100, bottom: 24, containLabel: true },
-      xAxis: catAxis({ data: rows.map((r) => r.estado) }),
-      yAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
-      tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong><br>${p.data.tip}` },
-      series: [{
-        type: 'bar', barWidth: '40%',
-        data: rows.map((r, i) => ({ value: r.ve_conejo_pct, tip: `Ve conejo: ${r.ve_conejo_pct}%. ${r.nota}`, itemStyle: { color: i === rows.length - 1 ? accent : hexA(accent, 0.4), borderRadius: [8, 8, 0, 0] } })),
-        label: { show: true, position: 'top', color: INK, fontFamily: DISPLAY, fontSize: 26, fontWeight: 600, formatter: (p) => `${p.value}%` },
-        animationDuration: 1200, animationEasing: 'cubicOut', animationDelay: (i) => i * 260,
-      }],
+    const base = rowsToObjects(data['01_pato_conejo']);          // estado inicial = gráfico anterior
+    const ctxRows = rowsToObjects(data['02_contexto_cambio']);
+    const withCtx = ctxRows.find((r) => /con/i.test(r.estado)) || ctxRows[ctxRows.length - 1];
+    const pato0 = (base.find((r) => /pato/i.test(r.respuesta)) || {}).porcentaje ?? 57.5;
+    const conejo0 = (base.find((r) => /conejo/i.test(r.respuesta)) || {}).porcentaje ?? 42.5;
+    const pato1 = withCtx.ve_pato_pct, conejo1 = withCtx.ve_conejo_pct;   // 26 / 74
+    const fmt = (v) => String(Math.round(v * 10) / 10).replace('.', ',');
+
+    container.classList.add('duo-morph');
+    container.innerHTML = `
+      <p class="duo-morph__state"><span data-state-off>Primera mirada, sin pista</span><span data-state-on>Con la pista de contexto</span></p>
+      <div class="duo">
+        <div class="duo__item" data-k="pato">
+          <div class="duo__track"><div class="duo__bar"></div><span class="duo__pct">0%</span></div>
+          <span class="duo__name">Pato</span>
+        </div>
+        <div class="duo__item duo__item--max" data-k="conejo">
+          <div class="duo__track"><div class="duo__bar"></div><span class="duo__pct">0%</span></div>
+          <span class="duo__name">Conejo</span>
+        </div>
+      </div>`;
+    const get = (k) => { const it = container.querySelector(`.duo__item[data-k="${k}"]`); return { track: it.querySelector('.duo__track'), pct: it.querySelector('.duo__pct') }; };
+    const pato = get('pato'), conejo = get('conejo');
+    let last = -1;
+    container.__setMorph = (p) => {
+      p = Math.max(0, Math.min(1, p));
+      if (p === last) return; last = p;
+      const pv = pato0 + (pato1 - pato0) * p;
+      const cv = conejo0 + (conejo1 - conejo0) * p;
+      pato.track.style.setProperty('--p', (pv / 100).toFixed(4)); pato.pct.textContent = fmt(pv) + '%';
+      conejo.track.style.setProperty('--p', (cv / 100).toFixed(4)); conejo.pct.textContent = fmt(cv) + '%';
+      container.classList.toggle('is-on', p >= 0.5);
     };
-    mountChart(container, option, opts);
+    container.__setMorph(opts.reduced ? 1 : 0);
   },
 
   /* ---------- G3 · Waffle 100 personas (E3) — HTML, se pinta con el scroll ---------- */
@@ -206,7 +235,7 @@ export const CHARTS = {
   '04_ilusion_auditiva'(container, data, opts) {
     const rows = rowsToObjects(data['04_ilusion_auditiva']);
     const accent = accentOf(container);
-    const second = INK_DIM;
+    const second = INK;   // alquiler en blanco (antes gris tenue, costaba leerlo)
     const bici = rows.find((r) => /Bicicleta/i.test(r.palabra_escuchada)) || rows[0];
     const alq = rows.find((r) => /Alquiler/i.test(r.palabra_escuchada)) || rows[1];
     const pBici = bici.porcentaje, pAlq = alq.porcentaje;
@@ -397,12 +426,15 @@ export const CHARTS = {
   '07_aversion_perdidas'(container, data, opts) {
     const sheet = data['07_aversion_perdidas'];
     const rows = rowsToObjects(sheet);
+    const accent = accentOf(container);
+    const gain = cssVar(container, '--gain', GAIN);   // tonalidad clara del módulo
+    const loss = cssVar(container, '--loss', LOSS);   // tonalidad profunda del módulo
     const at = (m) => { const r = rows.find((x) => x.resultado_monetario === m); return r ? Math.abs(r.valor_subjetivo) : 0; };
     const joy = at(50) || 35;          // alegría de ganar $50
     const pain = at(-50) || 79;        // dolor de perder $50 (≈ 2,25× la alegría)
     const lim = pain * 1.95;           // deja aire en los extremos para los rótulos
     const option = {
-      ...baseOption(GAIN),
+      ...baseOption(accent),
       title: titleBlock('Perder pesa el doble que ganar', 'Cuánto pesa, para tu cerebro, ganar o perder los mismos $50'),
       grid: { left: 12, right: 12, top: 104, bottom: 30, containLabel: true },
       xAxis: {
@@ -415,7 +447,7 @@ export const CHARTS = {
         axisLine: { show: false }, axisTick: { show: false }, axisLabel: { show: false },
       },
       tooltip: {
-        ...baseOption(GAIN).tooltip, trigger: 'item',
+        ...baseOption(accent).tooltip, trigger: 'item',
         formatter: (p) => (p.dataIndex === 1
           ? '<strong>Ganar $50</strong><br>Se siente bien… pero moderado.'
           : '<strong>Perder $50</strong><br>Duele casi el <strong>doble</strong> de lo que alegra ganarlos.'),
@@ -426,14 +458,14 @@ export const CHARTS = {
           show: true, fontFamily: DISPLAY, fontSize: 14, lineHeight: 18,
           rich: {
             t: { fontFamily: DISPLAY, fontWeight: 600, fontSize: 15, color: INK, lineHeight: 19 },
-            g: { fontFamily: FONT, fontSize: 12, color: GAIN, lineHeight: 16 },
-            l: { fontFamily: FONT, fontSize: 12, color: LOSS, lineHeight: 16 },
+            g: { fontFamily: FONT, fontSize: 12, color: gain, lineHeight: 16 },
+            l: { fontFamily: FONT, fontSize: 12, color: loss, lineHeight: 16 },
           },
         },
         data: [
-          { value: -pain, itemStyle: { color: LOSS, borderRadius: [6, 0, 0, 6] },       // Perdés → izquierda
+          { value: -pain, itemStyle: { color: loss, borderRadius: [6, 0, 0, 6] },        // Perdés → izquierda
             label: { position: 'left', formatter: '{t|Perdés $50}\n{l|casi el DOBLE de dolor}' } },
-          { value: joy, itemStyle: { color: GAIN, borderRadius: [0, 6, 6, 0] },          // Ganás → derecha
+          { value: joy, itemStyle: { color: gain, borderRadius: [0, 6, 6, 0] },          // Ganás → derecha
             label: { position: 'right', formatter: '{t|Ganás $50}\n{g|la alegría de ganar}' } },
         ],
         markLine: {
@@ -443,9 +475,9 @@ export const CHARTS = {
           data: [
             { xAxis: 0, label: { position: 'insideEndTop', formatter: 'mismos $50', color: INK_DIM } },
             // línea espejo: hasta acá el dolor sería "igual" que la alegría; la barra
-            // roja la pasa de largo → el resto es el dolor de más (lo hace el doble).
-            { xAxis: -joy, lineStyle: { color: hexA(GAIN, 0.7), type: 'dashed', width: 1.5 },
-              label: { position: 'insideEndBottom', formatter: 'igual que ganar', color: GAIN } },
+            // de pérdida la pasa de largo → el resto es el dolor de más (lo hace el doble).
+            { xAxis: -joy, lineStyle: { color: hexA(accent, 0.7), type: 'dashed', width: 1.5 },
+              label: { position: 'insideEndBottom', formatter: 'igual que ganar', color: gain } },
           ],
         },
         animationDuration: 1300, animationEasing: 'elasticOut', animationDelay: (i) => i * 220,
@@ -460,19 +492,22 @@ export const CHARTS = {
      72% a 22%. Dos barras (verde = vidas / rojo = muertes) lo dejan a la vista. */
   '08_framing_enfermedad'(container, data, opts) {
     const rows = rowsToObjects(data['08_framing_enfermedad']);
+    const accent = accentOf(container);
+    const gain = cssVar(container, '--gain', GAIN);   // tonalidad clara (vidas salvadas)
+    const loss = cssVar(container, '--loss', LOSS);   // tonalidad profunda (muertes)
     const find = (f, o) => rows.find((r) => r.encuadre.includes(f) && r.opcion === o) || { porcentaje: 0, descripcion: '' };
     const items = [
-      { label: 'Contado en\n«vidas salvadas»', value: find('vidas', 'Segura').porcentaje, color: GAIN, desc: find('vidas', 'Segura').descripcion },
-      { label: 'Contado en\n«muertes»', value: find('muertes', 'Segura').porcentaje, color: LOSS, desc: find('muertes', 'Segura').descripcion },
+      { label: 'Contado en\n«vidas salvadas»', value: find('vidas', 'Segura').porcentaje, color: gain, desc: find('vidas', 'Segura').descripcion },
+      { label: 'Contado en\n«muertes»', value: find('muertes', 'Segura').porcentaje, color: loss, desc: find('muertes', 'Segura').descripcion },
     ];
     const option = {
-      ...baseOption(GAIN),
+      ...baseOption(accent),
       title: titleBlock('El mismo plan, decisión opuesta', '% que elige el plan SEGURO según cómo se cuenta el resultado'),
       grid: { left: '26%', right: '26%', top: 104, bottom: 40, containLabel: true },
       xAxis: catAxis({ data: items.map((i) => i.label), axisLabel: { color: INK, fontSize: 13, lineHeight: 17, interval: 0 } }),
       yAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
       tooltip: {
-        ...baseOption(GAIN).tooltip, trigger: 'axis', axisPointer: { type: 'shadow' },
+        ...baseOption(accent).tooltip, trigger: 'axis', axisPointer: { type: 'shadow' },
         formatter: (ps) => { const it = items[ps[0].dataIndex]; return `<strong>Plan seguro</strong> · ${it.desc}<br>Lo elige el <strong>${it.value}%</strong>`; },
       },
       series: [{
@@ -515,7 +550,10 @@ export const CHARTS = {
       ...baseOption(accent), animation: false,
       title: titleBlock('Los que menos saben, más se creen', 'Lo que la gente cree que sabe vs. lo que realmente sabe'),
       grid: { left: 10, right: 86, top: 132, bottom: 30, containLabel: true },
-      legend: { data: ['Lo que creen que saben', 'Lo que realmente saben'], top: 78, textStyle: { color: INK, fontSize: 15, fontFamily: FONT }, itemWidth: 26, itemHeight: 14, itemGap: 24, icon: 'roundRect' },
+      // icon 'line' → la leyenda dibuja CADA serie con su lineStyle: "creen"
+      // como línea sólida naranja y "saben" como línea PUNTEADA gris (así la
+      // leyenda indica que es la línea de puntos, no un bloque naranja).
+      legend: { data: ['Lo que creen que saben', 'Lo que realmente saben'], top: 78, textStyle: { color: INK, fontSize: 15, fontFamily: FONT }, itemWidth: 36, itemHeight: 12, itemGap: 24, icon: 'line' },
       xAxis: {
         type: 'value', min: 0, max: 3, interval: 1,
         axisLine: { lineStyle: { color: LINE } }, axisTick: { show: false }, splitLine: { show: false },
@@ -526,7 +564,7 @@ export const CHARTS = {
       series: [
         {
           name: 'Lo que creen que saben', type: 'line', smooth: true, symbol: 'none', data: selfD,
-          lineStyle: { width: 3.5, color: accent }, z: 3,
+          lineStyle: { width: 3.5, color: accent }, itemStyle: { color: accent }, z: 3,
           endLabel: { show: true, formatter: 'CREEN', color: accent, fontFamily: DISPLAY, fontWeight: 700, fontSize: 16, distance: 10 },
           markLine: {
             silent: true, symbol: ['none', 'arrow'], symbolSize: 7,
@@ -537,7 +575,7 @@ export const CHARTS = {
         },
         {
           name: 'Lo que realmente saben', type: 'line', smooth: true, symbol: 'none', data: realD,
-          lineStyle: { width: 3, color: INK_DIM, type: 'dashed' },
+          lineStyle: { width: 3, color: INK_DIM, type: 'dashed' }, itemStyle: { color: INK_DIM },
           endLabel: { show: true, formatter: 'SABEN', color: INK_DIM, fontFamily: DISPLAY, fontWeight: 700, fontSize: 16, distance: 10 },
         },
       ],
@@ -600,16 +638,23 @@ export const CHARTS = {
       </ul>`;
   },
 
-  /* ---------- G11b · Texto Barnum anotado (E11, capa 2) — HTML ---------- */
+  /* ---------- G11b · Texto Barnum anotado (E11, capa 2) — HTML ----------
+     Cada frase del texto "tuyo" + el truco de lectura en frío que la hace
+     parecer personal. Rediseñado a tarjetas numeradas legibles (la frase en
+     Spectral, el truco con una etiqueta clara), en vez de una lista apretada. */
   '11b_texto_barnum'(container, data) {
     const rows = rowsToObjects(data['11b_texto_barnum']);
-    const accent = accentOf(container);
     container.classList.add('annotated');
-    container.innerHTML = rows.map((r) => `
-      <div class="annotated__item">
-        <p class="annotated__frase">“${r.frase}”</p>
-        <p class="annotated__tech" style="color:${accent}">↳ ${r.tecnica_lectura_en_frio}</p>
-      </div>`).join('');
+    container.innerHTML = `
+      <p class="annotated__head">Cada frase usa un truco distinto</p>
+      ${rows.map((r, i) => `
+        <div class="annotated__item">
+          <span class="annotated__n">${i + 1}</span>
+          <div class="annotated__body">
+            <p class="annotated__frase">“${r.frase}”</p>
+            <p class="annotated__tech"><span class="annotated__tag">El truco</span>${r.tecnica_lectura_en_frio}</p>
+          </div>
+        </div>`).join('')}`;
   },
 
   /* ---------- G12 · Pareidolia / paranormal (E12) ---------- */

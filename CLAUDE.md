@@ -37,6 +37,47 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   gira en E7 (`.coin`, cara verde/ceca roja); G9 leyendas más grandes (CREEN/SABEN fontSize 16, leyenda 15); G8
   con las dos barras juntas (grid 26%/26%).
 
+## ⚡ ACTUALIZACIÓN jun-2026 (6ª vuelta — pulido de gráficos y espacios) — MANDA sobre todo lo de abajo
+- **Pato-conejo = CONTORNO, no tarjeta de papel:** la figura de Jastrow (E1 y E2) se invierte
+  (`filter: invert(1) contrast/brightness` + `mix-blend-mode: screen`) → el fondo blanco del JPG
+  desaparece y queda solo el contorno blanco integrado al fondo oscuro; por eso se agrandó mucho
+  (E1 `min(86vh,100%)`, grid 4fr/8fr; E2 `.e2-figwrap min(60vh,78%)`). Se le sacó `figure-card` a E1
+  y se anuló el papel en `#e2 .figure-card`.
+- **G1 (pato vs conejo):** barras y gráfico **más grandes** (`.duo height min(56vh,540px)`, tracks más
+  anchos). Las barras se **llenan rápido** (primer ~26% del scroll, antes /0.76) y después el texto de
+  cierre (`.intro__after`) **sube y aparece** con el scroll (scrub en `tick()`). `.intro` bajó a 200vh
+  (menos scroll muerto).
+- **G2 (contexto) rehecho:** ya NO es ECharts. Ahora son **las mismas barras duo que G1** (HTML,
+  `.duo-morph` + `container.__setMorph(p)`): al llegar son **idénticas al gráfico anterior**
+  (Pato 57,5 / Conejo 42,5, leídas de `01_pato_conejo`) y al scrollear un poco se **vuelcan** a la
+  distribución con la pista (**26 / 74**, de `02_contexto_cambio` "Con contexto"). Un rótulo de estado
+  arriba cambia "sin pista → con la pista". Scrub en `tick()` por `stepScrub(#e2` step layer1`)`.
+- **E3b (waffle 96/100):** pasó de `scrolly--stage` a **dos columnas** (`.scrolly`): el texto ya no cae
+  al fondo, queda alineado con el waffle (sticky a la derecha).
+- **E4 (onda FM):** la onda se **achicó** (`.fmwave max-width 880px / max-height 60vh`, centrada) y el
+  **dial tiene mucho más contraste** (bici celeste pleno, alquiler en blanco con borde; números más
+  grandes). En el canvas, el tramo "alquiler" pasó de gris tenue a **blanco** (`second = INK`).
+- **E5 (gorila):** pasó a **dos columnas** (aprovecha el lado derecho que quedaba negro). Se ocultan
+  `.gorilla__title/__cap` (el narrativo va en la columna de texto) y se achicó el número + rótulo para
+  que **no se superpongan** con el anillo.
+- **E6 (bate):** pasó a **dos columnas** (problema a la derecha, tarea/explicación a la izquierda; ya no
+  queda espacio negro). Foto del bate y textos **más grandes** (`#e6 .batball-photo min(34vh,420px)`).
+- **DECISIÓN sin verde/rojo:** regla nueva → **cada módulo usa SOLO sus colores**. Decisión define
+  `--gain`/`--loss` como **tonalidades del naranja** (claro `#F6C28A` = ganancia, profundo `#D9641B` =
+  pérdida) en `setupModuleColors()`. La moneda (E7), las filas de apuesta y G7/G8 las heredan
+  (charts.js las lee con `cssVar()`; ya no usa los `GAIN/LOSS` verde/rojo). **No volver a meter verde/rojo
+  en Decisión** (ni en ningún módulo que no sea su color).
+- **G9 (Dunning-Kruger):** la leyenda de "lo que realmente saben" ahora se dibuja como **línea punteada
+  gris** (legend `icon:'line'` + `itemStyle.color` por serie), no como bloque naranja.
+- **SESGOS:** los carteles de las escenas full-bleed (sesgos-intro, E10, E13, cierre) son **más grandes,
+  centrados y con más texto legible** (`max-width 46rem`, `text-align:center`, lede/muted más grandes).
+- **E11 (frases Barnum, capa 2):** la slide "cada frase explota un sesgo" se **rediseñó**: tarjetas
+  numeradas, frase en Spectral grande + el truco con etiqueta clara (fuente de cuerpo, no mono apretado).
+- **Cierre (tablero de Adelson):** se le **agregó contexto y explicación** (descuenta la sombra → corrige
+  solo; no se puede apagar). El SVG no trae rótulos A/B, así que el copy nombra los cuadrados por su
+  posición (a plena luz vs. en sombra), no por letras.
+- **Scroll horizontal (E12):** NO se tocó (quedó excelente).
+
 ## ⚡ ACTUALIZACIÓN jun-2026 (5ª vuelta — Decisión: narrativa + colores) — MANDA sobre todo lo de abajo
 - **NARRATIVA = objetivo principal** (junto con gráficos/colores/tipografía/scroll): cada módulo conecta con el
   anterior. La teórica (Módulo 12) lo dice literal: abre con "¿cómo hace el cerebro para decidir qué es lo que
