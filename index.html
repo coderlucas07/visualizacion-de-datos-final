@@ -10,7 +10,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Unbounded:wght@200;300;400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js" defer></script>
   <link rel="stylesheet" href="./css/styles.css" />
 </head>
@@ -20,7 +20,7 @@
   <!-- ============================ MENÚ DE MÓDULOS ============================ -->
   <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu">
     <span class="menu-btn__icon" aria-hidden="true"><span></span><span></span><span></span></span>
-    Índice
+    Menu
   </button>
   <nav class="menu" id="menu" aria-label="Índice de módulos">
     <div class="menu__panel">
@@ -98,6 +98,21 @@
           <p class="cover__go">Seguí bajando</p>
         </div>
 
+        <audio id="coverAudio" src="./assets/audio/riser.mp3" preload="auto"></audio>
+        <button class="cover__sound" id="coverSound" type="button" aria-pressed="false" aria-label="Activar el sonido">
+          <svg class="ico-off" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="3 9 7 9 12 4 12 20 7 15 3 15" />
+            <line x1="16" y1="9" x2="22" y2="15" /><line x1="22" y1="9" x2="16" y2="15" />
+          </svg>
+          <svg class="ico-on" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="3 9 7 9 12 4 12 20 7 15 3 15" />
+            <path d="M16 8a5 5 0 0 1 0 8" /><path d="M19 5a9 9 0 0 1 0 14" />
+          </svg>
+          <span class="cover__sound-txt">Sonido</span>
+        </button>
+
         <button class="cover__replay" id="coverReplay" type="button" aria-label="Reiniciar la animación">
           <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor"
                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -120,6 +135,9 @@
             <h2 class="portal__name">Percepción</h2>
             <p class="portal__sub">No ves lo que creés que ves.</p>
           </div>
+        </div>
+        <div class="modot" aria-hidden="true">
+          <span class="modot__d modot__d--on"></span><span class="modot__d"></span><span class="modot__d"></span>
         </div>
       </div>
     </section>
@@ -179,7 +197,7 @@
     </section>
 
     <!-- ====================== E2 · La pista (gira con el scroll) ====================== -->
-    <section class="scrolly" id="e2" aria-labelledby="e2-h">
+    <section class="scrolly scrolly--stage" id="e2" aria-labelledby="e2-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -253,7 +271,7 @@
     </section>
 
     <!-- ====================== E3b · Waffle: cuántos ven el movimiento ====================== -->
-    <section class="scrolly" id="e3b" aria-labelledby="e3b-h">
+    <section class="scrolly scrolly--stage" id="e3b" aria-labelledby="e3b-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -274,7 +292,7 @@
     </section>
 
     <!-- ====================== E4 · También el oído (INTERACCIÓN 2) ====================== -->
-    <section class="scrolly" id="e4" aria-labelledby="e4-h">
+    <section class="scrolly scrolly--stage" id="e4" aria-labelledby="e4-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -369,8 +387,8 @@
       </div>
     </section>
 
-    <!-- ====================== E5 · Cierre del módulo · el gorila invisible ====================== -->
-    <section class="scrolly" id="e5" aria-labelledby="e5-h">
+    <!-- ====================== E5 · Cierre del módulo · el gorila invisible · PANTALLA COMPLETA ====================== -->
+    <section class="scrolly scrolly--stage" id="e5" aria-labelledby="e5-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -396,25 +414,23 @@
     </section>
 
     <!-- ====================== PORTAL 2 · espiral → Decisión ====================== -->
-    <section class="portal" id="portal2">
+    <section class="portal portal--plain" id="portal2">
       <div class="portal__sticky">
-        <canvas class="portal__canvas" data-spiral aria-hidden="true"></canvas>
-        <div class="portal__head">
+        <div class="portal__head portal__head--static">
           <div class="portal__head-in">
             <p class="portal__kicker">Módulo II</p>
             <h2 class="portal__name">Decisión</h2>
-            <p class="portal__sub">El mismo cerebro que armó lo que veías ahora elige por vos.</p>
+            <p class="portal__sub">Lo que viste lo construyó tu cerebro. ¿Pasa lo mismo con lo que elegís?</p>
           </div>
         </div>
-        <div class="portal__dot" aria-hidden="true"></div>
-        <div class="portal__after">
-          <p>Lo que viste lo <em>construyó</em> tu cerebro. ¿Pasa lo mismo con tus <em>decisiones</em>?</p>
+        <div class="modot" aria-hidden="true">
+          <span class="modot__d"></span><span class="modot__d modot__d--on"></span><span class="modot__d"></span>
         </div>
       </div>
     </section>
 
     <!-- ====================== E6 · Bate y pelota ====================== -->
-    <section class="scrolly" id="e6" aria-labelledby="e6-h">
+    <section class="scrolly scrolly--stage" id="e6" aria-labelledby="e6-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -456,12 +472,18 @@
     </section>
 
     <!-- ====================== E7 · Aversión a las pérdidas ====================== -->
-    <section class="scrolly" id="e7" aria-labelledby="e7-h">
+    <section class="scrolly scrolly--stage" id="e7" aria-labelledby="e7-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
             <div class="statement gamble">
               <p class="statement__eyebrow" id="e7-h">Una moneda al aire</p>
+              <div class="coin" aria-hidden="true">
+                <div class="coin__inner">
+                  <div class="coin__face coin__face--cara"><span>+$50</span><small>Cara</small></div>
+                  <div class="coin__face coin__face--ceca"><span>−$50</span><small>Ceca</small></div>
+                </div>
+              </div>
               <p class="gamble__row gamble__row--win">Sale <strong>cara</strong> <small>(50%)</small> → ganás <span>+$50</span></p>
               <p class="gamble__row gamble__row--lose">Sale <strong>ceca</strong> <small>(50%)</small> → perdés <span>−$50</span></p>
               <p class="statement__q">¿Aceptás jugar?</p>
@@ -499,8 +521,8 @@
       </div>
     </section>
 
-    <!-- ====================== E8 · Encuadre (framing) ====================== -->
-    <section class="scrolly" id="e8" aria-labelledby="e8-h">
+    <!-- ====================== E8 · Encuadre (framing) · PANTALLA COMPLETA ====================== -->
+    <section class="scrolly scrolly--stage" id="e8" aria-labelledby="e8-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -552,8 +574,8 @@
       </div>
     </section>
 
-    <!-- ====================== E9 · Dunning-Kruger (cierre del módulo) ====================== -->
-    <section class="scrolly" id="e9" aria-labelledby="e9-h">
+    <!-- ====================== E9 · Dunning-Kruger (cierre del módulo) · PANTALLA COMPLETA ====================== -->
+    <section class="scrolly scrolly--stage" id="e9" aria-labelledby="e9-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -585,25 +607,23 @@
     </section>
 
     <!-- ====================== PORTAL 3 · espiral → Sesgos ====================== -->
-    <section class="portal" id="portal3">
+    <section class="portal portal--plain" id="portal3">
       <div class="portal__sticky">
-        <canvas class="portal__canvas" data-spiral aria-hidden="true"></canvas>
-        <div class="portal__head">
+        <div class="portal__head portal__head--static">
           <div class="portal__head-in">
             <p class="portal__kicker">Módulo III</p>
             <h2 class="portal__name">Sesgos</h2>
-            <p class="portal__sub">Creer es rellenar lo ambiguo.</p>
+            <p class="portal__sub">Creer es rellenar lo ambiguo —y otros lo saben, y lo usan.</p>
           </div>
         </div>
-        <div class="portal__dot" aria-hidden="true"></div>
-        <div class="portal__after">
-          <p>Y otros lo saben. <em>Y lo usan.</em></p>
+        <div class="modot" aria-hidden="true">
+          <span class="modot__d"></span><span class="modot__d"></span><span class="modot__d modot__d--on"></span>
         </div>
       </div>
     </section>
 
     <!-- ====================== Intro · ¿Qué es un sesgo? ====================== -->
-    <section class="scrolly" id="sesgos-intro" aria-labelledby="si-h">
+    <section class="scrolly scrolly--stage" id="sesgos-intro" aria-labelledby="si-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -641,8 +661,8 @@
       </div>
     </section>
 
-    <!-- ====================== E10 · Mejor que el promedio ====================== -->
-    <section class="scrolly" id="e10" aria-labelledby="e10-h">
+    <!-- ====================== E10 · Mejor que el promedio · PANTALLA COMPLETA ====================== -->
+    <section class="scrolly scrolly--stage" id="e10" aria-labelledby="e10-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -704,39 +724,47 @@
     </section>
 
     <!-- ====================== E12 · Pareidolia / apofenia ====================== -->
-    <section class="scrolly" id="e12" aria-labelledby="e12-h">
-      <div class="scrolly__graphic">
-        <div class="viz">
-          <div class="viz__layer is-active" data-layer="0">
-            <div class="faces">
-              <img src="./assets/cafe-con-cara.jpg" alt="Una 'cara' formada por la espuma de un café." />
-              <img src="./assets/450_1000.webp" alt="Una 'cara' que aparece en la textura de una pared." />
-              <img src="./assets/blog_caras.jpg" alt="La famosa 'cara' en una formación rocosa de Marte." />
+    <!-- E12 en SCROLL HORIZONTAL: el track (título → 3 caras → gráfico) se recorre
+         de costado con el scroll vertical (transform en tick(), ref e12Track). -->
+    <section class="hscroll" id="e12" aria-labelledby="e12-h">
+      <div class="hscroll__sticky">
+        <div class="hscroll__track" id="e12Track">
+
+          <div class="hpanel hpanel--intro">
+            <div class="hpanel__text">
+              <p class="kicker">Caras y fantasmas</p>
+              <h2 id="e12-h">El cerebro que ve fantasmas.</h2>
+              <p class="lede">Somos tan buenos detectando patrones que los vemos donde no hay: una cara en un enchufe, una presencia en una habitación vacía.</p>
+              <p class="hscroll__cue">Seguí bajando — esto se mueve de costado →</p>
             </div>
           </div>
-          <div class="viz__layer" data-layer="1">
-            <div class="viz__chart"><div class="chart" data-chart="12_pareidolia_paranormal" role="img" aria-label="Muchas personas reportan experiencias paranormales que tienen explicación científica."></div></div>
+
+          <figure class="hpanel hpanel--face">
+            <img src="./assets/cafe-con-cara.jpg" alt="Una 'cara' formada por la espuma de un café." />
+            <figcaption>Una cara en la espuma de un café.</figcaption>
+          </figure>
+
+          <figure class="hpanel hpanel--face">
+            <img src="./assets/450_1000.webp" alt="Una 'cara' que aparece en la textura de una pared." />
+            <figcaption>Una cara en la textura de una pared.</figcaption>
+          </figure>
+
+          <figure class="hpanel hpanel--face">
+            <img src="./assets/blog_caras.jpg" alt="La famosa 'cara' en una formación rocosa de Marte." />
+            <figcaption>La famosa “cara” en una roca de Marte.</figcaption>
+          </figure>
+
+          <div class="hpanel hpanel--chart">
+            <div class="hpanel__chartwrap"><div class="chart" data-chart="12_pareidolia_paranormal" role="img" aria-label="Muchas personas reportan experiencias paranormales que tienen explicación científica."></div></div>
+            <p class="hpanel__note">El mismo cerebro que vio moverse a las víboras quietas encuentra fantasmas en el ruido. Cada experiencia “paranormal” tiene explicación: pareidolia, infrasonido, alucinación hipnagógica. Pasá el cursor por las barras.</p>
           </div>
-        </div>
-      </div>
-      <div class="scrolly__steps">
-        <div class="step is-active" data-layer="0">
-          <div class="step__card">
-            <h2 id="e12-h">El cerebro que ve fantasmas.</h2>
-            <p class="lede">Somos tan buenos detectando patrones que los vemos donde no hay: una cara en un enchufe, una presencia en una habitación vacía.</p>
-          </div>
-        </div>
-        <div class="step" data-layer="1">
-          <div class="step__card">
-            <p class="lede">El mismo cerebro que encontró movimiento en las víboras quietas encuentra fantasmas en el ruido.</p>
-            <p class="muted">Cada experiencia “paranormal” tiene una explicación conocida: pareidolia, infrasonido, alucinación hipnagógica. Pasá el cursor por las barras.</p>
-          </div>
+
         </div>
       </div>
     </section>
 
     <!-- ====================== E13 · La brecha con la ciencia ====================== -->
-    <section class="scrolly" id="e13" aria-labelledby="e13-h">
+    <section class="scrolly scrolly--stage" id="e13" aria-labelledby="e13-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -767,7 +795,7 @@
     </section>
 
     <!-- ====================== CIERRE · Checker Shadow ====================== -->
-    <section class="scrolly" id="cierre" aria-labelledby="cierre-h">
+    <section class="scrolly scrolly--stage" id="cierre" aria-labelledby="cierre-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">

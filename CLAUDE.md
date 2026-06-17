@@ -14,6 +14,29 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   código pero no este archivo, el contexto del resto queda desactualizado → siempre van juntos.
 - Si algo de acá ya no es cierto, corregilo (no agregues notas sueltas que se contradigan).
 
+## ⚡ ACTUALIZACIÓN jun-2026 (6ª vuelta — TIPOGRAFÍA + ESTRUCTURA) — MANDA sobre todo lo de abajo
+- **TIPOGRAFÍA = 3 familias con intención (se eliminó Unbounded):** **Spectral** (serif) para IMPACTO + TÍTULOS
+  + CITAS (las preguntas van en itálica); **Hanken Grotesk** para CUERPO (ledes, apoyo, subtítulos y ejes de
+  gráficos); **IBM Plex Mono** para DATOS/FUENTES/UI (kickers, citas de dataset, menú, botones). `--font-hero` y
+  `--font-display` apuntan ambos a Spectral; se diferencian por peso (600/700) y estilo. Pesos de los títulos
+  subidos (Spectral pide más cuerpo que Unbounded). Los gráficos (charts.js) ya usaban este sistema.
+- **ESTRUCTURA: el FULL-SCREEN es la nueva BASE (se descartó "texto izq / gráfico der con mucho negro").**
+  - **`.scrolly--stage` = visualización a PANTALLA COMPLETA con texto flotante:** el visual (sticky) ocupa todo
+    el viewport, CENTRADO, y los pasos flotan como panel abajo-izquierda (scrim + blur, aparecen con el scroll).
+    Aplicado a **E2, E3b, E4, E5, E6, E7, E8, E9, E10, E13, sesgos-intro, cierre** (E1 y E11 siguen aparte).
+    `initOne()` oculta el título interno del gráfico (`title:{show:false}`) en stage (el panel es el titular).
+    Centrado: `.viz__chart`/`.gorilla` con place-items/align-content center; en los planteos con botones
+    (`#e6/#e7/#e8 .viz__layer[data-layer="0"]`) se centra en la mitad superior (`padding-bottom`) para no tapar
+    el panel de botones. Modificadores `stage--top` / `stage--right`.
+  - **`.hscroll` = SCROLL HORIZONTAL (E12 · caras):** sección 500vh; `#e12Track` (flex) se recorre de costado con
+    el scroll vertical (transform en `tick()`). Paneles: título → 3 caras → gráfico. Reduced-motion → stack vertical.
+- **PORTALES = título + bajada en UNA pantalla (`.portal--plain`, SIN espiral) + puntitos de módulo:** `.modot`
+  (tipo iPhone, abajo) con el punto del módulo actual como pill en su color (`var(--accent)`) y los otros grises.
+  Percepción/Decisión/Sesgos. El espiral (`SpiralPortal`/`data-spiral`) quedó SIN uso.
+- **Arreglos:** snakes (E3) entra llenando la pantalla (`transform-origin:50% 50%`, zoom ~3,4×→1×); moneda 3D que
+  gira en E7 (`.coin`, cara verde/ceca roja); G9 leyendas más grandes (CREEN/SABEN fontSize 16, leyenda 15); G8
+  con las dos barras juntas (grid 26%/26%).
+
 ## ⚡ ACTUALIZACIÓN jun-2026 (5ª vuelta — Decisión: narrativa + colores) — MANDA sobre todo lo de abajo
 - **NARRATIVA = objetivo principal** (junto con gráficos/colores/tipografía/scroll): cada módulo conecta con el
   anterior. La teórica (Módulo 12) lo dice literal: abre con "¿cómo hace el cerebro para decidir qué es lo que

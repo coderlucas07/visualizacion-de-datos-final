@@ -8,26 +8,33 @@ Scrollytelling para **Visualización de Datos (UTDT)**: cómo el cerebro constru
 
 ---
 
-## Estado actual (jun-2026, tras la portada de video + identidad gris/celeste)
+## Estado actual (jun-2026)
 
-La historia completa está armada (3 módulos + cierre) con la **identidad nueva**: gris frío + **celeste
-neuronal `#8FD8FF`** (el celeste del cerebro del video), tipografías **Unbounded / Spectral / Hanken
-Grotesk / IBM Plex Mono**. Layout **dos columnas** (el texto scrollea a la izquierda y **nunca tapa** el
-visual fijo de la derecha), con momentos full-bleed deliberados (Rotating Snakes a pantalla completa).
-La **portada** es un **video a pantalla completa scrubeado por el scroll** (el hombre que grita y su cabeza
-se rompe en neuronas): arranca solo, "respira" mientras nadie scrollea, y al final funde a negro y aparece
-el título (con botón ↺ para rebobinar en reversa). Cada módulo abre con el **túnel de espiral**: el título
-aparece ya adentro y un **puntito crece con el scroll hasta tragarte**. Hay **menú de módulos** arriba a la
-izquierda; **E1 es interactivo** (imagen ⇄ gráfico con barras que crecen con el scroll) y **cada gráfico
-cita su fuente**.
+La historia completa está armada (3 módulos + cierre). Resumen de la identidad y la estructura vigentes
+(el detalle fino, escena por escena, está en [`CLAUDE.md`](CLAUDE.md) — manda sobre cualquier doc viejo):
 
-- ✅ **Módulo 1 — Percepción** (E1–E5, con E3 snakes full-bleed + E3b waffle + **video del gorila a pantalla
-  completa antes del cierre**, que arranca solo cuando llena el viewport).
-- ✅ **Módulo 2 — Decisión** (E6–E9).
-- ✅ **Módulo 3 — Sesgos** (E10–E13) + **cierre** (Checker Shadow) + **pie** (créditos/fuentes).
-- ⬜ **Pendiente:** completar los nombres de autores en el pie y pulido fino mobile/performance.
+**Identidad / tipografía.** Fondo gris-negro frío + **3 familias con intención**: **Spectral** (serif) para
+impacto, títulos y citas (las preguntas en itálica); **Hanken Grotesk** para el cuerpo; **IBM Plex Mono**
+para datos, fuentes y UI. **Color POR MÓDULO:** Percepción **celeste `#8FD8FF`**, Decisión **naranja
+`#F7943D`**, Sesgos **carmesí `#E11D48`** (verde/rojo solo para datos de ganancia/pérdida).
 
-Detalle escena por escena y convenciones: en [`CLAUDE.md`](CLAUDE.md).
+**Estructura = full-screen.** La base es **visualización a PANTALLA COMPLETA con el texto flotando** (variante
+`.scrolly--stage`): el visual ocupa todo el viewport centrado y los pasos aparecen con el scroll. Hay además
+un **scroll horizontal** (E12 · caras: título → 3 caras → gráfico, `.hscroll`) y la **portada de video**
+scrubeada por el scroll (se rompe en neuronas, funde a negro, entra el título; botón ↺ y **riser de audio**
+atado al scroll, opt-in). El **menú** está arriba a la izquierda y **cada gráfico cita su fuente**.
+
+**Portales entre módulos.** Título grande + bajada en UNA pantalla (`.portal--plain`, sin espiral) + **puntitos
+tipo iPhone** abajo que ubican el módulo (el actual pintado en su color, los otros grises).
+
+- ✅ **Módulo 1 — Percepción** (E1–E5): pato/conejo interactivo, la pista, snakes (llena la pantalla al entrar
+  y se achica con el scroll), oído (onda FM), **video del gorila a pantalla completa** + cierre (dona ≈50%).
+- ✅ **Módulo 2 — Decisión** (E6–E9): bate y pelota (Sistema 1/2), apuesta (**moneda 3D que gira** + balanza de
+  aversión a las pérdidas), encuadre (vuelco vidas/muertes), Dunning-Kruger (se dibuja con el scroll).
+- ✅ **Módulo 3 — Sesgos** (E10–E13): mejor que el promedio, Forer/Barnum, caras/pareidolia (**scroll
+  horizontal**), brecha con la ciencia + **cierre** (Checker Shadow) + pie.
+- ⬜ **Pendiente:** completar nombres de autores en el pie, E11 (lectura Barnum) sigue en columna, pulido
+  mobile/performance.
 
 ---
 
@@ -72,9 +79,9 @@ después de cada cambio: no hace falta levantar un server nuevo ni hacer hard-re
 Claude lee `CLAUDE.md` solo, pero para que arranque bien podés pegarle este primer mensaje:
 
 > Leé `CLAUDE.md` completo (manda sobre los docs viejos) y mirá `data/datos_visualizaciones.json`.
-> Decime en qué fase está el proyecto antes de tocar nada. Reglas clave: el **scroll es el protagonista**
-> (motor de pasos en dos columnas: el texto nunca tapa el visual), identidad **gris + celeste neuronal**
-> (Unbounded/Spectral) sobre gris-negro frío, y los números **siempre** se leen del JSON (no hardcodear).
+> Decime en qué fase está el proyecto antes de tocar nada. Reglas clave: el **scroll es el protagonista**,
+> la base es **full-screen** (visual a pantalla completa + texto flotante, `.scrolly--stage`), **3 familias**
+> (Spectral/Hanken/Plex Mono) y **color por módulo**, y los números **siempre** se leen del JSON (no hardcodear).
 
 ---
 

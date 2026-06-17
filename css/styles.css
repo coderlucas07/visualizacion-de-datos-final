@@ -2,9 +2,9 @@
    Tu cerebro no te cuenta toda la verdad — scrollytelling UTDT
    Identidad: gris frío + celeste neuronal (el celeste del cerebro del
    video de portada). Cinemática, inmersiva, tipo "21hrs on the Moon".
-   Unbounded para los momentos-identidad (portada, portales, cierre),
-   Spectral (serif fría con itálicas) para títulos y citas, Hanken para
-   cuerpo, Plex Mono para kickers y fuentes de datos.
+   Sistema de 3 familias: Spectral (serif, con pesos/itálicas) para impacto,
+   títulos y citas; Hanken Grotesk para el cuerpo; IBM Plex Mono para kickers,
+   fuentes de datos y UI.
    Layout: texto en columna IZQUIERDA que scrollea; visual FIJO a la
    derecha. El texto nunca tapa la visualización (excepto momentos
    full-bleed deliberados, como las Rotating Snakes).
@@ -27,7 +27,10 @@
   --loss: #E5484D;
   --gain: #3FA76E;
 
-  --font-hero:    "Unbounded", "Hanken Grotesk", sans-serif;
+  /* 3 familias con intención: SPECTRAL = impacto + títulos + citas (hero y
+     display comparten familia, se diferencian por peso/estilo) · HANKEN = cuerpo
+     · IBM PLEX MONO = datos/fuentes/UI. (Se quitó Unbounded.) */
+  --font-hero:    "Spectral", Georgia, "Times New Roman", serif;
   --font-display: "Spectral", Georgia, "Times New Roman", serif;
   --font-body:    "Hanken Grotesk", system-ui, -apple-system, sans-serif;
   --font-mono:    "IBM Plex Mono", ui-monospace, Menlo, monospace;
@@ -236,17 +239,17 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .cover__title { margin: 0; font-family: var(--font-hero); text-transform: uppercase; }
 .cover__title .t1 {
   display: block;
-  font-weight: 200;
-  font-size: clamp(0.85rem, 0.62rem + 1.2vw, 1.45rem);
-  letter-spacing: 0.34em;
+  font-weight: 400;
+  font-size: clamp(0.85rem, 0.62rem + 1.2vw, 1.4rem);
+  letter-spacing: 0.32em;
   color: var(--ink-dim);
   margin-bottom: 1.1rem;
 }
 .cover__title .t2 {
   display: block;
-  font-weight: 300;
-  font-size: clamp(1.6rem, 0.9rem + 3.8vw, 4rem);
-  letter-spacing: 0.05em;
+  font-weight: 600;
+  font-size: clamp(1.7rem, 0.9rem + 4vw, 4.2rem);
+  letter-spacing: 0.02em;
   color: var(--accent);
   text-shadow: 0 0 38px rgba(143, 216, 255, 0.4), 0 0 120px rgba(143, 216, 255, 0.18);
 }
@@ -306,6 +309,25 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .cover__replay:active svg { transform: rotate(-220deg); }
 .cover.replay-on .cover__replay { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%); }
 
+/* Botón de sonido de la portada (riser): el navegador exige un gesto para
+   reproducir audio, así que el sonido es opt-in con este botón. */
+.cover__sound {
+  position: absolute; z-index: 6; left: 1.4rem; bottom: 1.4rem;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: rgba(8, 11, 14, 0.55); backdrop-filter: blur(6px);
+  color: var(--ink-dim);
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: 0.5rem 0.9rem;
+  font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.18em; text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.3s var(--ease), border-color 0.3s var(--ease), opacity 0.4s var(--ease);
+}
+.cover__sound:hover { color: var(--ink); border-color: var(--accent); }
+.cover__sound .ico-on { display: none; }
+.cover__sound.is-on { color: var(--ink); border-color: var(--accent); }
+.cover__sound.is-on .ico-off { display: none; }
+.cover__sound.is-on .ico-on { display: block; }
+
 .cover__scrollcue {
   position: absolute; z-index: 4; bottom: 2rem; left: 50%;
   transform: translateX(-50%);
@@ -336,11 +358,27 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   position: sticky; top: 0; height: 100vh; overflow: hidden;
   background: var(--bg);
 }
-/* Portal 1 (Percepción): sin espiral, solo el título. Ocupa UN viewport (sin
-   scroll vacío de más): se pasa de largo como cualquier pantalla. */
+/* Portales: título + bajada en UNA pantalla (sin espiral), con puntitos de
+   módulo abajo (tipo iPhone). Ocupan un viewport: se pasan de largo. */
 .portal--plain { height: 100vh; }
 .portal--plain .portal__sticky { position: relative; }
-.portal__head--static {
+
+/* Puntitos de ubicación de módulo (gris los otros, color el actual) */
+.modot {
+  position: absolute; left: 50%; bottom: 8vh; transform: translateX(-50%);
+  display: flex; gap: 0.8rem; align-items: center; z-index: 3;
+}
+.modot__d {
+  width: 11px; height: 11px; border-radius: 50%;
+  background: var(--ink-faint); opacity: 0.55;
+  transition: width 0.4s var(--ease), background 0.4s var(--ease), opacity 0.4s var(--ease);
+}
+.modot__d--on {
+  width: 36px; border-radius: 999px;
+  background: var(--accent); opacity: 1;
+  box-shadow: 0 0 22px var(--accent-soft);
+}
+.portal--plain .portal__head--static {
   position: absolute; inset: 0; opacity: 1; transform: none;
 }
 .portal__canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
@@ -359,8 +397,8 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   color: var(--ink-dim); margin-bottom: 1.1rem;
 }
 .portal__name {
-  font-family: var(--font-hero); font-weight: 300;
-  text-transform: uppercase; letter-spacing: 0.1em;
+  font-family: var(--font-hero); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
   font-size: clamp(1.9rem, 1.2rem + 3.6vw, 4.4rem);
   color: var(--ink); margin: 0;
   text-shadow: 0 0 55px var(--accent-soft);   /* glow del color de cada módulo */
@@ -567,6 +605,87 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 }
 .chart-src--static { position: static; margin-top: 1rem; }
 
+/* ===== Variante STAGE: visualización a PANTALLA COMPLETA con texto flotante =====
+   El gráfico ocupa todo el viewport (sticky) y los pasos de texto flotan como un
+   panel (con scrim + blur) que no tapa el dato central. Rompe la columna doble
+   en los beats fuertes (E5, E8, E9, E10). El motor de scrolly es el mismo. */
+.scrolly--stage { display: block; position: relative; }
+.scrolly--stage .scrolly__graphic { width: 100%; position: sticky; top: 0; height: 100vh; }
+.scrolly--stage .scrolly__steps { width: 100%; margin-top: -100vh; position: relative; z-index: 2; pointer-events: none; }
+.scrolly--stage .viz__layer { padding: 0; }
+.scrolly--stage .viz__chart { max-width: none; width: 100%; height: 100vh; }
+/* degradado inferior para que el panel se lea sobre el gráfico */
+.scrolly--stage .scrolly__graphic::after {
+  content: ''; position: absolute; inset: auto 0 0 0; height: 42vh; z-index: 1;
+  background: linear-gradient(to top, rgba(10,13,16,0.92), rgba(10,13,16,0));
+  pointer-events: none;
+}
+.scrolly--stage .step { min-height: 100vh; display: flex; align-items: flex-end; justify-content: flex-start; padding: 0 var(--pad-x) 7vh; }
+.scrolly--stage .step__card {
+  pointer-events: auto;
+  max-width: 32rem;
+  background: rgba(10, 13, 16, 0.62);
+  border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 1.3rem 1.5rem;
+  backdrop-filter: blur(7px);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+}
+/* centra el contenido no-ECharts (ej. el anillo del gorila) en el viewport */
+.scrolly--stage .viz__chart { display: grid; place-items: center; }
+.scrolly--stage .gorilla { max-width: none; align-content: center; justify-items: center; height: 100%; }
+.scrolly--stage .gorilla__ring { width: min(50vh, 420px); }
+.scrolly--stage .gorilla__title, .scrolly--stage .gorilla__cap { display: none; } /* el panel flotante es el titular */
+
+/* E8/E6/E7: el planteo (layer 0) queda CENTRADO pero en la mitad superior, para
+   no chocar con el panel de la tarea/botones que flota abajo. */
+#e8 .viz__layer[data-layer="0"],
+#e6 .viz__layer[data-layer="0"],
+#e7 .viz__layer[data-layer="0"] { padding-bottom: 22vh; }
+
+/* el panel a la derecha (para gráficos con info a la izquierda, ej. E10) */
+.scrolly--stage.stage--right .step { justify-content: flex-end; }
+/* el panel arriba (para gráficos con el dato abajo) */
+.scrolly--stage.stage--top .step { align-items: flex-start; padding: 13vh var(--pad-x) 0; }
+.scrolly--stage.stage--top .scrolly__graphic::after { inset: 0 0 auto 0; background: linear-gradient(to bottom, rgba(10,13,16,0.92), rgba(10,13,16,0)); }
+
+/* ===== SCROLL HORIZONTAL (E12 · caras) =====
+   El track se recorre de costado con el scroll vertical (transform en tick()).
+   5 paneles → la sección mide 500vh para tener recorrido. */
+.hscroll { position: relative; height: 500vh; }
+.hscroll__sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; background: var(--bg); }
+.hscroll__track { display: flex; height: 100vh; will-change: transform; }
+.hpanel {
+  flex: 0 0 100vw; height: 100vh; box-sizing: border-box;
+  display: grid; place-items: center; padding: 0 var(--pad-x); margin: 0;
+}
+.hpanel--intro .hpanel__text { max-width: 40rem; }
+.hscroll__cue {
+  font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--accent); margin-top: 1.8rem;
+}
+.hpanel--face { gap: 1.4rem; }
+.hpanel--face img {
+  max-height: 64vh; max-width: 82vw; width: auto; border-radius: var(--radius);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+}
+.hpanel--face figcaption {
+  font-family: var(--font-display); font-style: italic;
+  font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.4rem); color: var(--ink-dim); text-align: center;
+}
+.hpanel--chart { grid-template-rows: 1fr auto; gap: 1rem; padding: 6vh var(--pad-x) 5vh; }
+.hpanel__chartwrap { width: min(90vw, 920px); height: 64vh; justify-self: center; }
+.hpanel__chartwrap .chart { width: 100%; height: 100%; }
+.hpanel__note { max-width: 60rem; text-align: center; color: var(--ink-dim); margin: 0 auto; justify-self: center; }
+
+/* Reduced-motion: el horizontal pasa a stack vertical normal (sin scrub) */
+@media (prefers-reduced-motion: reduce) {
+  .hscroll { height: auto; }
+  .hscroll__sticky { position: static; height: auto; overflow: visible; }
+  .hscroll__track { flex-direction: column; height: auto; transform: none !important; }
+  .hpanel { flex: none; height: auto; min-height: 88vh; }
+  .hpanel__chartwrap { height: 70vh; }
+}
+
 /* ---------- Variante FULL-BLEED (momentos deliberados: snakes) ---------- */
 .scrolly--bleed { display: block; }
 .scrolly--bleed .scrolly__graphic { width: 100%; position: sticky; }
@@ -620,7 +739,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   width: auto; height: auto;
   max-width: 92%; max-height: 60vh;
   transform: scale(var(--snake-zoom, 1));
-  transform-origin: 62.5% 50%;  /* centro del círculo más cercano al medio del PNG */
+  transform-origin: 50% 50%;  /* centrado: al entrar (zoom alto) llena parejo, sin negro a un lado */
   will-change: transform;
 }
 
@@ -875,6 +994,27 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .batball-photo { width: min(32vw, 360px); margin: 0 auto 1.6rem; }
 .batball-photo img { width: 100%; height: auto; display: block; }
 
+/* Moneda 3D que gira (E7) — cara (+$50, verde) / ceca (−$50, rojo) */
+.coin { width: 132px; height: 132px; margin: 0 auto 1.8rem; perspective: 700px; }
+.coin__inner {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d; animation: coinflip 2.6s cubic-bezier(.5,0,.5,1) infinite;
+}
+@keyframes coinflip { to { transform: rotateX(1080deg); } }
+.coin__face {
+  position: absolute; inset: 0; border-radius: 50%;
+  display: grid; place-content: center; gap: 0.15rem;
+  backface-visibility: hidden;
+  box-shadow: inset 0 0 0 3px rgba(255,255,255,0.18), 0 14px 34px rgba(0,0,0,0.5);
+}
+.coin__face span { font-family: var(--font-display); font-weight: 700; font-size: 1.7rem; color: #fff; line-height: 1; }
+.coin__face small { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.85); }
+.coin__face--cara { background: radial-gradient(circle at 38% 32%, #5ed39a, var(--gain) 70%); }
+.coin__face--ceca { background: radial-gradient(circle at 38% 32%, #f0716f, var(--loss) 70%); transform: rotateX(180deg); }
+@media (prefers-reduced-motion: reduce) {
+  .coin__inner { animation: none; transform: rotateX(20deg); }
+}
+
 /* Apuesta de la moneda (E7) */
 .gamble__row {
   display: flex; justify-content: space-between; align-items: baseline;
@@ -1015,8 +1155,8 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .checker { width: min(64vh, 92%); margin: 0; }
 .checker img { width: 100%; border-radius: var(--radius); }
 .closing-line {
-  font-family: var(--font-hero); font-weight: 300;
-  text-transform: uppercase; letter-spacing: 0.08em;
+  font-family: var(--font-hero); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
   font-size: clamp(1.7rem, 1.1rem + 3vw, 3.6rem);
   color: var(--accent); margin: 0;
   text-shadow: 0 0 44px rgba(143, 216, 255, 0.3);

@@ -35,6 +35,7 @@ let e3bSec = null, waffleEl = null, e3CountEl = null;
 let fmEl = null, e4FmStep = null;
 let e5Sec = null, gorilaStatEl = null;
 let e9Sec = null, dkEl = null;
+let e12Sec = null, e12Track = null;
 
 const state = { first: null, e2rotate: true, e1answered: false };
 const progressBar = document.getElementById('progressBar');
@@ -166,8 +167,15 @@ function initOne(el) {
   const fn = CHARTS[id];
   el.dataset.inited = '1';
   if (fn) {
-    try { fn(el, DATA, { reduced: REDUCED }); addSource(el, id); }
-    catch (err) { console.error('[chart] error en', id, err); }
+    try {
+      fn(el, DATA, { reduced: REDUCED }); addSource(el, id);
+      // En escenas a PANTALLA COMPLETA (.scrolly--stage) el panel de texto flotante
+      // es el titular → ocultamos el título interno del gráfico para que no compita
+      // y dejamos que el dato use toda la pantalla.
+      if (el.closest('.scrolly--stage') && el.__chart) {
+        el.__chart.setOption({ title: { show: false } });
+      }
+    } catch (err) { console.error('[chart] error en', id, err); }
   } else console.warn('[chart] sin handler para', id);
 }
 function initCharts(scope) {
@@ -210,6 +218,30 @@ function setupCover() {
   const replay = document.getElementById('coverReplay');
   const patch = document.getElementById('coverPatch');
   if (!coverEl || !video) return;
+
+  // ----- Riser de portada: un "whoosh" que dispara al empezar a bajar (la
+  // zambullida en el cerebro). El navegador bloquea el audio hasta que hay un
+  // gesto del usuario; probamos en el primer wheel/touch/click/tecla. Con
+  // prefers-reduced-motion no suena. Se rearma al reiniciar con el ↺. -----
+  const audio = document.getElementById('coverAudio');
+  const soundBtn = document.getElementById('coverSound');
+  let soundOn = false, audioDur = 0, lastTargetA = -1, idleA = 0;
+  const VOL = 0.6;
+  if (audio) {
+    const onMetaA = () => { audioDur = audio.duration || 0; };
+    if (audio.readyState >= 1) onMetaA();
+    else audio.addEventListener('loadedmetadata', onMetaA, { once: true });
+  }
+  const setSound = (on) => {
+    soundOn = on;
+    if (soundBtn) { soundBtn.classList.toggle('is-on', on); soundBtn.setAttribute('aria-pressed', String(on)); }
+    if (!audio) return;
+    if (on) audio.play().catch(() => { /* el loop reintenta */ });  // el click desbloquea; frame() maneja posición/volumen
+    else audio.pause();
+  };
+  // El click del botón es un gesto válido → desbloquea el audio.
+  if (soundBtn && audio && !REDUCED) soundBtn.addEventListener('click', () => setSound(!soundOn));
+  if (soundBtn && REDUCED) soundBtn.style.display = 'none';   // sin animación, sin sonido
 
   const SCRUB_END = 0.74;  // fracción de la sección en la que el video completa
   let duration = 0;
@@ -289,6 +321,31 @@ function setupCover() {
     coverEl.classList.toggle('replay-on', p > 0.02);
     coverEl.classList.toggle('cue-off', p > 0.03);
 
+    // Riser atado al scroll: la POSICIÓN del audio sigue al descenso, así dura
+    // TODO el scroll de la portada y el clímax cae en el quiebre. Avanza solo
+    // mientras scrolleás (se congela si frenás); fade-in al entrar y fade-out
+    // pasado el quiebre.
+    if (audio && soundOn && audioDur > 0) {
+      const target = clamp(p / SCRUB_END) * (audioDur - 0.05);
+      const moving = Math.abs(target - lastTargetA) > 0.0008;
+      lastTargetA = target;
+      if (moving) {
+        idleA = 0;
+        const diff = target - audio.currentTime;
+        if (diff > 0.16) {            // el scroll fue más rápido → adelanto el audio (nunca rebobina)
+          if (audio.paused) audio.play().catch(() => { /* noop */ });
+          try { audio.currentTime = target; } catch { /* noop */ }
+        } else if (diff < -0.06) {    // el audio se adelantó al scroll → espero (no rebobinar)
+          if (!audio.paused) audio.pause();
+        } else if (audio.paused) {    // en sync → reproduzco
+          audio.play().catch(() => { /* noop */ });
+        }
+      } else if (++idleA > 6 && !audio.paused) {
+        audio.pause();               // scroll quieto → congelo el riser donde está
+      }
+      audio.volume = VOL * clamp(p / 0.05) * (1 - clamp((p - 0.76) / 0.14));
+    }
+
     if (visible) raf = requestAnimationFrame(frame);
   };
 
@@ -298,6 +355,7 @@ function setupCover() {
       // Mientras la portada está a la vista se apaga el grano global
       // (mix-blend-mode sobre video es caro y serrucha el scroll).
       document.body.classList.toggle('cover-vis', visible);
+      if (!visible && audio) audio.pause();   // el riser solo suena en la portada
       if (visible && !raf) raf = requestAnimationFrame(frame);
     }),
     { threshold: 0 }
@@ -307,6 +365,9 @@ function setupCover() {
   if (replay) replay.addEventListener('click', () => {
     const top = coverEl.getBoundingClientRect().top + window.scrollY;
     animateScrollTo(top, 1400 + 1800 * sectionProgress(coverEl));
+    // Con el sonido activado, al volver al inicio el riser se rebobina solo
+    // (frame() lo lleva a la posición 0) y vuelve a sonar en la próxima bajada.
+    if (audio && soundOn) { try { audio.currentTime = 0; } catch { /* noop */ } }
   });
 
   // El botón se planta EXACTAMENTE sobre el sparkle de Gemini del video.
@@ -575,6 +636,8 @@ function cacheScrubRefs() {
   gorilaStatEl = document.querySelector('#e5 [data-chart="05_cierre_percepcion"]');
   e9Sec = document.getElementById('e9');
   dkEl = document.querySelector('#e9 [data-chart="09_dunning_kruger"]');
+  e12Sec = document.getElementById('e12');
+  e12Track = document.getElementById('e12Track');
 }
 
 /* ----------------------------- Motor de scroll ----------------------------- */
@@ -650,7 +713,7 @@ function tick() {
     // antes) lo serruchaba. Tope ~3× (por debajo del umbral de upscaling),
     // así la imagen se mantiene nítida en TODO el recorrido.
     const p = clamp((raw - 0.16) / 0.64);
-    const z = 1 + 2 * Math.pow(1 - p, 2);   // ~3× (zoom suave) → 1× final, sin pixelar
+    const z = 1 + 2.4 * Math.pow(1 - p, 2);   // ~3,4× (llena la pantalla al entrar) → 1× final, sin pixelar
     e3Img.style.setProperty('--snake-zoom', z.toFixed(3));
     // El texto final aparece SOLO con la imagen ya en su tamaño mínimo.
     if (e3FinalCard) e3FinalCard.style.opacity = clamp((raw - 0.84) / 0.1).toFixed(3);
@@ -679,6 +742,13 @@ function tick() {
   if (!REDUCED && dkEl && dkEl.__setProgress && e9Sec) {
     const p = clamp((sectionProgress(e9Sec) - 0.05) / 0.7);
     dkEl.__setProgress(p);
+  }
+
+  // E12 (caras): scroll vertical → recorrido HORIZONTAL del track.
+  if (!REDUCED && e12Track && e12Sec) {
+    const p = sectionProgress(e12Sec);
+    const max = Math.max(0, e12Track.scrollWidth - window.innerWidth);
+    e12Track.style.transform = `translate3d(${(-p * max).toFixed(1)}px,0,0)`;
   }
 }
 

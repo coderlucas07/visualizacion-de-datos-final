@@ -468,7 +468,7 @@ export const CHARTS = {
     const option = {
       ...baseOption(GAIN),
       title: titleBlock('El mismo plan, decisión opuesta', '% que elige el plan SEGURO según cómo se cuenta el resultado'),
-      grid: { left: 6, right: 16, top: 104, bottom: 40, containLabel: true },
+      grid: { left: '26%', right: '26%', top: 104, bottom: 40, containLabel: true },
       xAxis: catAxis({ data: items.map((i) => i.label), axisLabel: { color: INK, fontSize: 13, lineHeight: 17, interval: 0 } }),
       yAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
       tooltip: {
@@ -476,7 +476,7 @@ export const CHARTS = {
         formatter: (ps) => { const it = items[ps[0].dataIndex]; return `<strong>Plan seguro</strong> · ${it.desc}<br>Lo elige el <strong>${it.value}%</strong>`; },
       },
       series: [{
-        type: 'bar', barWidth: '42%',
+        type: 'bar', barWidth: '58%',
         data: items.map((i) => ({ value: i.value, itemStyle: { color: i.color, borderRadius: [6, 6, 0, 0] } })),
         label: { show: true, position: 'top', color: INK, fontFamily: DISPLAY, fontSize: 30, fontWeight: 600, formatter: '{c}%' },
         markLine: {
@@ -514,8 +514,8 @@ export const CHARTS = {
     const option = {
       ...baseOption(accent), animation: false,
       title: titleBlock('Los que menos saben, más se creen', 'Lo que la gente cree que sabe vs. lo que realmente sabe'),
-      grid: { left: 10, right: 72, top: 118, bottom: 30, containLabel: true },
-      legend: { data: ['Lo que creen que saben', 'Lo que realmente saben'], top: 74, textStyle: { color: INK_DIM }, icon: 'roundRect' },
+      grid: { left: 10, right: 86, top: 132, bottom: 30, containLabel: true },
+      legend: { data: ['Lo que creen que saben', 'Lo que realmente saben'], top: 78, textStyle: { color: INK, fontSize: 15, fontFamily: FONT }, itemWidth: 26, itemHeight: 14, itemGap: 24, icon: 'roundRect' },
       xAxis: {
         type: 'value', min: 0, max: 3, interval: 1,
         axisLine: { lineStyle: { color: LINE } }, axisTick: { show: false }, splitLine: { show: false },
@@ -527,7 +527,7 @@ export const CHARTS = {
         {
           name: 'Lo que creen que saben', type: 'line', smooth: true, symbol: 'none', data: selfD,
           lineStyle: { width: 3.5, color: accent }, z: 3,
-          endLabel: { show: true, formatter: 'CREEN', color: accent, fontFamily: DISPLAY, fontWeight: 600, fontSize: 13, distance: 8 },
+          endLabel: { show: true, formatter: 'CREEN', color: accent, fontFamily: DISPLAY, fontWeight: 700, fontSize: 16, distance: 10 },
           markLine: {
             silent: true, symbol: ['none', 'arrow'], symbolSize: 7,
             lineStyle: { color: accent, width: 1.5, opacity: 0.6 },
@@ -538,7 +538,7 @@ export const CHARTS = {
         {
           name: 'Lo que realmente saben', type: 'line', smooth: true, symbol: 'none', data: realD,
           lineStyle: { width: 3, color: INK_DIM, type: 'dashed' },
-          endLabel: { show: true, formatter: 'SABEN', color: INK_DIM, fontFamily: DISPLAY, fontWeight: 600, fontSize: 13, distance: 8 },
+          endLabel: { show: true, formatter: 'SABEN', color: INK_DIM, fontFamily: DISPLAY, fontWeight: 700, fontSize: 16, distance: 10 },
         },
       ],
     };
