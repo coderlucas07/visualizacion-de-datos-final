@@ -192,39 +192,77 @@ export const CHARTS = {
     container.__setMorph(opts.reduced ? 1 : 0);
   },
 
-  /* ---------- G3 · Waffle 100 personas (E3) — HTML, se pinta con el scroll ---------- */
+  /* ---------- G3 · MORPH número → waffle (E3) — canvas de partículas ----------
+     100 puntos arrancan formando el número (ej. "96") y, con el scroll, vuelan a
+     una grilla 10×10: los primeros `onTotal` quedan en el acento y el resto se
+     apaga. El número se vuelve gente. Expone __setWaffle(p) (lo scrubea main.js). */
   '03_ilusiones_movimiento_waffle'(container, data, opts) {
     const sheet = data['03_ilusiones_movimiento_waffle'];
     const accent = accentOf(container);
-    const onTotal = sheet.resumen.ven_movimiento;
-    container.classList.add('waffle');
+    const onTotal = sheet.resumen.ven_movimiento;  // 96
+    const dimRGB = '120,134,146';
+    container.classList.add('morphwaffle');
     container.setAttribute('role', 'img');
-    container.setAttribute('aria-label', `${onTotal} de 100 personas ven movimiento en una imagen estática.`);
-    container.style.setProperty('--accent-on', accent);
+    container.setAttribute('aria-label', `${onTotal} de 100 personas ven movimiento donde no lo hay.`);
+    container.innerHTML = '<canvas class="morphwaffle__cv"></canvas>';
+    const canvas = container.querySelector('canvas');
+    const ctx = canvas.getContext('2d');
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const N = 100;
+    let W = 0, H = 0, parts = [], lastP = opts.reduced ? 1 : 0;
 
-    const cells = [];
-    const frag = document.createDocumentFragment();
-    sheet.rows.forEach((row) => {
-      const cell = document.createElement('span');
-      cell.className = 'waffle__cell';
-      cell.dataset.eligible = row[1] === 1 ? '1' : '0';
-      frag.appendChild(cell);
-      cells.push(cell);
-    });
-    container.appendChild(frag);
+    const easeInOut = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
 
-    let lit = -1;
-    container.__setWaffle = (p) => {
-      const n = Math.max(0, Math.min(onTotal, Math.round(p * onTotal)));
-      if (n === lit) return;
-      lit = n;
-      let count = 0;
-      for (const c of cells) {
-        if (c.dataset.eligible === '1') { const on = count < n; c.classList.toggle('on', on); if (on) count++; }
-        else c.classList.remove('on');
+    function build() {
+      // --- layout GRID (10×10 centrado) ---
+      const cols = 10, rows = 10;
+      const span = Math.min(W * 0.62, H * 0.86);
+      const cell = span / cols;
+      const gx0 = W / 2 - span / 2 + cell / 2, gy0 = H / 2 - span / 2 + cell / 2;
+      // --- layout NÚMERO (puntos muestreados del texto onTotal) ---
+      const off = document.createElement('canvas'); off.width = W; off.height = H;
+      const o = off.getContext('2d');
+      o.fillStyle = '#fff'; o.textAlign = 'center'; o.textBaseline = 'middle';
+      o.font = `700 ${Math.min(W * 0.52, H * 0.92)}px Spectral, Georgia, serif`;
+      o.fillText(String(onTotal), W / 2, H / 2);
+      const px = o.getImageData(0, 0, W, H).data;
+      const hit = [];
+      for (let i = 0; i < 90000 && hit.length < N * 9; i++) {
+        const x = (Math.random() * W) | 0, y = (Math.random() * H) | 0;
+        if (px[(y * W + x) * 4 + 3] > 128) hit.push([x, y]);
       }
+      parts = [];
+      for (let i = 0; i < N; i++) {
+        const r = (i / cols) | 0, c = i % cols;
+        const np = hit.length ? hit[(i / N * hit.length) | 0] : [W / 2, H / 2];
+        parts.push({ nx: np[0], ny: np[1], gx: gx0 + c * cell, gy: gy0 + r * cell, lit: i < onTotal });
+      }
+    }
+    function draw(p) {
+      lastP = p; ctx.clearRect(0, 0, W, H);
+      if (!W || !parts.length) return;
+      const e = easeInOut(Math.max(0, Math.min(1, p)));
+      const dot = Math.min(W, H) * 0.017;
+      for (const pt of parts) {
+        const x = pt.nx + (pt.gx - pt.nx) * e;
+        const y = pt.ny + (pt.gy - pt.ny) * e;
+        ctx.beginPath(); ctx.arc(x, y, dot, 0, Math.PI * 2);
+        // mientras es número va todo en acento; al llegar a la grilla, los 4 que
+        // "no ven" se apagan (fade con el avance del morph).
+        ctx.fillStyle = pt.lit ? accent : `rgba(${dimRGB},${(0.85 - 0.6 * e).toFixed(3)})`;
+        ctx.fill();
+      }
+    }
+    const resize = () => {
+      const r = canvas.getBoundingClientRect();
+      W = Math.max(1, r.width); H = Math.max(1, r.height);
+      canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      build(); draw(lastP);
     };
-    if (opts.reduced) container.__setWaffle(1);
+    container.__setWaffle = (p) => draw(p);
+    new ResizeObserver(resize).observe(canvas);
+    requestAnimationFrame(resize);
   },
 
   /* ---------- G4 · Ilusión auditiva (E4) — ONDA FM (canvas), se estira con el scroll ----------

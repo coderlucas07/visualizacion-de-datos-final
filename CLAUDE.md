@@ -14,6 +14,24 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   código pero no este archivo, el contexto del resto queda desactualizado → siempre van juntos.
 - Si algo de acá ya no es cierto, corregilo (no agregues notas sueltas que se contradigan).
 
+## ⚡ ACTUALIZACIÓN jun-2026 (7ª vuelta — MORPHS entre visuales, pilotos) — MANDA sobre todo lo de abajo
+- **DIRECCIÓN nueva (decidida con el usuario):** romper la repetición "texto izq / visual der" con **morphs**:
+  un visual SE TRANSFORMA en el siguiente con el scroll. Layouts centrados con aire. Se arranca por pocas
+  escenas piloto.
+- **Piloto #1 — pato → conejo (E2):** la MISMA silueta de Jastrow **rota ~90°** con el scroll (`--rot`,
+  `MAXDEG=90` en `tick()`); el pico se vuelve orejas → aparece el conejo; las marcas (`cues-on`) salen al final
+  (p>0.72). El morph ES el concepto: mismo estímulo, dos lecturas.
+- **Piloto #2 — número → waffle (E3b):** el handler `03_ilusiones_movimiento_waffle` ya NO es grilla HTML; es un
+  **canvas de partículas** (`.morphwaffle`): 100 puntos arrancan formando el número (96, muestreado del texto) y
+  con el scroll vuelan a una **grilla 10×10** (96 en acento + 4 grises). Mantiene `__setWaffle(p)` (lo scrubea
+  `tick()`). E3b pasó a `.scrolly--stage` con recorrido (`#e3b .step min-height 240vh`) para que el morph complete.
+  **Patrón reutilizable** para otros datos (gorila 50%, 93%, etc.).
+- **Piloto #3 — barras que se reordenan:** PENDIENTE de definición; ojo que el patrón YA existe en el G1→G2 del
+  compañero (las barras pato/conejo 57/42 se vuelcan a 26/74 con contexto).
+- **PENDIENTE:** re-arreglar lo que se repite en esta versión (ejes Y de % que sobran en barras, el scrim del
+  stage que funde las barras al negro = "se ven como fondo", paneles que tapan datos). Verificación con scroll
+  real vía puppeteer-core (en /tmp, Chrome del sistema), porque el headless `--dump-dom` no dispara el IntersectionObserver.
+
 ## ⚡ ACTUALIZACIÓN jun-2026 (6ª vuelta — TIPOGRAFÍA + ESTRUCTURA) — MANDA sobre todo lo de abajo
 - **TIPOGRAFÍA = 3 familias con intención (se eliminó Unbounded):** **Spectral** (serif) para IMPACTO + TÍTULOS
   + CITAS (las preguntas van en itálica); **Hanken Grotesk** para CUERPO (ledes, apoyo, subtítulos y ejes de

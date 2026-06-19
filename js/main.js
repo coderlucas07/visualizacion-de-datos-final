@@ -704,15 +704,15 @@ function tick() {
     }
   }
 
-  // E2: la figura gira con el scroll (si toca girar) y aparecen las marcas
+  // E2 · MORPH pato→conejo: la MISMA silueta rota ~90° con el scroll (el pico se
+  // transforma en las orejas). Las marcas aparecen al final, ya con el conejo a
+  // la vista. La rotación es continua y pausada (es el corazón del morph).
   if (e2Fig && e2Step) {
     const p = stepScrub(e2Step);
-    // El conejo aparece cerca de los 45°: girar 90° era demasiado y mostraba
-    // las marcas muy rápido. Tope en 45° y curva más pausada.
-    const MAXDEG = 45;
+    const MAXDEG = 90;
     const deg = state.e2rotate ? (REDUCED ? MAXDEG : easeOut(p) * MAXDEG) : 0;
     e2Fig.style.setProperty('--rot', deg.toFixed(1) + 'deg');
-    if (e2Sec) e2Sec.classList.toggle('cues-on', p > (state.e2rotate ? 0.6 : 0.35));
+    if (e2Sec) e2Sec.classList.toggle('cues-on', p > (state.e2rotate ? 0.72 : 0.35));
   }
 
   // E2 (gráfico del contexto): al llegar, las barras son IDÉNTICAS al gráfico

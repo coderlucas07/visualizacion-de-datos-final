@@ -273,19 +273,20 @@
     <!-- ====================== E3b · Waffle: cuántos ven el movimiento ======================
          Dos columnas: el texto (izq.) queda alineado con el waffle (der., sticky)
          en vez de caer al fondo de la pantalla. -->
-    <section class="scrolly" id="e3b" aria-labelledby="e3b-h">
+    <!-- E3b · MORPH: el número "96" se desarma en la grilla de 100 personas con el scroll -->
+    <section class="scrolly scrolly--stage" id="e3b" aria-labelledby="e3b-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
-            <div class="chart waffle" id="e3Waffle" data-chart="03_ilusiones_movimiento_waffle"></div>
+            <div class="chart morphwaffle" id="e3Waffle" data-chart="03_ilusiones_movimiento_waffle"></div>
           </div>
         </div>
       </div>
       <div class="scrolly__steps">
-        <div class="step step--tall is-active" data-layer="0">
+        <div class="step is-active" data-layer="0">
           <div class="step__card">
             <p class="kicker" id="e3b-h">Pero no sos el único</p>
-            <p class="stat-line"><span class="stat-line__num" id="e3Count">0</span> de cada 100 ven movimiento donde no lo hay.</p>
+            <p class="lede"><strong>96 de cada 100</strong> ven movimiento donde no lo hay.</p>
             <p class="muted">No es un error tuyo: tu cerebro <em>agrega</em> un movimiento que no existe en la imagen.</p>
             <p class="chart-src chart-src--static" data-src-for="03_ilusiones_movimiento_waffle"></p>
           </div>

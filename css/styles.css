@@ -636,6 +636,13 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .scrolly--stage .gorilla__ring { width: min(50vh, 420px); }
 .scrolly--stage .gorilla__title, .scrolly--stage .gorilla__cap { display: none; } /* el panel flotante es el titular */
 
+/* MORPH número → waffle (E3b): canvas cuadrado centrado; el panel va ARRIBA-izq
+   (el morph ocupa el centro) y la sección tiene recorrido para que complete. */
+.morphwaffle { width: min(84vw, 76vh); aspect-ratio: 1; }
+.morphwaffle__cv { width: 100%; height: 100%; display: block; }
+#e3b .step { min-height: 240vh; align-items: flex-start; padding: 8vh var(--pad-x) 0; }
+#e3b .step__card { position: sticky; top: 8vh; }
+
 /* E8/E7: el planteo (layer 0) queda CENTRADO pero en la mitad superior, para
    no chocar con el panel de la tarea/botones que flota abajo. (E6 pasó a dos
    columnas, así que ya no necesita ese hueco.) */
