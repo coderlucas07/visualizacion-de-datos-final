@@ -491,21 +491,25 @@ export const CHARTS = {
     const at = (m) => { const r = rows.find((x) => x.resultado_monetario === m); return r ? Math.abs(r.valor_subjetivo) : 0; };
     const joy = at(50) || 35;          // alegría de ganar $50
     const pain = at(-50) || 79;        // dolor de perder $50 (≈ 2,25× la alegría)
-    const lim = pain * 1.7;            // deja aire en los extremos para los rótulos
+    // Mobile: barras más cortas (más lim) y rótulos/márgenes chicos para que entren en pantalla angosta.
+    const narrow = container.clientWidth < 640;
+    const lim = pain * (narrow ? 2.4 : 1.7);   // deja aire en los extremos para los rótulos
     // Texto del rótulo de cada barra (grande, lo "lleva" el rayito).
     const lblFor = (which) => which === 'loss'
       ? '{n|−$50}\n{l|casi el DOBLE de dolor}'
       : '{n|+$50}\n{g|la alegría de ganar}';
     const richLbl = {
-      n: { fontFamily: DISPLAY, fontWeight: 700, fontSize: 32, color: INK, lineHeight: 36 },
-      g: { fontFamily: FONT, fontSize: 14, color: gain, lineHeight: 19 },
-      l: { fontFamily: FONT, fontSize: 14, color: loss, lineHeight: 19 },
+      n: { fontFamily: DISPLAY, fontWeight: 700, fontSize: narrow ? 20 : 32, color: INK, lineHeight: narrow ? 24 : 36 },
+      g: { fontFamily: FONT, fontSize: narrow ? 11 : 14, color: gain, lineHeight: narrow ? 15 : 19 },
+      l: { fontFamily: FONT, fontSize: narrow ? 11 : 14, color: loss, lineHeight: narrow ? 15 : 19 },
     };
     const option = {
       ...baseOption(accent), animation: false,
       title: titleBlock('Perder pesa el doble que ganar', 'Cuánto pesa, para tu cerebro, ganar o perder los mismos $50'),
       // las dos barras suben a la franja de arriba; el texto vive en la banda inferior sin tocarlas.
-      grid: { left: 90, right: 90, top: 72, bottom: '40%', containLabel: true },
+      grid: narrow
+        ? { left: 10, right: 10, top: 54, bottom: '42%', containLabel: true }
+        : { left: 90, right: 90, top: 72, bottom: '40%', containLabel: true },
       xAxis: {
         type: 'value', min: -lim, max: lim,
         axisLine: { show: false }, axisTick: { show: false }, splitLine: { show: false },
@@ -522,7 +526,7 @@ export const CHARTS = {
           : '<strong>Perder $50</strong><br>Duele casi el <strong>doble</strong> de lo que alegra ganarlos.'),
       },
       series: [{
-        type: 'bar', barWidth: 52,
+        type: 'bar', barWidth: narrow ? 32 : 52,
         label: { show: true, fontFamily: DISPLAY, lineHeight: 18, rich: richLbl },
         data: [
           { value: 0, itemStyle: { color: loss, borderRadius: [6, 0, 0, 6] },

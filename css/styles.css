@@ -1323,6 +1323,14 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   /* mobile: framing full width arriba y texto en banda inferior (no hay columna). */
   #e8 .step[data-layer="1"] { align-items: flex-end; justify-content: center; padding: 0 var(--pad-x) 5vh; }
   #e8 .step[data-layer="1"] .step__card { width: auto; max-width: none; text-align: center; }
+
+  /* mobile: la galería de caras (E12) deja de ser scroll horizontal y se APILA
+     verticalmente (el scroll horizontal en celular es incómodo y deja mucho negro). */
+  .hscroll { height: auto; }
+  .hscroll__sticky { position: static; height: auto; overflow: visible; }
+  .hscroll__track { flex-direction: column; height: auto; transform: none !important; }
+  .hpanel { flex: none; height: auto; min-height: 80vh; }
+  .hpanel__chartwrap { height: 64vh; }
 }
 #sesgos-intro .step__card h2,
 #e10 .step__card h2,
