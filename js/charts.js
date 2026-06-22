@@ -78,8 +78,8 @@ function baseOption(accent) {
     tooltip: {
       trigger: 'item', confine: true,
       backgroundColor: 'rgba(13,17,21,0.96)', borderColor: 'rgba(228,234,239,0.14)', borderWidth: 1,
-      padding: [10, 14], textStyle: { color: INK, fontSize: 13, fontFamily: FONT },
-      extraCssText: 'border-radius:10px; max-width:280px; white-space:normal; line-height:1.5;',
+      padding: [11, 15], textStyle: { color: INK, fontSize: 14.5, fontFamily: FONT },
+      extraCssText: 'border-radius:10px; max-width:300px; white-space:normal; line-height:1.55;',
     },
   };
 }
@@ -87,18 +87,18 @@ function baseOption(accent) {
 /* Título + subtítulo dentro del gráfico (como cualquier gráfico). */
 function titleBlock(text, subtext) {
   return {
-    text, subtext, left: 'center', top: 12,
-    textStyle: { color: INK, fontFamily: DISPLAY, fontWeight: 600, fontSize: 24, overflow: 'truncate' },
-    subtextStyle: { color: INK_DIM, fontFamily: FONT, fontSize: 14, overflow: 'truncate' },
-    itemGap: 8,
+    text, subtext, left: 'center', top: 10,
+    textStyle: { color: INK, fontFamily: DISPLAY, fontWeight: 600, fontSize: 28, overflow: 'truncate' },
+    subtextStyle: { color: INK_DIM, fontFamily: FONT, fontSize: 16, overflow: 'truncate' },
+    itemGap: 9,
   };
 }
 
 function catAxis(extra = {}) {
-  return { type: 'category', axisLine: { lineStyle: { color: LINE } }, axisTick: { show: false }, axisLabel: { color: INK, fontSize: 14, fontWeight: 500 }, ...extra };
+  return { type: 'category', axisLine: { lineStyle: { color: LINE } }, axisTick: { show: false }, axisLabel: { color: INK, fontSize: 16, fontWeight: 500 }, ...extra };
 }
 function valAxis(extra = {}) {
-  return { type: 'value', axisLine: { show: false }, axisTick: { show: false }, splitLine: { lineStyle: { color: LINE } }, axisLabel: { color: INK_DIM, fontSize: 12 }, ...extra };
+  return { type: 'value', axisLine: { show: false }, axisTick: { show: false }, splitLine: { lineStyle: { color: LINE } }, axisLabel: { color: INK_DIM, fontSize: 14 }, ...extra };
 }
 
 export function mountChart(container, option, opts = {}) {
@@ -160,7 +160,7 @@ export const CHARTS = {
   '02_contexto_cambio'(container, data, opts) {
     const base = rowsToObjects(data['01_pato_conejo']);          // estado inicial = gráfico anterior
     const ctxRows = rowsToObjects(data['02_contexto_cambio']);
-    const withCtx = ctxRows.find((r) => /con/i.test(r.estado)) || ctxRows[ctxRows.length - 1];
+    const withCtx = ctxRows.find((r) => /^con/i.test(r.estado)) || ctxRows[ctxRows.length - 1];
     const pato0 = (base.find((r) => /pato/i.test(r.respuesta)) || {}).porcentaje ?? 57.5;
     const conejo0 = (base.find((r) => /conejo/i.test(r.respuesta)) || {}).porcentaje ?? 42.5;
     const pato1 = withCtx.ve_pato_pct, conejo1 = withCtx.ve_conejo_pct;   // 26 / 74
@@ -362,7 +362,7 @@ export const CHARTS = {
       ...baseOption(accent),
       title: titleBlock('El contexto decide lo que oís', '% que oye la palabra sugerida, con y sin pista de texto'),
       grid: { left: 6, right: 64, top: 96, bottom: 24, containLabel: true },
-      xAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
+      xAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 14 } }),
       yAxis: catAxis({ data: items.map((i) => i.label), axisLabel: { color: INK, fontSize: 15 } }),
       tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong>: ${p.value}%<br>${items[p.dataIndex].nota}` },
       series: [{
@@ -425,14 +425,14 @@ export const CHARTS = {
       title: titleBlock('Más seguridad, menos acierto', 'Confianza declarada (1 a 5) frente al % de acierto'),
       grid: { left: 6, right: 28, top: 100, bottom: 24, containLabel: true },
       xAxis: catAxis({ data: rows.map((r) => `${r.nivel_confianza}/5`), boundaryGap: false, name: 'confianza declarada', nameLocation: 'middle', nameGap: 34, nameTextStyle: { color: INK_DIM } }),
-      yAxis: valAxis({ min: 25, max: 55, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
+      yAxis: valAxis({ min: 25, max: 55, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 14 } }),
       tooltip: { ...baseOption(accent).tooltip, trigger: 'axis', formatter: (ps) => `<strong>Confianza ${rows[ps[0].dataIndex].nivel_confianza}/5</strong><br>${rows[ps[0].dataIndex].tooltip}` },
       series: [{
         type: 'line', smooth: true, symbol: 'circle', symbolSize: 10, data: vals,
         lineStyle: { width: 3, color: accent }, itemStyle: { color: accent, borderColor: '#0A0D10', borderWidth: 2 },
         markPoint: {
           symbolSize: 13,
-          label: { show: true, color: INK, fontFamily: DISPLAY, fontSize: 12, position: 'top', distance: 12, lineHeight: 15 },
+          label: { show: true, color: INK, fontFamily: DISPLAY, fontSize: 14, position: 'top', distance: 12, lineHeight: 15 },
           data: [
             { coord: [idxMax, vals[idxMax]], itemStyle: { color: accent }, label: { formatter: `el techo\n${vals[idxMax]}%` } },
             { coord: [idxMaxConf, vals[idxMaxConf]], itemStyle: { color: loss }, label: { position: 'left', distance: 16, formatter: `máx. confianza\n${vals[idxMaxConf]}%` } },
@@ -458,12 +458,12 @@ export const CHARTS = {
       ...baseOption(accent),
       title: titleBlock('La respuesta que salta sola está mal', 'Las cuatro respuestas más elegidas · la correcta es $0,05'),
       grid: { left: 16, right: 56, top: 96, bottom: 24, containLabel: true },
-      xAxis: valAxis({ max: 70, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
+      xAxis: valAxis({ max: 70, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 14 } }),
       yAxis: catAxis({
         data: ordered.map((r) => r.respuesta),
         axisLabel: {
           formatter: (val) => `{p|${val}}\n{e|${etiBy[val]}}`,
-          rich: { p: { fontFamily: DISPLAY, fontWeight: 600, fontSize: 15, color: INK, lineHeight: 18 }, e: { fontSize: 11, color: INK_DIM, lineHeight: 14 } },
+          rich: { p: { fontFamily: DISPLAY, fontWeight: 600, fontSize: 15, color: INK, lineHeight: 18 }, e: { fontSize: 13, color: INK_DIM, lineHeight: 14 } },
         },
       }),
       tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong> · ${p.data.eti}<br>${p.data.tip}` },
@@ -504,7 +504,8 @@ export const CHARTS = {
     const option = {
       ...baseOption(accent), animation: false,
       title: titleBlock('Perder pesa el doble que ganar', 'Cuánto pesa, para tu cerebro, ganar o perder los mismos $50'),
-      grid: { left: 90, right: 90, top: 104, bottom: 30, containLabel: true },
+      // las dos barras suben a la franja de arriba; el texto vive en la banda inferior sin tocarlas.
+      grid: { left: 90, right: 90, top: 72, bottom: '40%', containLabel: true },
       xAxis: {
         type: 'value', min: -lim, max: lim,
         axisLine: { show: false }, axisTick: { show: false }, splitLine: { show: false },
@@ -532,7 +533,7 @@ export const CHARTS = {
         markLine: {
           silent: true, symbol: 'none',
           lineStyle: { color: 'rgba(228,234,239,0.35)', type: 'dashed', width: 1.5 },
-          label: { show: true, fontFamily: MONO, fontSize: 11 },
+          label: { show: true, fontFamily: MONO, fontSize: 13 },
           data: [{ xAxis: 0, label: { position: 'insideEndTop', formatter: 'mismos $50', color: INK_DIM } }],
         },
       }],
@@ -587,14 +588,15 @@ export const CHARTS = {
     const option = {
       ...baseOption(accent),
       title: titleBlock('El mismo plan, decisión opuesta', '% que elige el plan SEGURO vs. el arriesgado · según cómo se cuenta'),
-      grid: { left: '24%', right: '24%', top: 104, bottom: 40, containLabel: true },
-      xAxis: catAxis({ data: items.map((i) => i.label), axisLabel: { color: INK, fontSize: 13, lineHeight: 17, interval: 0 } }),
-      yAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
+      // las dos barras viven en el ~48% derecho; el texto del gráfico va en la columna izquierda (no las tapa).
+      grid: { left: '46%', right: '8%', top: 80, bottom: 40, containLabel: true },
+      xAxis: catAxis({ data: items.map((i) => i.label), axisLabel: { color: INK, fontSize: 15, lineHeight: 17, interval: 0 } }),
+      yAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 14 } }),
       tooltip: {
         ...baseOption(accent).tooltip, trigger: 'axis', axisPointer: { type: 'shadow' },
         formatter: (ps) => { const it = items[ps[0].dataIndex]; return `<strong>Plan seguro · ${it.seguro}%</strong> — ${it.descS}<br><strong>Plan arriesgado · ${100 - it.seguro}%</strong> — ${it.descR}`; },
       },
-      legend: { data: ['Plan seguro', 'Plan arriesgado'], top: 76, textStyle: { color: INK_DIM }, icon: 'roundRect' },
+      legend: { data: ['Plan seguro', 'Plan arriesgado'], top: 76, textStyle: { color: INK_DIM, fontSize: 14, fontFamily: FONT }, icon: 'roundRect' },
       series: [
         {
           name: 'Plan seguro', type: 'bar', stack: 'f', barWidth: '52%',
@@ -636,7 +638,8 @@ export const CHARTS = {
     const option = {
       ...baseOption(accent), animation: false,
       title: titleBlock('Los que menos saben, más se creen', 'Lo que la gente cree que sabe vs. lo que realmente sabe'),
-      grid: { left: 10, right: 86, top: 132, bottom: 30, containLabel: true },
+      // las líneas ocupan la franja superior; el texto va en una BANDA INFERIOR (no las tapa).
+      grid: { left: 10, right: 86, top: 96, bottom: '40%', containLabel: true },
       // icon 'line' → la leyenda dibuja CADA serie con su lineStyle: "creen"
       // como línea sólida naranja y "saben" como línea PUNTEADA gris (así la
       // leyenda indica que es la línea de puntos, no un bloque naranja).
@@ -644,9 +647,9 @@ export const CHARTS = {
       xAxis: {
         type: 'value', min: 0, max: 3, interval: 1,
         axisLine: { lineStyle: { color: LINE } }, axisTick: { show: false }, splitLine: { show: false },
-        axisLabel: { color: INK, fontSize: 12, formatter: (v) => labelFor[v] || '' },
+        axisLabel: { color: INK, fontSize: 15, formatter: (v) => labelFor[v] || '' },
       },
-      yAxis: valAxis({ min: 0, max: 100, axisLabel: { formatter: '{value}', color: INK_DIM, fontSize: 12 }, name: 'nivel', nameTextStyle: { color: INK_DIM, fontSize: 11, align: 'left' } }),
+      yAxis: valAxis({ min: 0, max: 100, axisLabel: { formatter: '{value}', color: INK_DIM, fontSize: 14 }, name: 'nivel', nameTextStyle: { color: INK_DIM, fontSize: 13, align: 'left' } }),
       tooltip: { ...baseOption(accent).tooltip, trigger: 'axis', formatter: (ps) => { const qi = Math.round(ps[0].data[0]); return `<strong>${labelFor[qi]}</strong><br>${rows[qi].tooltip}`; } },
       series: [
         {
@@ -656,7 +659,7 @@ export const CHARTS = {
           markLine: {
             silent: true, symbol: ['none', 'arrow'], symbolSize: 7,
             lineStyle: { color: accent, width: 1.5, opacity: 0.6 },
-            label: { show: true, position: 'middle', formatter: `se creen\n+${gap} pts`, color: INK, fontFamily: FONT, fontSize: 11, lineHeight: 14, backgroundColor: 'rgba(10,13,16,0.85)', padding: [3, 5], borderRadius: 4 },
+            label: { show: true, position: 'middle', formatter: `se creen\n+${gap} pts`, color: INK, fontFamily: FONT, fontSize: 13, lineHeight: 14, backgroundColor: 'rgba(10,13,16,0.85)', padding: [3, 5], borderRadius: 4 },
             data: [[{ coord: [0, real[0]] }, { coord: [0, self[0]] }]],
           },
         },
@@ -691,8 +694,9 @@ export const CHARTS = {
     const option = {
       ...baseOption(accent),
       title: titleBlock('Casi todos se creen por encima de la media', '% que se cree mejor que el promedio · la línea marca el 50% (lo posible)'),
-      grid: { left: 16, right: 116, top: 96, bottom: 24, containLabel: true },
-      xAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
+      // el gráfico ocupa el ~58% superior; la banda inferior queda libre para el texto (no lo tapa).
+      grid: { left: 16, right: 76, top: 54, bottom: '42%', containLabel: true },
+      xAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 14 } }),
       yAxis: catAxis({ data: items.map((i) => i.label), axisLabel: { fontSize: 14 } }),
       tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong> — ${p.value}%<br>${items[p.dataIndex].muestra} · ${items[p.dataIndex].fuente}` },
       series: [{
@@ -770,8 +774,8 @@ export const CHARTS = {
       ...baseOption(accent),
       title: titleBlock('Cuántos vivieron algo “paranormal”', 'Experiencias reportadas · cada una tiene explicación científica'),
       grid: { left: 16, right: 48, top: 96, bottom: 24, containLabel: true },
-      xAxis: valAxis({ max: 50, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
-      yAxis: catAxis({ data: ordered.map((r) => r.experiencia), axisLabel: { color: INK, fontSize: 13, width: 250, overflow: 'break' } }),
+      xAxis: valAxis({ max: 50, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 14 } }),
+      yAxis: catAxis({ data: ordered.map((r) => r.experiencia), axisLabel: { color: INK, fontSize: 15, width: 250, overflow: 'break' } }),
       tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong>: ${p.value}%<br><span style="color:${accent}">Explicación:</span> ${ordered[p.dataIndex].explicacion_cientifica}` },
       series: [{
         type: 'bar', barWidth: '56%',
@@ -805,18 +809,19 @@ export const CHARTS = {
     const option = {
       ...baseOption(accent),
       title: titleBlock('La ciencia dice una cosa; la gente, otra', 'Consenso científico vs. acuerdo del público (% de acuerdo)'),
-      grid: { left: 6, right: 16, top: 120, bottom: 30, containLabel: true },
-      legend: { data: ['Ciencia', 'Público'], top: 78, textStyle: { color: INK_DIM }, icon: 'roundRect' },
-      xAxis: catAxis({ data: cats, axisLabel: { color: INK, fontSize: 13, interval: 0, lineHeight: 16 } }),
-      yAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
+      // el gráfico vive en el ~58% derecho; el ~40% izquierdo queda libre para el texto (sin tapar barras).
+      grid: { left: '40%', right: 36, top: 74, bottom: 30, containLabel: true },
+      legend: { data: ['Ciencia', 'Público'], right: '5%', top: 30, textStyle: { color: INK_DIM, fontSize: 14, fontFamily: FONT }, icon: 'roundRect' },
+      xAxis: catAxis({ data: cats, axisLabel: { color: INK, fontSize: 15, interval: 0, lineHeight: 16 } }),
+      yAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 14 } }),
       tooltip: {
         ...baseOption(accent).tooltip, trigger: 'axis', axisPointer: { type: 'shadow' },
         formatter: (ps) => { const it = items[ps[0].dataIndex]; return `<strong>${it.tema}</strong><br>Ciencia: ${it.ciencia}% · Público: ${it.publico}%<br><span style="color:${accent}">Brecha:</span> ${it.brecha} pp`; },
       },
       series: [
-        { name: 'Ciencia', type: 'bar', barWidth: '32%', data: items.map(() => 0), itemStyle: { color: accent, borderRadius: [4, 4, 0, 0] }, label: { show: false, position: 'top', color: INK, fontFamily: DISPLAY, fontSize: 13, formatter: '{c}%' },
+        { name: 'Ciencia', type: 'bar', barWidth: '32%', data: items.map(() => 0), itemStyle: { color: accent, borderRadius: [4, 4, 0, 0] }, label: { show: false, position: 'top', color: INK, fontFamily: DISPLAY, fontSize: 15, formatter: '{c}%' },
           markLine: { silent: true, symbol: ['none', 'none'], lineStyle: { width: 0 }, data: [] } },
-        { name: 'Público', type: 'bar', barWidth: '32%', data: items.map(() => 0), itemStyle: { color: publicoCol, borderRadius: [4, 4, 0, 0] }, label: { show: false, position: 'top', color: INK_DIM, fontFamily: DISPLAY, fontSize: 13, formatter: '{c}%' } },
+        { name: 'Público', type: 'bar', barWidth: '32%', data: items.map(() => 0), itemStyle: { color: publicoCol, borderRadius: [4, 4, 0, 0] }, label: { show: false, position: 'top', color: INK_DIM, fontFamily: DISPLAY, fontSize: 15, formatter: '{c}%' } },
       ],
     };
     const chart = mountChart(container, option, opts);
@@ -839,7 +844,7 @@ export const CHARTS = {
           markLine: {
             silent: true, symbol: ['none', 'none'],
             lineStyle: { color: hexA(accent, 0.85 * s3), type: 'dashed', width: 2 },
-            label: { show: s3 > 0.25, position: 'middle', color: accent, fontFamily: DISPLAY, fontWeight: 700, fontSize: 13, formatter: (d) => `−${d.value}` },
+            label: { show: s3 > 0.25, position: 'middle', color: accent, fontFamily: DISPLAY, fontWeight: 700, fontSize: 15, formatter: (d) => `−${d.value}` },
             data: gapLines,
           },
         },

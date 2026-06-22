@@ -14,6 +14,49 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   código pero no este archivo, el contexto del resto queda desactualizado → siempre van juntos.
 - Si algo de acá ya no es cierto, corregilo (no agregues notas sueltas que se contradigan).
 
+## ⚡ ACTUALIZACIÓN jun-2026 (10ª vuelta — REDISEÑO PREMIUM multi-pasada, EN CURSO) — MANDA sobre todo lo de abajo
+- **Objetivo (brief del usuario):** subir el sitio a nivel editorial (The Pudding/Reuters/Guardian): romper la
+  monotonía "fondo oscuro + gráfico + tarjeta translúcida", variar la gramática de escenas (hero / prueba dividida /
+  dato limpio / full-screen / sticky por pasos / frase editorial / galería / antes-después), higiene de scroll
+  (escenas que no se pisen, matar negros vacíos, centrar vertical, auditar min-height/sticky/z-index), gráficos
+  SIN texto encima, mejores transiciones entre módulos, copy más corto/claro, y responsive mobile (usar `svh`).
+  NO rehacer desde cero ni cambiar la esencia. Se hace en PASADAS (el usuario revisa en localhost cada una).
+- **PASADA 1 (transversal) — HECHA:**
+  - **Legibilidad global de TODOS los gráficos** (helpers de charts.js, un solo lugar): título 24→28, subtítulo
+    14→16, ejes de categoría 14→16, ejes de valor/% 12→14, leyendas →14, tooltips →14.5, y se barrieron los
+    overrides chicos inline (12/13/11 → 14/15/13). Si agregás gráficos, NO bajes de estos tamaños.
+  - **Coherencia texto↔gráfico:** G2 (contexto, E2) — el morph Pato/Conejo se CONSERVA (es la firma "mismas
+    barras que se vuelcan"); se reescribió el texto para que coincida con las barras: "Con la pista, la lectura se
+    da vuelta: 3 de cada 4 pasan a ver al conejo / No cambió el estímulo. Cambió la interpretación." (se descartó
+    la Opción B de "cambió/no cambió" porque mataba el morph). E3 (snakes) suma "A veces el cerebro agrega algo
+    que no está". El typo "No todas las ilusiones son ambiguas" ya estaba bien.
+- **PASADA (a) — gráficos sin tarjeta encima — HECHA.** Dos patrones según el tipo de gráfico:
+  - **Texto en columna IZQUIERDA + gráfico corrido a la derecha** (barras verticales/agrupadas):
+    **brecha ciencia↔público** (`grid.left:'40%'`, legend top-right; `.e13--brecha .step` flex-start) y
+    **framing/enfermedad de 600** (`08_framing` `grid.left:'46%'`; `#e8 .step[data-layer="1"]` columna izq.).
+  - **Texto en BANDA INFERIOR + gráfico comprimido arriba** (barras horizontales / líneas que ocupan todo el
+    ancho): **mejor que el promedio** (`10_` `grid.bottom:'42%'`; `#e10 .step` banda abajo) y **Dunning-Kruger**
+    (`09_` `grid.bottom:'40%'`; `#e9 .step` banda abajo).
+  - **Ya estaban bien (sin cambio):** bate y pelota (texto izq. / barras der.) y gorila/ceguera atencional (texto
+    izq. / dona der.). **aversión a la pérdida**: solape mínimo, se dejó como está (revisar si molesta).
+  - ⚠️ OJO para futuras escenas Sesgos/cierre: la regla con especificidad de ID
+    `#sesgos-intro,#cierre .step__card{max-width:46rem;text-align:center}` (carteles full-bleed, 6ª vuelta) centra
+    y agranda. Si un panel "no se mueve" aunque cambies `.e1X`/clase, buscá reglas `#id .step__card` (ganan por ID).
+- **PASADA (b) — higiene de scroll — EN CURSO:**
+  - **Alturas recortadas** (matan scroll/negro muerto; el scrub se normaliza a la altura, no se rompe):
+    portada `.cover` 460→320vh (mobile 380→260), portales `.portal` 380→270vh, `.step--tall` 220→180vh
+    (rotación pato/conejo), `#e3b .step` 240→180vh (waffle). Verificado que el morph del pato/conejo y el waffle
+    completan dentro de la altura nueva.
+  - **Cue de scroll de portada eliminado** (`.cover__scrollcue` "Bajá").
+  - **🐛 BUG IMPORTANTE corregido (morph pato/conejo "con contexto"):** el handler `02_contexto_cambio` elegía la
+    fila con `/con/i.test(estado)`, que matchea **"Sin contexto"** (por "**con**texto") → mostraba Pato 74/Conejo 26
+    CON la pista (al revés, contradecía la tesis y el copy "3 de cada 4 ven al conejo"). Fix: `/^con/i`. Ahora con
+    contexto = Conejo 74 / Pato 26. (Si tocás textos de estado, ojo con regex que matcheen subcadenas de "contexto".)
+  - **PENDIENTE en (b):** auditar escenas que se pisan (sticky bleed entre secciones — requiere capturas de
+    transición), y revisar el `padding-top:55vh` de la portada de snakes (`#e3 .step--center`) por "contenido bajo".
+- **PENDIENTE (próximas pasadas, en orden sugerido):** (c) variedad de layouts / menos tarjetas
+  translúcidas; (d) video de atención des-embebido y con escena propia; (e) responsive mobile con `svh`.
+
 ## ⚡ ACTUALIZACIÓN jun-2026 (9ª vuelta — E13 a 3 etapas + limpieza de cues) — MANDA sobre todo lo de abajo
 - **COPY de SESGOS rehilado para narrativa clara (pedido del usuario):** progresión = qué es un sesgo (no es
   equivocarse una vez, es equivocarse siempre parecido) → son predecibles (anticipar = aprovechar) → patrones/

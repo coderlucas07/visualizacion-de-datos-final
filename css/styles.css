@@ -181,7 +181,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 /* PORTADA — el video solo, a pantalla completa. El scroll lo scrubea;   */
 /* al final funde a negro y recién ahí aparece el título.                */
 /* ===================================================================== */
-.cover { position: relative; height: 460vh; background: #06080B; }
+.cover { position: relative; height: 320vh; background: #06080B; }
 .cover__sticky {
   position: sticky; top: 0; height: 100vh;
   overflow: hidden;
@@ -353,7 +353,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 /* el título aparece cuando ya estás ADENTRO; abajo nace un puntito que  */
 /* crece hasta tragarte; en el negro, la frase del módulo.               */
 /* ===================================================================== */
-.portal { position: relative; height: 380vh; }
+.portal { position: relative; height: 270vh; }
 .portal__sticky {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
   background: var(--bg);
@@ -568,7 +568,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   display: flex; align-items: center;
   padding: 9vh var(--pad-x) 9vh var(--pad-x);
 }
-.step--tall { min-height: 220vh; align-items: flex-start; }
+.step--tall { min-height: 180vh; align-items: flex-start; }
 .step--tall .step__card { position: sticky; top: 33vh; }
 .step__card {
   max-width: var(--measure);
@@ -640,7 +640,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
    (el morph ocupa el centro) y la sección tiene recorrido para que complete. */
 .morphwaffle { width: min(84vw, 76vh); aspect-ratio: 1; }
 .morphwaffle__cv { width: 100%; height: 100%; display: block; }
-#e3b .step { min-height: 240vh; align-items: flex-start; padding: 8vh var(--pad-x) 0; }
+#e3b .step { min-height: 180vh; align-items: flex-start; padding: 8vh var(--pad-x) 0; }
 #e3b .step__card { position: sticky; top: 8vh; }
 
 /* ===== FANTASMAS (Sesgos) — embudo 50→15→1 que se arma con el scroll ===== */
@@ -699,19 +699,22 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 #fantasmas .step[data-layer="1"] { justify-content: center; }
 #fantasmas .step[data-layer="1"] .step__card { text-align: center; }
 
-/* E13 (la brecha) · 3 etapas: izquierda → derecha → centro, con entrada slide/fade
-   cuando el paso queda activo (la clase .is-active la pone setupScrolly). */
-.e13--brecha .brechastep--left { justify-content: flex-start; }
-.e13--brecha .brechastep--right { justify-content: flex-end; }
-.e13--brecha .brechastep--center { justify-content: center; }
-.e13--brecha .brechastep--center .step__card { text-align: center; }
-.e13--brecha .step__card { opacity: 0; transition: opacity 0.6s var(--ease), transform 0.6s var(--ease); }
-.e13--brecha .brechastep--left .step__card { transform: translateX(-30px); }
-.e13--brecha .brechastep--right .step__card { transform: translateX(30px); }
-.e13--brecha .brechastep--center .step__card { transform: translateY(26px); }
+/* E13 (la brecha) · 3 etapas. El gráfico vive en el lado DERECHO (grid.left 40%);
+   el texto va SIEMPRE en una columna izquierda, centrado vertical, sin tapar las
+   barras. Cada paso entra con fade/slide al quedar activo (.is-active la pone
+   setupScrolly). */
+.e13--brecha .step { align-items: center; justify-content: flex-start; padding: 0 var(--pad-x); }
+.e13--brecha .step__card {
+  max-width: 30rem; width: min(34vw, 30rem);
+  opacity: 0; transform: translateX(-30px);
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+}
 .e13--brecha .step.is-active .step__card { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
   .e13--brecha .step__card { opacity: 1; transform: none; transition: none; }
+}
+@media (max-width: 760px) {
+  .e13--brecha .step__card { width: auto; max-width: none; }
 }
 
 /* Cierre · los pasos 2 y 3 entran SUBIENDO, uno a la izquierda y otro a la derecha,
@@ -727,10 +730,10 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 /* E4: el paso del 85/15 va ARRIBA-derecha para no tapar la barra del 15% (abajo). */
 #e4 .step[data-layer="2"] { align-items: flex-start; justify-content: flex-end; padding: 12vh var(--pad-x) 0; }
 
-/* E9 (Dunning-Kruger): el primer paso entra por la DERECHA (la línea se dibuja a
-   la izquierda, de "Peores" a "Mejores"); los siguientes van a la izquierda, así
-   la línea (que termina a la derecha) queda siempre a la vista. */
-#e9 .step:first-child { justify-content: flex-end; }
+/* E9 (Dunning-Kruger): las líneas viven en la franja de arriba; el texto va en una
+   BANDA INFERIOR centrada, sin tapar el arranque de la línea punteada. */
+#e9 .scrolly__steps .step { align-items: flex-end; justify-content: center; padding: 0 var(--pad-x) 6vh; }
+#e9 .step__card { max-width: 42rem; text-align: center; }
 /* el panel arriba (para gráficos con el dato abajo) */
 .scrolly--stage.stage--top .step { align-items: flex-start; padding: 13vh var(--pad-x) 0; }
 .scrolly--stage.stage--top .scrolly__graphic::after { inset: 0 0 auto 0; background: linear-gradient(to bottom, rgba(10,13,16,0.92), rgba(10,13,16,0)); }
@@ -1295,14 +1298,25 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
    Aplica a las escenas full-bleed del módulo (intro, E10, E13, cierre): la tarjeta
    deja de estar pegada abajo-izquierda y pasa a centrada, más grande y legible. ===== */
 #sesgos-intro .scrolly__steps .step,
-#e10 .scrolly__steps .step,
-#e13 .scrolly__steps .step,
 #cierre .scrolly__steps .step { justify-content: center; padding-bottom: 9vh; }
 #sesgos-intro .step__card,
-#e10 .step__card,
-#e13 .step__card,
 #cierre .step__card {
   max-width: 46rem; padding: 1.9rem 2.3rem; text-align: center;
+}
+/* E13 (brecha) NO se centra: el texto va en columna izquierda (ver bloque .e13--brecha). */
+/* E10 (mejor que el promedio): el gráfico ocupa la franja de arriba; el texto va
+   en una BANDA INFERIOR centrada, sin tapar las barras. */
+#e10 .scrolly__steps .step { align-items: flex-end; justify-content: center; padding-bottom: 7vh; }
+#e10 .step__card { max-width: 44rem; padding: 1.6rem 2.1rem; text-align: center; }
+#e10 .step__card h2 { font-size: clamp(1.8rem, 1.25rem + 2vw, 2.9rem); }
+
+/* E8 (framing · enfermedad de 600): el gráfico de las dos barras se corre a la
+   derecha; el texto del gráfico (capa 1) va en columna izquierda, sin taparlas.
+   El planteo (capa 0, statement + Plan A/B) no se toca. */
+#e8 .step[data-layer="1"] { align-items: center; justify-content: flex-start; padding: 0 var(--pad-x); }
+#e8 .step[data-layer="1"] .step__card { width: min(34vw, 30rem); max-width: 30rem; text-align: left; }
+@media (max-width: 760px) {
+  #e8 .step[data-layer="1"] .step__card { width: auto; max-width: none; }
 }
 #sesgos-intro .step__card h2,
 #e10 .step__card h2,
@@ -1393,7 +1407,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   .intro__stage--img { grid-template-columns: 1fr; gap: 1.2rem; align-content: center; }
   .intro__fig { width: min(38vh, 86vw); }
   .duo { height: 34vh; }
-  .cover { height: 380vh; }
+  .cover { height: 260vh; }
   .faces { grid-template-columns: 1fr; max-width: 60vw; }
   .menu__scenes { display: none; }
 }
