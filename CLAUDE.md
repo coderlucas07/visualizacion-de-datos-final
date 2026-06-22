@@ -64,9 +64,14 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   desktop = columna lateral; mobile = full-width arriba + texto en banda inferior (CSS `@media (max-width:640px)`
   reposiciona la tarjeta). Patrón a reusar para cualquier chart de columna lateral. Los de banda (mejor que el
   promedio, Dunning-Kruger, aversión) ya andaban en mobile. Intro pato/conejo y demás apilan ok.
-- **PENDIENTE (lo que queda, menor/opcional):** (c) seguir reduciendo párrafos largos / más variedad de tarjetas
-  (subjetivo, conviene input del usuario); revisar responsive del resto en mobile real (gorila, hscroll caras,
-  cover); completar nombres del equipo en el `<footer>` (placeholder).
+- **PASADA (e) — responsive mobile — HECHA en lo crítico:** todos los charts que rompían en mobile ahora son
+  responsive por `container.clientWidth<640`: brecha y framing (columna→banda), aversión (márgenes/labels/barras
+  reducidos). La galería de caras (E12) se APILA vertical en mobile (`@media max-width:640` con las mismas reglas
+  que `prefers-reduced-motion`). Intro/charts de banda (E10/E9) ya andaban. El gorila en mobile es un strip 16:9
+  centrado estándar (el scrim de desktop no aplica; aceptable, el brief prioriza desktop).
+- **PENDIENTE (lo que queda):** **nombres del equipo en el `<footer>`** (placeholder `[completar nombres del equipo]`
+  en index.html:851 — REQUIERE que el usuario los dé). Opcional/subjetivo: seguir variando tarjetas / acortar más
+  copy (conviene input del usuario).
 
 ## ⚡ ACTUALIZACIÓN jun-2026 (9ª vuelta — E13 a 3 etapas + limpieza de cues) — MANDA sobre todo lo de abajo
 - **COPY de SESGOS rehilado para narrativa clara (pedido del usuario):** progresión = qué es un sesgo (no es
