@@ -715,8 +715,10 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 @media (prefers-reduced-motion: reduce) {
   .e13--brecha .step__card { opacity: 1; transform: none; transition: none; }
 }
-@media (max-width: 760px) {
-  .e13--brecha .step__card { width: auto; max-width: none; }
+@media (max-width: 640px) {
+  /* mobile: el gráfico va full width arriba y el texto a la banda inferior (no hay columna). */
+  .e13--brecha .step { align-items: flex-end; justify-content: center; padding: 0 var(--pad-x) 5vh; }
+  .e13--brecha .step__card { width: auto; max-width: none; text-align: center; }
 }
 
 /* Cierre · los pasos 2 y 3 entran SUBIENDO, uno a la izquierda y otro a la derecha,
@@ -1317,8 +1319,10 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
    El planteo (capa 0, statement + Plan A/B) no se toca. */
 #e8 .step[data-layer="1"] { align-items: center; justify-content: flex-start; padding: 0 var(--pad-x); }
 #e8 .step[data-layer="1"] .step__card { width: min(34vw, 30rem); max-width: 30rem; text-align: left; }
-@media (max-width: 760px) {
-  #e8 .step[data-layer="1"] .step__card { width: auto; max-width: none; }
+@media (max-width: 640px) {
+  /* mobile: framing full width arriba y texto en banda inferior (no hay columna). */
+  #e8 .step[data-layer="1"] { align-items: flex-end; justify-content: center; padding: 0 var(--pad-x) 5vh; }
+  #e8 .step[data-layer="1"] .step__card { width: auto; max-width: none; text-align: center; }
 }
 #sesgos-intro .step__card h2,
 #e10 .step__card h2,

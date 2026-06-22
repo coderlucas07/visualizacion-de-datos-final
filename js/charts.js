@@ -585,11 +585,14 @@ export const CHARTS = {
       { label: 'Contado en\n«muertes»', seguro: find('muertes', 'Segura').porcentaje, descS: find('muertes', 'Segura').descripcion, descR: find('muertes', 'Riesgosa').descripcion },
     ];
     const lbl = (p) => (p.value >= 8 ? p.value + '%' : '');
+    // Desktop: barras a la derecha, texto en columna izquierda. Mobile: full width + texto en banda inferior.
+    const narrow = container.clientWidth < 640;
     const option = {
       ...baseOption(accent),
       title: titleBlock('El mismo plan, decisión opuesta', '% que elige el plan SEGURO vs. el arriesgado · según cómo se cuenta'),
-      // las dos barras viven en el ~48% derecho; el texto del gráfico va en la columna izquierda (no las tapa).
-      grid: { left: '46%', right: '8%', top: 80, bottom: 40, containLabel: true },
+      grid: narrow
+        ? { left: 8, right: 16, top: 58, bottom: '42%', containLabel: true }
+        : { left: '46%', right: '8%', top: 80, bottom: 40, containLabel: true },
       xAxis: catAxis({ data: items.map((i) => i.label), axisLabel: { color: INK, fontSize: 15, lineHeight: 17, interval: 0 } }),
       yAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 14 } }),
       tooltip: {
@@ -806,12 +809,18 @@ export const CHARTS = {
       .filter((i) => i.ciencia >= 60);
     const cats = items.map((i) => lbl(i.tema));
     const publicoCol = hexA(accent, 0.34);
+    // Desktop: el gráfico vive en el ~58% derecho y el texto en columna izquierda.
+    // Mobile: no hay lugar para columna → full width arriba y el texto en banda inferior.
+    const narrow = container.clientWidth < 640;
     const option = {
       ...baseOption(accent),
       title: titleBlock('La ciencia dice una cosa; la gente, otra', 'Consenso científico vs. acuerdo del público (% de acuerdo)'),
-      // el gráfico vive en el ~58% derecho; el ~40% izquierdo queda libre para el texto (sin tapar barras).
-      grid: { left: '40%', right: 36, top: 74, bottom: 30, containLabel: true },
-      legend: { data: ['Ciencia', 'Público'], right: '5%', top: 30, textStyle: { color: INK_DIM, fontSize: 14, fontFamily: FONT }, icon: 'roundRect' },
+      grid: narrow
+        ? { left: 8, right: 16, top: 60, bottom: '46%', containLabel: true }
+        : { left: '40%', right: 36, top: 74, bottom: 30, containLabel: true },
+      legend: narrow
+        ? { data: ['Ciencia', 'Público'], top: 28, textStyle: { color: INK_DIM, fontSize: 13, fontFamily: FONT }, icon: 'roundRect' }
+        : { data: ['Ciencia', 'Público'], right: '5%', top: 30, textStyle: { color: INK_DIM, fontSize: 14, fontFamily: FONT }, icon: 'roundRect' },
       xAxis: catAxis({ data: cats, axisLabel: { color: INK, fontSize: 15, interval: 0, lineHeight: 16 } }),
       yAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 14 } }),
       tooltip: {
