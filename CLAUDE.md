@@ -59,8 +59,14 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   (arriba-izq) y el logo (abajo) sin recortar al gorila (la acción es centrada). Los playerVars ya estaban bien
   (`controls:0, modestbranding:1, rel:0, fs:0, iv_load_policy:3, playsinline, mute`). La placa "Selective Attention
   Test" que se ve es del propio video (contenido), no chrome.
-- **PENDIENTE (próximas pasadas, en orden sugerido):** (c) variedad de layouts / menos tarjetas
-  translúcidas; (d) video de atención des-embebido y con escena propia; (e) responsive mobile con `svh`.
+- **PASADA (e, parcial) — responsive mobile:** los charts de columna lateral (brecha, framing) rompían en
+  mobile (`grid.left:40%` aplastaba las barras). Ahora son **responsive por `container.clientWidth < 640`**:
+  desktop = columna lateral; mobile = full-width arriba + texto en banda inferior (CSS `@media (max-width:640px)`
+  reposiciona la tarjeta). Patrón a reusar para cualquier chart de columna lateral. Los de banda (mejor que el
+  promedio, Dunning-Kruger, aversión) ya andaban en mobile. Intro pato/conejo y demás apilan ok.
+- **PENDIENTE (lo que queda, menor/opcional):** (c) seguir reduciendo párrafos largos / más variedad de tarjetas
+  (subjetivo, conviene input del usuario); revisar responsive del resto en mobile real (gorila, hscroll caras,
+  cover); completar nombres del equipo en el `<footer>` (placeholder).
 
 ## ⚡ ACTUALIZACIÓN jun-2026 (9ª vuelta — E13 a 3 etapas + limpieza de cues) — MANDA sobre todo lo de abajo
 - **COPY de SESGOS rehilado para narrativa clara (pedido del usuario):** progresión = qué es un sesgo (no es
