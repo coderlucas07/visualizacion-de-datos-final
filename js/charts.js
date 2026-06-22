@@ -51,6 +51,8 @@ const SOURCES = {
   '11b_texto_barnum': 'Dataset: Técnicas de Lectura en Frío (efecto Barnum) · Forer (1948).',
   '12_pareidolia_paranormal': 'Dataset: Encuesta de Experiencias Paranormales (YouGov, 2021, n=1.000).',
   '13_brecha_consenso': 'Dataset: Brecha Ciencia–Público · Pew Research (2015) + Pulsar UBA (Argentina, 2023).',
+  '14_fantasmas_embudo': 'Dataset: Creencia y experiencias paranormales · Módulo 13 (cátedra) + Ipsos Global Advisor (2018).',
+  '14b_fantasmas_reportes': 'Dataset: Tipos de reporte “paranormal” · Módulo 13 — Sesgos (cátedra).',
 };
 
 /* Inserta la cita: usa el slot [data-src-for] de la sección si existe;
@@ -209,15 +211,34 @@ export const CHARTS = {
     const ctx = canvas.getContext('2d');
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const N = 100;
-    let W = 0, H = 0, parts = [], lastP = opts.reduced ? 1 : 0;
+    let W = 0, H = 0, parts = [], cellSize = 0, lastP = opts.reduced ? 1 : 0;
 
     const easeInOut = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+
+    // Dibuja una "personita" (cabeza + torso) centrada en (x,y), alto ≈ h.
+    function person(x, y, h, color) {
+      const head = h * 0.30, bw = h * 0.52, bh = h * 0.56;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(x, y - h * 0.30, head / 2, 0, Math.PI * 2);   // cabeza
+      ctx.fill();
+      const top = y - h * 0.06;                              // hombros
+      ctx.beginPath();                                       // torso (cápsula)
+      ctx.moveTo(x - bw / 2, top + bh);
+      ctx.lineTo(x - bw / 2, top + bw * 0.45);
+      ctx.quadraticCurveTo(x - bw / 2, top, x, top);
+      ctx.quadraticCurveTo(x + bw / 2, top, x + bw / 2, top + bw * 0.45);
+      ctx.lineTo(x + bw / 2, top + bh);
+      ctx.closePath();
+      ctx.fill();
+    }
 
     function build() {
       // --- layout GRID (10×10 centrado) ---
       const cols = 10, rows = 10;
       const span = Math.min(W * 0.62, H * 0.86);
       const cell = span / cols;
+      cellSize = cell;
       const gx0 = W / 2 - span / 2 + cell / 2, gy0 = H / 2 - span / 2 + cell / 2;
       // --- layout NÚMERO (puntos muestreados del texto onTotal) ---
       const off = document.createElement('canvas'); off.width = W; off.height = H;
@@ -242,15 +263,15 @@ export const CHARTS = {
       lastP = p; ctx.clearRect(0, 0, W, H);
       if (!W || !parts.length) return;
       const e = easeInOut(Math.max(0, Math.min(1, p)));
-      const dot = Math.min(W, H) * 0.017;
+      // Apretadas mientras forman el número; tamaño "persona" al llegar a la grilla.
+      const h = (Math.min(W, H) * 0.026) + (cellSize * 0.66 - Math.min(W, H) * 0.026) * e;
       for (const pt of parts) {
         const x = pt.nx + (pt.gx - pt.nx) * e;
         const y = pt.ny + (pt.gy - pt.ny) * e;
-        ctx.beginPath(); ctx.arc(x, y, dot, 0, Math.PI * 2);
         // mientras es número va todo en acento; al llegar a la grilla, los 4 que
         // "no ven" se apagan (fade con el avance del morph).
-        ctx.fillStyle = pt.lit ? accent : `rgba(${dimRGB},${(0.85 - 0.6 * e).toFixed(3)})`;
-        ctx.fill();
+        const color = pt.lit ? accent : `rgba(${dimRGB},${(0.85 - 0.55 * e).toFixed(3)})`;
+        person(x, y, h, color);
       }
     }
     const resize = () => {
@@ -470,11 +491,20 @@ export const CHARTS = {
     const at = (m) => { const r = rows.find((x) => x.resultado_monetario === m); return r ? Math.abs(r.valor_subjetivo) : 0; };
     const joy = at(50) || 35;          // alegría de ganar $50
     const pain = at(-50) || 79;        // dolor de perder $50 (≈ 2,25× la alegría)
-    const lim = pain * 1.95;           // deja aire en los extremos para los rótulos
+    const lim = pain * 1.7;            // deja aire en los extremos para los rótulos
+    // Texto del rótulo de cada barra (grande, lo "lleva" el rayito).
+    const lblFor = (which) => which === 'loss'
+      ? '{n|−$50}\n{l|casi el DOBLE de dolor}'
+      : '{n|+$50}\n{g|la alegría de ganar}';
+    const richLbl = {
+      n: { fontFamily: DISPLAY, fontWeight: 700, fontSize: 32, color: INK, lineHeight: 36 },
+      g: { fontFamily: FONT, fontSize: 14, color: gain, lineHeight: 19 },
+      l: { fontFamily: FONT, fontSize: 14, color: loss, lineHeight: 19 },
+    };
     const option = {
-      ...baseOption(accent),
+      ...baseOption(accent), animation: false,
       title: titleBlock('Perder pesa el doble que ganar', 'Cuánto pesa, para tu cerebro, ganar o perder los mismos $50'),
-      grid: { left: 12, right: 12, top: 104, bottom: 30, containLabel: true },
+      grid: { left: 90, right: 90, top: 104, bottom: 30, containLabel: true },
       xAxis: {
         type: 'value', min: -lim, max: lim,
         axisLine: { show: false }, axisTick: { show: false }, splitLine: { show: false },
@@ -491,37 +521,49 @@ export const CHARTS = {
           : '<strong>Perder $50</strong><br>Duele casi el <strong>doble</strong> de lo que alegra ganarlos.'),
       },
       series: [{
-        type: 'bar', barWidth: 44,
-        label: {
-          show: true, fontFamily: DISPLAY, fontSize: 14, lineHeight: 18,
-          rich: {
-            t: { fontFamily: DISPLAY, fontWeight: 600, fontSize: 15, color: INK, lineHeight: 19 },
-            g: { fontFamily: FONT, fontSize: 12, color: gain, lineHeight: 16 },
-            l: { fontFamily: FONT, fontSize: 12, color: loss, lineHeight: 16 },
-          },
-        },
+        type: 'bar', barWidth: 52,
+        label: { show: true, fontFamily: DISPLAY, lineHeight: 18, rich: richLbl },
         data: [
-          { value: -pain, itemStyle: { color: loss, borderRadius: [6, 0, 0, 6] },        // Perdés → izquierda
-            label: { position: 'left', formatter: '{t|Perdés $50}\n{l|casi el DOBLE de dolor}' } },
-          { value: joy, itemStyle: { color: gain, borderRadius: [0, 6, 6, 0] },          // Ganás → derecha
-            label: { position: 'right', formatter: '{t|Ganás $50}\n{g|la alegría de ganar}' } },
+          { value: 0, itemStyle: { color: loss, borderRadius: [6, 0, 0, 6] },
+            label: { position: 'left', formatter: '' } },
+          { value: 0, itemStyle: { color: gain, borderRadius: [0, 6, 6, 0] },
+            label: { position: 'right', formatter: '' } },
         ],
         markLine: {
           silent: true, symbol: 'none',
           lineStyle: { color: 'rgba(228,234,239,0.35)', type: 'dashed', width: 1.5 },
           label: { show: true, fontFamily: MONO, fontSize: 11 },
-          data: [
-            { xAxis: 0, label: { position: 'insideEndTop', formatter: 'mismos $50', color: INK_DIM } },
-            // línea espejo: hasta acá el dolor sería "igual" que la alegría; la barra
-            // de pérdida la pasa de largo → el resto es el dolor de más (lo hace el doble).
-            { xAxis: -joy, lineStyle: { color: hexA(accent, 0.7), type: 'dashed', width: 1.5 },
-              label: { position: 'insideEndBottom', formatter: 'igual que ganar', color: gain } },
-          ],
+          data: [{ xAxis: 0, label: { position: 'insideEndTop', formatter: 'mismos $50', color: INK_DIM } }],
         },
-        animationDuration: 1300, animationEasing: 'elasticOut', animationDelay: (i) => i * 220,
       }],
     };
-    mountChart(container, option, opts);
+    const chart = mountChart(container, option, opts);
+
+    // ----- Transición con SCROLL: la moneda dispara un "rayito" que dibuja la
+    // barra de PÉRDIDA (abajo, grande) y después otro para la de GANANCIA (arriba,
+    // chica). El número (−$50 / +$50) lo lleva el rayo hasta la punta. -----
+    let lastP = -1;
+    container.__setG7 = (p) => {
+      p = Math.max(0, Math.min(1, p));
+      if (p === lastP) return; lastP = p;
+      const lossP = Math.min(1, p / 0.55);                 // primero la pérdida
+      const gainP = Math.max(0, Math.min(1, (p - 0.5) / 0.5)); // después la ganancia
+      const lossV = -pain * lossP, gainV = joy * gainP;
+      // chispa en la punta de la barra que se está dibujando (el "rayito")
+      const sparks = [];
+      if (lossP > 0.02 && lossP < 0.999) sparks.push({ coord: [lossV, 'Perdés $50'], itemStyle: { color: '#fff', shadowBlur: 16, shadowColor: loss }, symbol: 'circle', symbolSize: 16 });
+      if (gainP > 0.02 && gainP < 0.999) sparks.push({ coord: [gainV, 'Ganás $50'], itemStyle: { color: '#fff', shadowBlur: 16, shadowColor: gain }, symbol: 'circle', symbolSize: 16 });
+      chart.setOption({ series: [{
+        data: [
+          { value: lossV, itemStyle: { color: loss, borderRadius: [6, 0, 0, 6] },
+            label: { position: 'left', formatter: lossP > 0.6 ? lblFor('loss') : '' } },
+          { value: gainV, itemStyle: { color: gain, borderRadius: [0, 6, 6, 0] },
+            label: { position: 'right', formatter: gainP > 0.6 ? lblFor('gain') : '' } },
+        ],
+        markPoint: { data: sparks, animation: false, silent: true },
+      }] });
+    };
+    container.__setG7(opts.reduced ? 1 : 0);
   },
 
   /* ---------- G8 · Encuadre / framing (E8) — el VUELCO ----------
@@ -531,35 +573,42 @@ export const CHARTS = {
   '08_framing_enfermedad'(container, data, opts) {
     const rows = rowsToObjects(data['08_framing_enfermedad']);
     const accent = accentOf(container);
-    const gain = cssVar(container, '--gain', GAIN);   // tonalidad clara (vidas salvadas)
-    const loss = cssVar(container, '--loss', LOSS);   // tonalidad profunda (muertes)
+    const gain = cssVar(container, '--gain', GAIN);   // tonalidad clara (plan seguro)
+    const loss = cssVar(container, '--loss', LOSS);   // tonalidad profunda (plan arriesgado)
     const find = (f, o) => rows.find((r) => r.encuadre.includes(f) && r.opcion === o) || { porcentaje: 0, descripcion: '' };
+    // Dos barras (vidas / muertes); cada una se PARTE 100% entre plan seguro y
+    // arriesgado. Mismo plan, mismos números: solo cambia la palabra → el % que
+    // elige lo seguro se desploma de 72 a 22.
     const items = [
-      { label: 'Contado en\n«vidas salvadas»', value: find('vidas', 'Segura').porcentaje, color: gain, desc: find('vidas', 'Segura').descripcion },
-      { label: 'Contado en\n«muertes»', value: find('muertes', 'Segura').porcentaje, color: loss, desc: find('muertes', 'Segura').descripcion },
+      { label: 'Contado en\n«vidas salvadas»', seguro: find('vidas', 'Segura').porcentaje, descS: find('vidas', 'Segura').descripcion, descR: find('vidas', 'Riesgosa').descripcion },
+      { label: 'Contado en\n«muertes»', seguro: find('muertes', 'Segura').porcentaje, descS: find('muertes', 'Segura').descripcion, descR: find('muertes', 'Riesgosa').descripcion },
     ];
+    const lbl = (p) => (p.value >= 8 ? p.value + '%' : '');
     const option = {
       ...baseOption(accent),
-      title: titleBlock('El mismo plan, decisión opuesta', '% que elige el plan SEGURO según cómo se cuenta el resultado'),
-      grid: { left: '26%', right: '26%', top: 104, bottom: 40, containLabel: true },
+      title: titleBlock('El mismo plan, decisión opuesta', '% que elige el plan SEGURO vs. el arriesgado · según cómo se cuenta'),
+      grid: { left: '24%', right: '24%', top: 104, bottom: 40, containLabel: true },
       xAxis: catAxis({ data: items.map((i) => i.label), axisLabel: { color: INK, fontSize: 13, lineHeight: 17, interval: 0 } }),
       yAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
       tooltip: {
         ...baseOption(accent).tooltip, trigger: 'axis', axisPointer: { type: 'shadow' },
-        formatter: (ps) => { const it = items[ps[0].dataIndex]; return `<strong>Plan seguro</strong> · ${it.desc}<br>Lo elige el <strong>${it.value}%</strong>`; },
+        formatter: (ps) => { const it = items[ps[0].dataIndex]; return `<strong>Plan seguro · ${it.seguro}%</strong> — ${it.descS}<br><strong>Plan arriesgado · ${100 - it.seguro}%</strong> — ${it.descR}`; },
       },
-      series: [{
-        type: 'bar', barWidth: '58%',
-        data: items.map((i) => ({ value: i.value, itemStyle: { color: i.color, borderRadius: [6, 6, 0, 0] } })),
-        label: { show: true, position: 'top', color: INK, fontFamily: DISPLAY, fontSize: 30, fontWeight: 600, formatter: '{c}%' },
-        markLine: {
-          silent: true, symbol: ['none', 'none'],
-          lineStyle: { color: 'rgba(228,234,239,0.25)', type: 'dashed', width: 1 },
-          label: { show: true, position: 'middle', formatter: 'mismo plan', color: INK_DIM, fontFamily: MONO, fontSize: 10 },
-          data: [[{ coord: [0, items[0].value] }, { coord: [1, items[1].value] }]],
+      legend: { data: ['Plan seguro', 'Plan arriesgado'], top: 76, textStyle: { color: INK_DIM }, icon: 'roundRect' },
+      series: [
+        {
+          name: 'Plan seguro', type: 'bar', stack: 'f', barWidth: '52%',
+          data: items.map((i) => ({ value: i.seguro, itemStyle: { color: gain, borderRadius: [6, 6, 0, 0] } })),
+          label: { show: true, position: 'inside', color: '#0A0D10', fontFamily: DISPLAY, fontSize: 26, fontWeight: 700, formatter: lbl },
+          animationDuration: 1100, animationEasing: 'cubicOut',
         },
-        animationDuration: 1100, animationEasing: 'cubicOut', animationDelay: (i) => i * 220,
-      }],
+        {
+          name: 'Plan arriesgado', type: 'bar', stack: 'f', barWidth: '52%',
+          data: items.map((i) => ({ value: 100 - i.seguro, itemStyle: { color: hexA(loss, 0.55) } })),
+          label: { show: true, position: 'inside', color: INK, fontFamily: DISPLAY, fontSize: 18, fontWeight: 600, formatter: lbl },
+          animationDuration: 1100, animationEasing: 'cubicOut',
+        },
+      ],
     };
     mountChart(container, option, opts);
   },
@@ -637,10 +686,12 @@ export const CHARTS = {
     const lbl = (r) => /EE\.UU\./.test(r.muestra) ? 'Manejar (EE.UU.)' : /Suecia/.test(r.muestra) ? 'Manejar (Suecia)' : r.dominio;
     const items = rows.map((r) => ({ label: lbl(r), value: r.pct_arriba_del_promedio, muestra: r.muestra, fuente: r.fuente }))
       .sort((a, b) => a.value - b.value); // asc: el más alto queda arriba (category pinta abajo→arriba)
+    // Barra "manejar" del 93% (la del título): le apunta una flecha al scrollear.
+    const driveIdx = items.reduce((best, it, i) => (/Manejar/i.test(it.label) && it.value > items[best].value ? i : best), 0);
     const option = {
       ...baseOption(accent),
       title: titleBlock('Casi todos se creen por encima de la media', '% que se cree mejor que el promedio · la línea marca el 50% (lo posible)'),
-      grid: { left: 16, right: 60, top: 96, bottom: 24, containLabel: true },
+      grid: { left: 16, right: 116, top: 96, bottom: 24, containLabel: true },
       xAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
       yAxis: catAxis({ data: items.map((i) => i.label), axisLabel: { fontSize: 14 } }),
       tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong> — ${p.value}%<br>${items[p.dataIndex].muestra} · ${items[p.dataIndex].fuente}` },
@@ -649,10 +700,25 @@ export const CHARTS = {
         data: items.map((i) => ({ value: i.value, itemStyle: { color: hexA(accent, 0.45 + 0.5 * (i.value / 100)), borderRadius: [0, 8, 8, 0] } })),
         label: { show: true, position: 'right', color: INK, fontFamily: DISPLAY, fontSize: 16, fontWeight: 600, formatter: '{c}%' },
         markLine: { silent: true, symbol: 'none', lineStyle: { color: INK_DIM, type: 'dashed', width: 1.5 }, label: { show: true, formatter: '50%', position: 'end', color: INK_DIM, fontFamily: DISPLAY }, data: [{ xAxis: 50 }] },
+        markPoint: { data: [] },
         animationDuration: 1100, animationEasing: 'cubicOut', animationDelay: (i) => i * 110,
       }],
     };
-    mountChart(container, option, opts);
+    const chart = mountChart(container, option, opts);
+    // Flecha que sale apuntando a la barra del 93% cuando seguís scrolleando.
+    let calloutOn = false;
+    container.__showCallout = (on) => {
+      on = !!on;
+      if (on === calloutOn) return; calloutOn = on;
+      chart.setOption({ series: [{ markPoint: {
+        symbol: 'arrow', symbolRotate: 90, symbolSize: on ? [15, 21] : 0, symbolOffset: [40, 0],
+        itemStyle: { color: accent },
+        label: { show: false },
+        animation: true,
+        data: on ? [{ coord: [items[driveIdx].value, items[driveIdx].label] }] : [],
+      } }] });
+    };
+    if (opts.reduced) container.__showCallout(true);
   },
 
   /* ---------- G11 · Lectura Barnum (E11, capa 0) — HTML ---------- */
@@ -702,7 +768,7 @@ export const CHARTS = {
     const ordered = rows.slice().sort((a, b) => a.pct_si - b.pct_si);
     const option = {
       ...baseOption(accent),
-      title: titleBlock('Cuántos vivieron algo “paranormal”', 'Experiencias reportadas · pasá el cursor para ver la explicación científica'),
+      title: titleBlock('Cuántos vivieron algo “paranormal”', 'Experiencias reportadas · cada una tiene explicación científica'),
       grid: { left: 16, right: 48, top: 96, bottom: 24, containLabel: true },
       xAxis: valAxis({ max: 50, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
       yAxis: catAxis({ data: ordered.map((r) => r.experiencia), axisLabel: { color: INK, fontSize: 13, width: 250, overflow: 'break' } }),
@@ -717,31 +783,137 @@ export const CHARTS = {
     mountChart(container, option, opts);
   },
 
-  /* ---------- G13 · Brecha ciencia vs público (E13) ---------- */
+  /* ---------- G13 · Brecha ciencia vs público (E13) — 3 etapas con el scroll ----------
+     Relato en 3 momentos (container.__setBrecha(p), scrubeado por sectionProgress(#e13)):
+       (1) crecen SOLO las barras de Ciencia (consenso alto);
+       (2) crecen las de Público (más bajas);
+       (3) aparecen los conectores punteados = la brecha entre ambas.
+     Se quedan solo los temas de consenso fuerte (ciencia alta) para que la
+     secuencia ciencia↑ / público↓ / brecha se lea limpia. */
   '13_brecha_consenso'(container, data, opts) {
     const rows = rowsToObjects(data['13_brecha_consenso']);
     const accent = accentOf(container);
     const lbl = (t) => ({
-      'Cambio climático humano': 'Cambio\nclimático', 'Evolución humana': 'Evolución', 'Transgénicos seguros': 'Transgénicos',
-      'Vacunas (seguras)': 'Vacunas', "'La cura del cáncer está oculta'": '“Cura del\ncáncer oculta”',
+      'Cambio climático humano': 'Cambio\nclimático', 'Evolución humana': 'Evolución',
+      'Transgénicos seguros': 'Transgénicos', 'Vacunas (seguras)': 'Vacunas',
     }[t] || t);
-    const items = rows.map((r) => ({ tema: r.tema, ciencia: r.pct_cientificos, publico: r.pct_publico_arg != null ? r.pct_publico_arg : r.pct_publico_usa, brecha: r.brecha_pp, ben: r.beneficiario_del_hueco }));
+    const items = rows
+      .map((r) => { const publico = r.pct_publico_arg != null ? r.pct_publico_arg : r.pct_publico_usa; return { tema: r.tema, ciencia: r.pct_cientificos, publico, brecha: r.pct_cientificos - publico }; })
+      .filter((i) => i.ciencia >= 60);
+    const cats = items.map((i) => lbl(i.tema));
+    const publicoCol = hexA(accent, 0.34);
     const option = {
       ...baseOption(accent),
-      title: titleBlock('La ciencia dice una cosa; la gente, otra', '% de acuerdo: consenso científico vs. público · pasá el cursor: ¿quién se beneficia?'),
-      grid: { left: 6, right: 16, top: 122, bottom: 30, containLabel: true },
+      title: titleBlock('La ciencia dice una cosa; la gente, otra', 'Consenso científico vs. acuerdo del público (% de acuerdo)'),
+      grid: { left: 6, right: 16, top: 120, bottom: 30, containLabel: true },
       legend: { data: ['Ciencia', 'Público'], top: 78, textStyle: { color: INK_DIM }, icon: 'roundRect' },
-      xAxis: catAxis({ data: items.map((i) => lbl(i.tema)), axisLabel: { color: INK, fontSize: 12, interval: 0, lineHeight: 15 } }),
+      xAxis: catAxis({ data: cats, axisLabel: { color: INK, fontSize: 13, interval: 0, lineHeight: 16 } }),
       yAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 12 } }),
       tooltip: {
         ...baseOption(accent).tooltip, trigger: 'axis', axisPointer: { type: 'shadow' },
-        formatter: (ps) => { const it = items[ps[0].dataIndex]; return `<strong>${it.tema}</strong><br>Ciencia: ${it.ciencia}% · Público: ${it.publico}%<br>Brecha: ${it.brecha} pp<br><span style="color:${accent}">Se beneficia:</span> ${it.ben}`; },
+        formatter: (ps) => { const it = items[ps[0].dataIndex]; return `<strong>${it.tema}</strong><br>Ciencia: ${it.ciencia}% · Público: ${it.publico}%<br><span style="color:${accent}">Brecha:</span> ${it.brecha} pp`; },
       },
       series: [
-        { name: 'Ciencia', type: 'bar', barWidth: '30%', data: items.map((i) => i.ciencia), itemStyle: { color: accent, borderRadius: [4, 4, 0, 0] }, label: { show: true, position: 'top', color: INK, fontFamily: DISPLAY, fontSize: 13, formatter: '{c}%' } },
-        { name: 'Público', type: 'bar', barWidth: '30%', data: items.map((i) => i.publico), itemStyle: { color: hexA(accent, 0.32), borderRadius: [4, 4, 0, 0] }, label: { show: true, position: 'top', color: INK_DIM, fontFamily: DISPLAY, fontSize: 13, formatter: '{c}%' } },
+        { name: 'Ciencia', type: 'bar', barWidth: '32%', data: items.map(() => 0), itemStyle: { color: accent, borderRadius: [4, 4, 0, 0] }, label: { show: false, position: 'top', color: INK, fontFamily: DISPLAY, fontSize: 13, formatter: '{c}%' },
+          markLine: { silent: true, symbol: ['none', 'none'], lineStyle: { width: 0 }, data: [] } },
+        { name: 'Público', type: 'bar', barWidth: '32%', data: items.map(() => 0), itemStyle: { color: publicoCol, borderRadius: [4, 4, 0, 0] }, label: { show: false, position: 'top', color: INK_DIM, fontFamily: DISPLAY, fontSize: 13, formatter: '{c}%' } },
       ],
     };
-    mountChart(container, option, opts);
+    const chart = mountChart(container, option, opts);
+
+    let last = -1;
+    container.__setBrecha = (p) => {
+      p = Math.max(0, Math.min(1, p));
+      if (Math.abs(p - last) < 0.004) return; last = p;
+      const s1 = Math.max(0, Math.min(1, p / 0.32));          // Ciencia
+      const s2 = Math.max(0, Math.min(1, (p - 0.36) / 0.30)); // Público
+      const s3 = Math.max(0, Math.min(1, (p - 0.68) / 0.28)); // brecha
+      const gapLines = s3 > 0.02 ? items.map((i) => ([
+        { coord: [lbl(i.tema), i.publico] },
+        { coord: [lbl(i.tema), i.ciencia], value: i.brecha },
+      ])) : [];
+      chart.setOption({ series: [
+        {
+          data: items.map((i) => Math.round(i.ciencia * s1)),
+          label: { show: s1 > 0.05 },
+          markLine: {
+            silent: true, symbol: ['none', 'none'],
+            lineStyle: { color: hexA(accent, 0.85 * s3), type: 'dashed', width: 2 },
+            label: { show: s3 > 0.25, position: 'middle', color: accent, fontFamily: DISPLAY, fontWeight: 700, fontSize: 13, formatter: (d) => `−${d.value}` },
+            data: gapLines,
+          },
+        },
+        { data: items.map((i) => Math.round(i.publico * s2)), label: { show: s2 > 0.05 } },
+      ] }, false, true);
+    };
+    if (opts.reduced) container.__setBrecha(1);
+  },
+
+  /* ---------- G14 · El embudo de los fantasmas (Sesgos) — HTML, se arma con el scroll ----------
+     De cada 100: 50 CREEN, 15 sintieron algo, 1 vio una aparición. El desplome
+     50→1 es el dato: el cerebro infla la creencia mucho más allá de la experiencia
+     real. Tres niveles que aparecen escalonados y cuentan con el scroll
+     (container.__setFunnel(p), scrubeado en main.js). */
+  '14_fantasmas_embudo'(container, data, opts) {
+    const rows = rowsToObjects(data['14_fantasmas_embudo']);
+    const accent = accentOf(container);
+    const maxV = Math.max(...rows.map((r) => r.de_cada_100));   // 50
+    container.classList.add('funnel');
+    container.style.setProperty('--accent', accent);
+    container.setAttribute('role', 'img');
+    container.setAttribute('aria-label', 'De cada 100 personas, 50 creen en fantasmas, 15 dicen haber sentido algo y solo 1 vio una aparición.');
+    container.innerHTML = `
+      <p class="funnel__head">De cada <strong>100</strong> personas…</p>
+      <div class="funnel__levels">
+        ${rows.map((r, i) => `
+          <div class="funnel__row" data-i="${i}" style="--w:${(r.de_cada_100 / maxV).toFixed(3)}">
+            <span class="funnel__num">0</span>
+            <div class="funnel__bar"></div>
+            <p class="funnel__label"><strong>${r.etapa}</strong><span>${r.detalle}</span></p>
+          </div>`).join('')}
+      </div>`;
+    const els = rows.map((_, i) => container.querySelector(`.funnel__row[data-i="${i}"]`));
+    const nums = els.map((e) => e.querySelector('.funnel__num'));
+    const vals = rows.map((r) => r.de_cada_100);
+    const N = vals.length;
+    let last = -1;
+    container.__setFunnel = (p) => {
+      p = Math.max(0, Math.min(1, p));
+      if (p === last) return; last = p;
+      els.forEach((row, i) => {
+        const start = (i / (N + 0.4)) * 0.9;
+        const a = Math.max(0, Math.min(1, (p - start) / 0.28));
+        row.style.setProperty('--p', a.toFixed(3));
+        nums[i].textContent = Math.round(vals[i] * a);
+        row.classList.toggle('is-on', a > 0.02);
+      });
+    };
+    container.__setFunnel(opts.reduced ? 1 : 0);
+  },
+
+  /* ---------- G14b · Tipos de reporte (Sesgos) — HTML ----------
+     Lo que la gente "sintió" se reparte casi en tercios entre vista, oído y
+     sensación corporal: el cerebro completa con CUALQUIER sentido. Cierra el
+     puente con el módulo Percepción (la misma máquina, ahora inventando). */
+  '14b_fantasmas_reportes'(container, data) {
+    const rows = rowsToObjects(data['14b_fantasmas_reportes']);
+    const ico = {
+      Visual: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+      Sonoro: '<path d="M3 10v4h4l5 5V5L7 10H3Z"/><path d="M16 9a4 4 0 0 1 0 6"/>',
+      Sensorial: '<path d="M8 13V5a2 2 0 0 1 4 0v6m0-1a2 2 0 0 1 4 0v3m0-1a2 2 0 0 1 4 0v4a6 6 0 0 1-6 6h-2a6 6 0 0 1-5-3l-3-5a2 2 0 0 1 3-2l1 1"/>',
+    };
+    container.classList.add('thirds');
+    container.innerHTML = `
+      <p class="thirds__head">¿Qué forma toma ese <strong>“algo”</strong>?</p>
+      <p class="thirds__sub">Entre quienes dijeron sentir “algo”, la experiencia se reparte casi en tercios.</p>
+      <div class="thirds__grid">
+        ${rows.map((r) => `
+          <div class="thirds__cell">
+            <svg class="thirds__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ico[r.tipo] || ''}</svg>
+            <span class="thirds__pct">${r.pct}%</span>
+            <strong>${r.tipo}</strong>
+            <p>${r.ejemplos}</p>
+          </div>`).join('')}
+      </div>`;
   },
 };

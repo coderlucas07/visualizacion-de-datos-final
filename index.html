@@ -52,9 +52,9 @@
       <li class="menu__item">
         <a class="menu__link" href="#portal3"><span class="menu__num">03</span>Sesgos</a>
         <div class="menu__scenes">
-          <a class="menu__scene" href="#e10">Mejor que el promedio</a>
-          <a class="menu__scene" href="#e11">El texto que es tuyo</a>
+          <a class="menu__scene" href="#fantasmas">Fantasmas</a>
           <a class="menu__scene" href="#e12">Caras y fantasmas</a>
+          <a class="menu__scene" href="#e10">Mejor que el promedio</a>
           <a class="menu__scene" href="#e13">La brecha</a>
         </div>
       </li>
@@ -95,7 +95,6 @@
             <span class="t1">Tu cerebro no te cuenta</span>
             <span class="t2">toda la verdad</span>
           </h1>
-          <p class="cover__go">Seguí bajando</p>
         </div>
 
         <audio id="coverAudio" src="./assets/audio/riser.mp3" preload="auto"></audio>
@@ -181,7 +180,7 @@
         <div class="intro__stage intro__stage--chart">
           <header class="chart-head">
             <h3>Más gente ve pato que conejo</h3>
-            <p>Qué vio la gente al mirar la figura por primera vez · seguí bajando: las barras crecen con tu scroll</p>
+            <p>Qué vio la gente al mirar la figura por primera vez.</p>
           </header>
           <div class="chart" data-chart="01_pato_conejo" id="duoChart" role="img"
                aria-label="Casi 6 de cada 10 personas ven primero un pato; el resto, un conejo."></div>
@@ -224,7 +223,7 @@
           <div class="step__card">
             <p class="kicker">La pista</p>
             <h2 id="e2-h" data-e2-title>Dale vuelta la cabeza.</h2>
-            <p class="lede" data-e2-lede>Seguí bajando: la figura gira y aparece el otro animal.</p>
+            <p class="lede" data-e2-lede>La figura gira y aparece el otro animal.</p>
           </div>
         </div>
         <div class="step" data-layer="1">
@@ -257,7 +256,7 @@
         <div class="step step--center step--tall is-active" data-layer="0">
           <div class="step__card" id="e3TitleCard">
             <h2 id="e3-h">No todas las ilusiones<br />son ambiguas.</h2>
-            <p class="lede">Mirá el centro un segundo. Seguí bajando.</p>
+            <p class="lede">Mirá el centro un segundo.</p>
           </div>
         </div>
         <div class="step step--tall" data-layer="1">
@@ -386,7 +385,6 @@
           <span class="gorila__sound-txt">Sonido</span>
         </button>
 
-        <p class="gorila__cue" aria-hidden="true">Cuando termine, seguí bajando</p>
       </div>
     </section>
 
@@ -411,8 +409,8 @@
         </div>
         <div class="step" data-layer="0">
           <div class="step__card">
-            <p class="lede">Tu atención es un reflector: ilumina una porción mínima del mundo y deja el resto a oscuras.</p>
-            <p class="muted">El mismo cerebro que recorta lo que ves es el que, en un rato, va a recortar <em>qué te conviene</em>.</p>
+            <p class="lede">Se llama <strong>ceguera por falta de atención</strong>.</p>
+            <p class="muted">Cuando tu foco está ocupado en una tarea —contar pases—, lo demás no llega a tu conciencia, aunque te pase por delante. No es que lo viste y lo olvidaste: el gorila nunca entró. Tu atención es un reflector que ilumina una porción mínima del mundo y deja el resto a oscuras.</p>
           </div>
         </div>
       </div>
@@ -466,6 +464,7 @@
               <button class="choice" data-choice="010" aria-pressed="false"><span>$0,10</span></button>
               <button class="choice" data-choice="005" aria-pressed="false"><span>$0,05</span></button>
               <button class="choice" data-choice="100" aria-pressed="false"><span>$1,00</span></button>
+              <button class="choice" data-choice="001" aria-pressed="false"><span>$0,01</span></button>
             </div>
           </div>
         </div>
@@ -568,13 +567,13 @@
         <div class="step" data-layer="1">
           <div class="step__card">
             <p class="kicker">Acá está el truco</p>
-            <p class="lede">A la mitad de la gente le conté esos mismos planes hablando de <strong>vidas salvadas</strong>. A la otra mitad, de <strong>muertes</strong>.</p>
-            <p class="muted">Mismos planes, mismos números. Lo único distinto fue la palabra.</p>
+            <p class="lede">Es el <strong>mismo plan</strong>, con los mismos números. Lo único que cambia es la palabra: «vidas salvadas» o «muertes».</p>
+            <p class="muted">Mismos planes, mismo resultado. Solo cambia cómo está contado.</p>
           </div>
         </div>
         <div class="step" data-layer="1">
           <div class="step__card">
-            <p class="lede">Y la palabra dio vuelta la decisión: contado en <strong>vidas</strong>, el 72% eligió el plan seguro; contado en <strong>muertes</strong>, solo el 22%.</p>
+            <p class="lede">Y la palabra da vuelta la decisión: contado en <strong>vidas</strong>, <strong>más de la mitad</strong> elige el plan seguro (72%); contado en <strong>muertes</strong>, solo el 22%.</p>
             <p class="muted">¿Por qué? Por lo que ya viste con la moneda: <strong>perder pesa más</strong>. Dicho en muertes, el plan seguro suena a una pérdida fija —400 muertos— y, con tal de esquivarla, la gente se anima a arriesgar. La misma aversión a las pérdidas, ahora decidiendo vidas.</p>
           </div>
         </div>
@@ -656,75 +655,52 @@
           <div class="step__card">
             <p class="kicker">Antes de empezar</p>
             <h2 id="si-h">¿Qué es un sesgo?</h2>
-            <p class="lede">No es un error al azar. Es una desviación <strong>sistemática</strong>: tu juicio apunta torcido y casi siempre para el mismo lado.</p>
+            <p class="lede">No es equivocarse una vez. Es equivocarse <strong>siempre parecido</strong>: el juicio se inclina hacia el mismo lado.</p>
           </div>
         </div>
         <div class="step" data-layer="0">
           <div class="step__card">
             <p class="lede">Por eso son <em>predecibles</em>.</p>
-            <p class="muted">Si todos fallan igual, el error se puede anticipar —y aprovechar. De eso se trata este último módulo.</p>
+            <p class="muted">Si muchos fallamos parecido, el error se puede anticipar. Y si se puede anticipar, también se puede <strong>aprovechar</strong>.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ====================== E10 · Mejor que el promedio · PANTALLA COMPLETA ====================== -->
-    <section class="scrolly scrolly--stage" id="e10" aria-labelledby="e10-h">
+    <!-- ====================== FANTASMAS · el cerebro inventa presencias (CENTRO de Sesgos) ======================
+         Espeja a Percepción: si el cerebro le agrega movimiento a una imagen quieta,
+         también te agrega una presencia donde no hay nada. El EMBUDO (50 creen → 15
+         sintieron → 1 vio) se arma con el scroll; después, los reportes en tercios. -->
+    <section class="scrolly scrolly--stage" id="fantasmas" aria-labelledby="fant-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
-            <div class="viz__chart"><div class="chart" data-chart="10_mejor_que_promedio" role="img" aria-label="En todos los dominios, mucho más de la mitad se cree por encima del promedio."></div></div>
+            <div class="chart funnel" id="ghostFunnel" data-chart="14_fantasmas_embudo"></div>
+          </div>
+          <div class="viz__layer" data-layer="1">
+            <div class="viz__chart"><div class="chart" data-chart="14b_fantasmas_reportes" role="img" aria-label="Los reportes paranormales se reparten casi en tercios entre vista, oído y sensación."></div></div>
           </div>
         </div>
       </div>
       <div class="scrolly__steps">
         <div class="step is-active" data-layer="0">
           <div class="step__card">
-            <h2 id="e10-h">El 93% se cree mejor<br />que el promedio al volante.</h2>
-            <p class="lede">Es matemáticamente imposible: por definición, <strong>solo la mitad</strong> puede estar por encima de la media.</p>
+            <p class="kicker">Creer es rellenar lo ambiguo</p>
+            <h2 id="fant-h">¿Cuánta gente<br />vio un fantasma?</h2>
+            <p class="lede">La mitad de la gente cree que existen. Pero mirá cómo se desploma el número cuando preguntás quién <strong>vio</strong> uno.</p>
           </div>
         </div>
         <div class="step" data-layer="0">
           <div class="step__card">
-            <p class="lede">No es soberbia: es una ilusión.</p>
-            <p class="muted">El mismo cerebro que vio moverse una imagen quieta se ve a sí mismo mejor de lo que es.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ====================== E11 · Forer / Barnum ====================== -->
-    <section class="scrolly" id="e11" aria-labelledby="e11-h">
-      <div class="scrolly__graphic">
-        <div class="viz">
-          <div class="viz__layer is-active" data-layer="0">
-            <div class="reading" data-chart="11_lectura"></div>
-          </div>
-          <div class="viz__layer" data-layer="1">
-            <div class="bigstat" data-chart="11_efecto_forer"></div>
-          </div>
-          <div class="viz__layer" data-layer="2">
-            <div class="annotated" data-chart="11b_texto_barnum"></div>
-          </div>
-        </div>
-      </div>
-      <div class="scrolly__steps">
-        <div class="step is-active" data-layer="0">
-          <div class="step__card">
-            <h2 id="e11-h">Leé esto con atención.</h2>
-            <p class="lede">Es una descripción de <em>tu</em> personalidad. ¿Te sentís identificado?</p>
+            <p class="lede">De los <strong>50 que creen</strong>, apenas <strong>1</strong> dice haber visto una aparición.</p>
+            <p class="muted">La creencia es enorme; la “prueba” es casi nada. Entre una cosa y la otra, el cerebro rellenó el resto.</p>
           </div>
         </div>
         <div class="step" data-layer="1">
           <div class="step__card">
-            <p class="lede">Es normal: <strong>este texto se lo mostramos a todos</strong>.</p>
-            <p class="muted">En 1948, Bertram Forer le dio la misma descripción genérica a sus alumnos y la calificaron, en promedio, 4,26 sobre 5 de precisión. Es el truco del horóscopo, del tarot y del psíquico.</p>
-          </div>
-        </div>
-        <div class="step" data-layer="2">
-          <div class="step__card">
-            <p class="lede">Cada frase explota un sesgo distinto.</p>
-            <p class="muted">Tu cerebro completó un texto vago con tu propia vida, igual que le agregó movimiento a una imagen que estaba quieta. La creencia y la ilusión funcionan con el mismo mecanismo: rellenar lo ambiguo.</p>
+            <p class="lede">Ese “algo” no siempre se ve.<br />A veces se escucha.<br />A veces se siente.</p>
+            <p class="muted">Distintas señales, <strong>mismo mecanismo</strong>: el cerebro completa lo ambiguo.</p>
+            <p class="chart-src chart-src--static" data-src-for="14b_fantasmas_reportes"></p>
           </div>
         </div>
       </div>
@@ -740,9 +716,8 @@
           <div class="hpanel hpanel--intro">
             <div class="hpanel__text">
               <p class="kicker">Caras y fantasmas</p>
-              <h2 id="e12-h">El cerebro que ve fantasmas.</h2>
-              <p class="lede">Somos tan buenos detectando patrones que los vemos donde no hay: una cara en un enchufe, una presencia en una habitación vacía.</p>
-              <p class="hscroll__cue">Seguí bajando — esto se mueve de costado →</p>
+              <h2 id="e12-h">No buscamos fantasmas.<br />Buscamos patrones.</h2>
+              <p class="lede">Y a veces el cerebro encuentra caras <strong>donde no las hay</strong>: presencias o señales donde solo hay ruido.</p>
             </div>
           </div>
 
@@ -763,39 +738,69 @@
 
           <div class="hpanel hpanel--chart">
             <div class="hpanel__chartwrap"><div class="chart" data-chart="12_pareidolia_paranormal" role="img" aria-label="Muchas personas reportan experiencias paranormales que tienen explicación científica."></div></div>
-            <p class="hpanel__note">El mismo cerebro que vio moverse a las víboras quietas encuentra fantasmas en el ruido. Cada experiencia “paranormal” tiene explicación: pareidolia, infrasonido, alucinación hipnagógica. Pasá el cursor por las barras.</p>
+            <p class="hpanel__note">No hace falta un fantasma para explicar una presencia. Un ruido, una sombra o una sensación corporal pueden alcanzar para que el cerebro <strong>construya una historia</strong>.</p>
           </div>
 
         </div>
       </div>
     </section>
 
-    <!-- ====================== E13 · La brecha con la ciencia ====================== -->
-    <section class="scrolly scrolly--stage" id="e13" aria-labelledby="e13-h">
+    <!-- ====================== E10 · Mejor que el promedio · PANTALLA COMPLETA ====================== -->
+    <section class="scrolly scrolly--stage stage--right" id="e10" aria-labelledby="e10-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
-            <div class="viz__chart"><div class="chart" data-chart="13_brecha_consenso" role="img" aria-label="Hay una brecha grande entre el consenso científico y lo que cree el público."></div></div>
+            <div class="viz__chart"><div class="chart" data-chart="10_mejor_que_promedio" role="img" aria-label="En todos los dominios, mucho más de la mitad se cree por encima del promedio."></div></div>
           </div>
         </div>
       </div>
       <div class="scrolly__steps">
         <div class="step is-active" data-layer="0">
           <div class="step__card">
-            <h2 id="e13-h">Más seguros que<br />los que saben.</h2>
-            <p class="lede">Aunque nos equivoquemos, sentimos que tenemos razón —incluso frente a miles de científicos que estudiaron el tema toda su vida.</p>
+            <h2 id="e10-h">La mayoría se cree mejor<br />que la mayoría.</h2>
+            <p class="lede">No mide habilidad real: mide <strong>exceso de confianza</strong>. Si todos se comparan con el mismo grupo, <strong>no todos pueden estar arriba</strong>.</p>
           </div>
         </div>
         <div class="step" data-layer="0">
           <div class="step__card">
-            <p class="lede">Y hay industrias que lo saben.</p>
-            <p class="muted">“La duda es nuestro producto”, escribió una tabacalera en 1969. Hoy las mismas técnicas se usan para negar el cambio climático.</p>
+            <p class="lede">El <strong>93%</strong> dice manejar mejor que el promedio.</p>
+            <p class="muted">Pero el gráfico no demuestra que manejemos mejor. Demuestra que nos <strong>evaluamos con demasiada confianza</strong>.</p>
           </div>
         </div>
-        <div class="step" data-layer="0">
+      </div>
+    </section>
+
+    <!-- ====================== E13 · La brecha con la ciencia · 3 ETAPAS ====================== -->
+    <!-- Gráfico pinneado; con el scroll: (1) crecen las barras de Ciencia (texto izq.),
+         (2) crecen las de Público (texto der.), (3) aparece la brecha (texto centrado).
+         El scrub del gráfico es __setBrecha(sectionProgress(#e13)) en tick(). -->
+    <section class="scrolly scrolly--stage e13--brecha" id="e13" aria-labelledby="e13-h">
+      <div class="scrolly__graphic">
+        <div class="viz">
+          <div class="viz__layer is-active" data-layer="0">
+            <div class="viz__chart"><div class="chart" id="brechaChart" data-chart="13_brecha_consenso" role="img" aria-label="El consenso científico es muy alto; el acuerdo del público es más bajo. Esa distancia es la brecha."></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="scrolly__steps">
+        <div class="step is-active brechastep brechastep--left" data-layer="0">
           <div class="step__card">
-            <p class="lede">Es la ilusión más cara de todas.</p>
-            <p class="muted">Creer que tu percepción del mundo le gana al método que se inventó, justamente, para corregir las ilusiones del cerebro.</p>
+            <p class="kicker">La brecha con la ciencia</p>
+            <h2 id="e13-h">La ciencia sí<br />tiene respuestas.</h2>
+            <p class="lede">En estos temas el consenso científico es <strong>altísimo</strong>: no son opiniones sueltas, son décadas de evidencia acumulada.</p>
+          </div>
+        </div>
+        <div class="step brechastep brechastep--right" data-layer="0">
+          <div class="step__card">
+            <h2>Pero el público<br />no acompaña.</h2>
+            <p class="lede">Cuando mirás a la gente, el acuerdo <strong>baja</strong>. Incluso en temas muy estudiados, muchos siguen dudando.</p>
+          </div>
+        </div>
+        <div class="step brechastep brechastep--center" data-layer="0">
+          <div class="step__card">
+            <h2>Esa distancia<br />no es casual.</h2>
+            <p class="lede">A veces no gana la evidencia. Gana lo que ya creemos, lo que nos da miedo o lo que se repite <strong>más fuerte</strong>.</p>
+            <p class="chart-src chart-src--static" data-src-for="13_brecha_consenso"></p>
           </div>
         </div>
       </div>
@@ -813,22 +818,22 @@
       <div class="scrolly__steps">
         <div class="step is-active" data-layer="0">
           <div class="step__card">
-            <p class="kicker">Una última ilusión · el tablero de Adelson</p>
-            <h2 id="cierre-h">No podés apagar la ilusión.</h2>
-            <p class="lede">El cuadrado “oscuro” a plena luz y el cuadrado “claro” dentro de la sombra son <strong>exactamente el mismo gris</strong>. Tu cerebro, en cambio, te muestra dos.</p>
-            <p class="muted">¿Por qué? Ve que ese cuadrado cae bajo la sombra del cilindro y la <em>descuenta</em>: “si está en sombra y aun así se ve así, en realidad tiene que ser más claro”. Corrige la sombra solo, automáticamente. Y no lo podés desactivar —ni ahora que sabés que son el mismo color.</p>
+            <p class="kicker">Para concluir · una última ilusión · el tablero de Adelson</p>
+            <h2 id="cierre-h">Saberlo no apaga<br />la ilusión.</h2>
+            <p class="lede">Aunque sepas que los cuadrados son <strong>del mismo gris</strong>, tu cerebro los sigue viendo distintos.</p>
+            <p class="muted"><strong>Con los sesgos pasa algo parecido.</strong></p>
           </div>
         </div>
-        <div class="step" data-layer="0">
+        <div class="step cierrestep cierrestep--left" data-layer="0">
           <div class="step__card">
-            <p class="lede">Tu cerebro no te miente para hacerte mal.</p>
-            <p class="muted">Te miente porque construir una versión <em>útil</em> de la realidad es lo único que sabe hacer. Lo hace cuando mirás, cuando elegís y cuando creés.</p>
+            <p class="lede">Tu cerebro no busca la verdad perfecta. Busca una <strong>versión útil</strong> de la realidad.</p>
+            <p class="muted">Lo hace cuando mirás, cuando decidís y cuando creés.</p>
           </div>
         </div>
-        <div class="step" data-layer="0">
+        <div class="step cierrestep cierrestep--right" data-layer="0">
           <div class="step__card">
-            <p class="lede">La única diferencia entre caer en la trampa y verla venir no es ser más inteligente.</p>
-            <p class="muted">Es saber que la trampa existe.</p>
+            <p class="lede">Conocer el truco no lo apaga.</p>
+            <p class="muted">Pero te permite <strong>verlo venir</strong>.</p>
           </div>
         </div>
         <div class="step" data-layer="0">

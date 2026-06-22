@@ -1133,6 +1133,69 @@
       ]
     ]
   },
+  "14_fantasmas_embudo": {
+    "headers": [
+      "etapa",
+      "de_cada_100",
+      "pct",
+      "detalle"
+    ],
+    "rows": [
+      [
+        "Cree en fantasmas",
+        50,
+        50,
+        "La mitad de la gente cree que existen."
+      ],
+      [
+        "Sintió “algo”",
+        15,
+        15,
+        "Tuvo alguna experiencia fantasmagórica."
+      ],
+      [
+        "Vio una aparición",
+        1,
+        1,
+        "Una figura corpórea —casi siempre al dormirse o despertarse."
+      ]
+    ],
+    "resumen": {
+      "cree": 50,
+      "experiencia": 15,
+      "aparicion": 1
+    },
+    "nota": "Encuestas internacionales sobre creencia y experiencias paranormales (Módulo 13, cátedra; Ipsos 2018: Argentina lidera la creencia en fantasmas).",
+    "fuente": "Módulo 13 — Sesgos (cátedra) · Ipsos Global Advisor (2018)"
+  },
+  "14b_fantasmas_reportes": {
+    "headers": [
+      "tipo",
+      "pct",
+      "ejemplos"
+    ],
+    "rows": [
+      [
+        "Visual",
+        33,
+        "Luces, sombras, humo o figuras que parecen moverse."
+      ],
+      [
+        "Sonoro",
+        33,
+        "Pasos, susurros, golpes o sonidos inexplicables."
+      ],
+      [
+        "Sensorial",
+        34,
+        "Olores raros, escalofríos o sentir una presencia."
+      ]
+    ],
+    "resumen": {
+      "nota": "Los reportes se reparten casi en tercios entre los tres sentidos."
+    },
+    "fuente": "Módulo 13 — Sesgos (cátedra)"
+  },
   "_metodologia": {
     "headers": [
       "dataset",

@@ -643,14 +643,94 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 #e3b .step { min-height: 240vh; align-items: flex-start; padding: 8vh var(--pad-x) 0; }
 #e3b .step__card { position: sticky; top: 8vh; }
 
+/* ===== FANTASMAS (Sesgos) — embudo 50→15→1 que se arma con el scroll ===== */
+.funnel { width: min(88vw, 760px); display: flex; flex-direction: column; align-items: center; gap: clamp(1.4rem, 3.5vh, 2.8rem); color: var(--ink); }
+.funnel__head { font-family: var(--font-display); font-size: clamp(1.15rem, 1rem + 1vw, 1.7rem); color: var(--ink-dim); margin: 0; }
+.funnel__head strong { color: var(--ink); }
+.funnel__levels { display: flex; flex-direction: column; align-items: center; gap: clamp(1.3rem, 3.4vh, 2.6rem); width: 100%; }
+.funnel__row {
+  display: flex; flex-direction: column; align-items: center; gap: 0.5rem; width: 100%;
+  opacity: calc(0.12 + 0.88 * var(--p, 0));
+  transform: translateY(calc((1 - var(--p, 0)) * 16px));
+}
+.funnel__num {
+  font-family: var(--font-display); font-weight: 700; line-height: 1;
+  font-size: clamp(2.6rem, 1.6rem + 4.4vw, 5.4rem);
+  color: var(--accent); font-variant-numeric: tabular-nums;
+}
+.funnel__bar {
+  height: clamp(14px, 2.4vh, 22px); border-radius: 999px; background: var(--accent);
+  width: calc(var(--w) * min(72vw, 600px) * var(--p, 0)); min-width: 8px;
+  box-shadow: 0 0 26px var(--accent-soft);
+}
+.funnel__label { text-align: center; max-width: 34ch; margin: 0.25rem 0 0; }
+.funnel__label strong { display: block; font-family: var(--font-display); font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.45rem); color: var(--ink); }
+.funnel__label span { font-size: 0.94rem; color: var(--ink-dim); }
+
+/* Reportes en tercios (vista / oído / sensación) */
+.thirds {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
+  padding: 11vh 4vw 8vh; box-sizing: border-box;
+  color: var(--ink); text-align: center;
+}
+.thirds__head { font-family: var(--font-display); font-size: clamp(1.4rem, 1.05rem + 1.4vw, 2.2rem); margin: 0 0 0.7rem; max-width: 22ch; }
+.thirds__head strong { color: var(--accent); }
+.thirds__sub { font-family: var(--font-body); font-size: clamp(0.95rem, 0.9rem + 0.3vw, 1.12rem); color: var(--ink-dim); margin: 0 0 2.4rem; max-width: 44ch; }
+.thirds__grid { width: 100%; max-width: 920px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; }
+.thirds__cell { border: 1px solid var(--line); border-radius: var(--radius); padding: 1.7rem 1.2rem; background: rgba(228, 234, 239, 0.025); display: flex; flex-direction: column; align-items: center; gap: 0.45rem; }
+.thirds__ico { width: 40px; height: 40px; color: var(--accent); }
+.thirds__pct { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.9rem, 1.2rem + 2vw, 2.9rem); color: var(--ink); line-height: 1; }
+.thirds__cell strong { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
+.thirds__cell p { font-size: 0.95rem; color: var(--ink-dim); margin: 0; line-height: 1.4; }
+@media (max-width: 700px) { .thirds__grid { grid-template-columns: 1fr; } }
+
 /* E8/E7: el planteo (layer 0) queda CENTRADO pero en la mitad superior, para
    no chocar con el panel de la tarea/botones que flota abajo. (E6 pasó a dos
    columnas, así que ya no necesita ese hueco.) */
 #e8 .viz__layer[data-layer="0"],
-#e7 .viz__layer[data-layer="0"] { padding-bottom: 22vh; }
+#e7 .viz__layer[data-layer="0"] { padding-bottom: 8vh; }
 
 /* el panel a la derecha (para gráficos con info a la izquierda, ej. E10) */
 .scrolly--stage.stage--right .step { justify-content: flex-end; }
+
+/* Fantasmas · paso de los tercios: el panel va ABAJO-CENTRO (los cuadros están
+   arriba), así el texto no tapa las tarjetas. */
+#fantasmas .step[data-layer="1"] { justify-content: center; }
+#fantasmas .step[data-layer="1"] .step__card { text-align: center; }
+
+/* E13 (la brecha) · 3 etapas: izquierda → derecha → centro, con entrada slide/fade
+   cuando el paso queda activo (la clase .is-active la pone setupScrolly). */
+.e13--brecha .brechastep--left { justify-content: flex-start; }
+.e13--brecha .brechastep--right { justify-content: flex-end; }
+.e13--brecha .brechastep--center { justify-content: center; }
+.e13--brecha .brechastep--center .step__card { text-align: center; }
+.e13--brecha .step__card { opacity: 0; transition: opacity 0.6s var(--ease), transform 0.6s var(--ease); }
+.e13--brecha .brechastep--left .step__card { transform: translateX(-30px); }
+.e13--brecha .brechastep--right .step__card { transform: translateX(30px); }
+.e13--brecha .brechastep--center .step__card { transform: translateY(26px); }
+.e13--brecha .step.is-active .step__card { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .e13--brecha .step__card { opacity: 1; transform: none; transition: none; }
+}
+
+/* Cierre · los pasos 2 y 3 entran SUBIENDO, uno a la izquierda y otro a la derecha,
+   para no tapar el tablero (que está centrado). El primero queda como está. */
+#cierre .cierrestep--left { justify-content: flex-start; }
+#cierre .cierrestep--right { justify-content: flex-end; }
+#cierre .cierrestep .step__card { opacity: 0; transform: translateY(34px); transition: opacity 0.6s var(--ease), transform 0.6s var(--ease); }
+#cierre .cierrestep.is-active .step__card { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  #cierre .cierrestep .step__card { opacity: 1; transform: none; transition: none; }
+}
+
+/* E4: el paso del 85/15 va ARRIBA-derecha para no tapar la barra del 15% (abajo). */
+#e4 .step[data-layer="2"] { align-items: flex-start; justify-content: flex-end; padding: 12vh var(--pad-x) 0; }
+
+/* E9 (Dunning-Kruger): el primer paso entra por la DERECHA (la línea se dibuja a
+   la izquierda, de "Peores" a "Mejores"); los siguientes van a la izquierda, así
+   la línea (que termina a la derecha) queda siempre a la vista. */
+#e9 .step:first-child { justify-content: flex-end; }
 /* el panel arriba (para gráficos con el dato abajo) */
 .scrolly--stage.stage--top .step { align-items: flex-start; padding: 13vh var(--pad-x) 0; }
 .scrolly--stage.stage--top .scrolly__graphic::after { inset: 0 0 auto 0; background: linear-gradient(to bottom, rgba(10,13,16,0.92), rgba(10,13,16,0)); }
@@ -675,6 +755,9 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   max-height: 64vh; max-width: 82vw; width: auto; border-radius: var(--radius);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
 }
+/* la cara en la pared es vertical (450×1000): a 64vh quedaba angosta → más alta
+   para que tenga el mismo peso visual que las otras dos. */
+.hpanel--face img[src*="450_1000"] { max-height: 82vh; }
 .hpanel--face figcaption {
   font-family: var(--font-display); font-style: italic;
   font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.4rem); color: var(--ink-dim); text-align: center;
@@ -787,20 +870,21 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 /* Estado imagen: pregunta ESTÁTICA a la izquierda, figura a la derecha */
 .intro__stage--img {
   display: grid;
-  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  grid-template-columns: minmax(0, 3.4fr) minmax(0, 8.6fr);
   align-items: center;
-  gap: 2.5rem;
+  gap: 2rem;
   padding: 0 var(--pad-x);
 }
 .intro__ask { max-width: 30rem; justify-self: start; }
 /* La figura ya no es una tarjeta de papel: se invierte a CONTORNO blanco y el
    fondo blanco del JPG desaparece (mix-blend screen sobre el fondo oscuro), así
-   se integra al sitio y se puede agrandar mucho más. */
-.intro__fig { justify-self: center; width: min(86vh, 100%); margin: 0; }
+   se integra al sitio (no se ve recuadro/fondo) y se puede agrandar mucho más.
+   El contraste alto fuerza el fondo a negro puro → screen lo vuelve invisible. */
+.intro__fig { justify-self: center; width: min(96vh, 100%); margin: 0; }
 .intro__fig img,
 #e2 .figure-card img {
   width: 100%; display: block;
-  filter: invert(1) contrast(1.12) brightness(1.05);
+  filter: invert(1) contrast(1.32) brightness(1.04);
   mix-blend-mode: screen;
 }
 
@@ -905,6 +989,9 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
    % de la imagen) y giran con ella; los RÓTULOS viven en el wrapper (no rotan)
    y se ubican FUERA del recuadro de la figura para no taparla. */
 .e2-figwrap { position: relative; width: min(60vh, 78%); }
+/* Canvas de la transición: líneas celestes que viajan y forman la figura */
+.e2-lines { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .e2-lines { display: none; } }
 #e2 .viz__media { width: 100%; }
 /* En E2 la figura también es contorno (no tarjeta): se saca el papel y la sombra. */
 #e2 .figure-card { background: none; box-shadow: none; border-radius: 0; overflow: visible; }
@@ -1038,7 +1125,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 #e6 .statement__q { font-size: clamp(1.7rem, 1.2rem + 1.9vw, 2.7rem); margin-top: 1.7rem; }
 
 /* Moneda 3D que gira (E7) — cara (+$50, verde) / ceca (−$50, rojo) */
-.coin { width: 132px; height: 132px; margin: 0 auto 1.8rem; perspective: 700px; }
+.coin { width: 170px; height: 170px; margin: 0 auto 2rem; perspective: 700px; }
 .coin__inner {
   position: relative; width: 100%; height: 100%;
   transform-style: preserve-3d; animation: coinflip 2.6s cubic-bezier(.5,0,.5,1) infinite;
@@ -1050,8 +1137,8 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   backface-visibility: hidden;
   box-shadow: inset 0 0 0 3px rgba(255,255,255,0.18), 0 14px 34px rgba(0,0,0,0.5);
 }
-.coin__face span { font-family: var(--font-display); font-weight: 700; font-size: 1.7rem; color: #fff; line-height: 1; }
-.coin__face small { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.85); }
+.coin__face span { font-family: var(--font-display); font-weight: 700; font-size: 2.1rem; color: #fff; line-height: 1; }
+.coin__face small { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.85); }
 /* La cara (naranja claro) necesita texto oscuro para que se lea */
 .coin__face--cara span { color: #4A2606; }
 .coin__face--cara small { color: rgba(74, 38, 6, 0.82); }
@@ -1066,33 +1153,34 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 /* Apuesta de la moneda (E7) */
 .gamble__row {
   display: flex; justify-content: space-between; align-items: baseline;
-  gap: 1.2rem; width: min(22rem, 88%); margin: 0.7rem auto;
-  padding-bottom: 0.5rem; border-bottom: 1px solid var(--line);
-  font-family: var(--font-display); font-size: clamp(1.15rem, 1rem + 0.6vw, 1.45rem); color: var(--ink);
+  gap: 1.2rem; width: min(26rem, 90%); margin: 0.85rem auto;
+  padding-bottom: 0.6rem; border-bottom: 1px solid var(--line);
+  font-family: var(--font-display); font-size: clamp(1.3rem, 1.05rem + 0.8vw, 1.7rem); color: var(--ink);
 }
+.gamble__row span { font-size: 1.18em; }
 .gamble__row small { font-family: var(--font-mono); font-size: 0.66em; color: var(--ink-dim); letter-spacing: 0.04em; }
 .gamble__row span { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .gamble__row--win span { color: var(--gain); }
 .gamble__row--lose span { color: var(--loss); }
 
-/* Planteo grande del encuadre (E8): el problema y los dos planes, a la derecha */
-.statement--framing { max-width: 30rem; }
+/* Planteo grande del encuadre (E8): el problema y los dos planes, centrado */
+.statement--framing { max-width: 40rem; }
 .framing-head {
   font-family: var(--font-display); font-weight: 600;
-  font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2.4rem); line-height: 1.12;
-  color: var(--ink); margin: 0 0 1.4rem;
+  font-size: clamp(2rem, 1.3rem + 2.6vw, 3.2rem); line-height: 1.1;
+  color: var(--ink); margin: 0 0 1.8rem;
 }
 .framing-head strong { color: var(--accent); }
-.plan-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin: 0 auto; text-align: left; }
+.plan-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 0 auto; text-align: left; }
 .plan-card {
   border: 1px solid var(--line); border-radius: var(--radius);
-  padding: 1.1rem 1rem; background: rgba(228, 234, 239, 0.025);
+  padding: 1.4rem 1.3rem; background: rgba(228, 234, 239, 0.025);
 }
 .plan-card__tag {
-  font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 0.5rem;
+  font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 0.6rem;
 }
-.plan-card__txt { font-size: clamp(0.98rem, 0.9rem + 0.35vw, 1.18rem); color: var(--ink); margin: 0; line-height: 1.4; }
+.plan-card__txt { font-size: clamp(1.1rem, 0.95rem + 0.5vw, 1.35rem); color: var(--ink); margin: 0; line-height: 1.45; }
 .plan-card__txt strong { color: var(--ink); }
 .framing-foot {
   font-family: var(--font-display); font-style: italic;

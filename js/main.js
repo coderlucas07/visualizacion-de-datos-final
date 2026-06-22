@@ -30,12 +30,17 @@ const portals = [];   // espirales: { sp, section, head, dot, after }
 let coverEl = null;
 let introEl = null, duoEl = null, introAfterEl = null;
 let e2Sec = null, e2Fig = null, e2Step = null, e2ChartEl = null, e2ChartStep = null;
+let e2LinesCanvas = null, e2LinesDraw = null;
 let e3Img = null, e3Step = null, e3TitleCard = null, e3TitleStep = null, e3FinalCard = null;
 let e3bSec = null, waffleEl = null, e3CountEl = null;
 let fmEl = null, e4FmStep = null;
 let e5Sec = null, gorilaStatEl = null;
+let e7Sec = null, e7ChartEl = null;
 let e9Sec = null, dkEl = null;
+let e10Sec = null, e10ChartEl = null;
+let fantSec = null, ghostFunnelEl = null;
 let e12Sec = null, e12Track = null;
+let e13Sec = null, brechaEl = null;
 
 const state = { first: null, e2rotate: true, e1answered: false };
 const progressBar = document.getElementById('progressBar');
@@ -49,6 +54,7 @@ async function init() {
   setupIntro();
   setupInteractions();
   cacheScrubRefs();
+  setupE2Lines();
   setupCover();
   setupGorila();
   setupScroll();
@@ -79,7 +85,7 @@ async function loadData() {
    hereda el celeste global #8FD8FF (el mismo azul del título de portada). */
 function setupModuleColors() {
   const DECISION = ['portal2', 'e6', 'e7', 'e8', 'e9'];                          // Decisión (naranja cálido)
-  const SESGOS = ['portal3', 'sesgos-intro', 'e10', 'e11', 'e12', 'e13', 'cierre'];
+  const SESGOS = ['portal3', 'sesgos-intro', 'fantasmas', 'e12', 'e10', 'e13', 'cierre'];
   const mods = { '#F7943D': DECISION, '#E11D48': SESGOS };
   const soft = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`; };
   for (const [hex, ids] of Object.entries(mods)) {
@@ -607,17 +613,91 @@ function configureE2(firstChoice) {
   // del wrapper y trae una flecha que apunta hacia adentro.
   const label = (el, text, css) => { el.textContent = text; el.removeAttribute('style'); Object.assign(el.style, css); };
 
+  // Rótulos ARRIBA y a la DERECHA de la figura (el panel de texto flota
+  // abajo-izquierda: así el scroll no los tapa).
   if (target === 'conejo') {
     titleEl.textContent = 'Dale vuelta la cabeza.';
-    ledeEl.innerHTML = 'Seguí bajando: la figura gira. Eso que era un pico ahora son <strong>dos orejas</strong>, y atrás aparece el <strong>hocico</strong>. ¿Ves el conejo?';
-    dot(a1, 20, 22);   label(l1, 'las orejas ↘', { left: '-6%', bottom: '110%' });
-    dot(a2, 92, 51);   label(l2, '↑ el hocico',  { left: '46%', top: '112%' });
+    ledeEl.innerHTML = 'La figura gira: eso que era un pico ahora son <strong>dos orejas</strong>, y atrás aparece el <strong>hocico</strong>. ¿Ves el conejo?';
+    dot(a1, 20, 22);   label(l1, 'las orejas ↑', { left: '54%', bottom: '104%' });
+    dot(a2, 92, 51);   label(l2, '← el hocico',  { left: '103%', top: '46%' });
   } else {
     titleEl.textContent = 'Mirá otra vez.';
     ledeEl.innerHTML = 'Eso que parecían <strong>orejas</strong> es un <strong>pico</strong>, y el ojo mira hacia el agua. ¿Aparece el pato?';
-    dot(a1, 20, 22);     label(l1, 'el pico ↘', { left: '-6%', bottom: '110%' });
-    dot(a2, 68.5, 30);   label(l2, 'el ojo ↓',  { left: '62%', bottom: '110%' });
+    dot(a1, 20, 22);     label(l1, 'el pico ↑', { left: '8%', bottom: '104%' });
+    dot(a2, 68.5, 30);   label(l2, '← el ojo',  { left: '103%', top: '24%' });
   }
+}
+
+/* =====================================================================
+   E2 — transición de "líneas que viajan" (entrada desde E1).
+   Un canvas sobre la figura: muestrea la silueta del pato-conejo y manda
+   partículas-estela desde afuera que CONVERGEN y la dibujan. Cuando termina
+   de armarse, se funde con la figura real (que después rota). Scrubeado por
+   el scroll en tick() (e2LinesDraw). Con reduced-motion no corre.
+   ===================================================================== */
+function setupE2Lines() {
+  if (REDUCED) return;
+  const wrap = document.querySelector('#e2 .e2-figwrap');
+  const fig = document.getElementById('e2Fig');
+  if (!wrap || !fig) return;
+  const accent = (getComputedStyle(e2Sec || document.getElementById('e2')).getPropertyValue('--accent').trim()) || '#8FD8FF';
+  const n = parseInt(accent.replace('#', ''), 16);
+  const rgb = `${(n >> 16) & 255},${(n >> 8) & 255},${n & 255}`;
+
+  const cv = document.createElement('canvas');
+  cv.className = 'e2-lines'; cv.setAttribute('aria-hidden', 'true');
+  wrap.appendChild(cv);
+  e2LinesCanvas = cv;
+  const ctx = cv.getContext('2d');
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let W = 0, H = 0, pts = [];
+
+  const img = new Image();
+  img.src = './assets/840_560.jpg';
+
+  const build = () => {
+    const r = fig.getBoundingClientRect();
+    W = Math.max(1, r.width); H = Math.max(1, r.height);
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (!img.complete || !img.naturalWidth) return;
+    const wi = Math.round(W), hi = Math.round(H);
+    const off = document.createElement('canvas'); off.width = wi; off.height = hi;
+    const o = off.getContext('2d'); o.drawImage(img, 0, 0, wi, hi);
+    const data = o.getImageData(0, 0, wi, hi).data;
+    pts = [];
+    const N = 540; let tries = 0;
+    while (pts.length < N && tries < N * 60) {
+      tries++;
+      const x = (Math.random() * wi) | 0, y = (Math.random() * hi) | 0;
+      const i = (y * wi + x) * 4;
+      const lum = (data[i] + data[i + 1] + data[i + 2]) / 3;
+      if (lum < 95) {   // pixel de la FIGURA (oscura sobre fondo claro)
+        const ang = Math.random() * Math.PI * 2, d = Math.max(W, H) * (0.45 + Math.random() * 0.75);
+        pts.push({ ex: x, ey: y, sx: x + Math.cos(ang) * d, sy: y + Math.sin(ang) * d });
+      }
+    }
+  };
+  const ease = (t) => 1 - Math.pow(1 - t, 3);
+
+  e2LinesDraw = (p) => {
+    if (!W) return;
+    ctx.clearRect(0, 0, W, H);
+    if (!pts.length) return;
+    const e = ease(clamp(p));
+    const e0 = ease(clamp(p - 0.07));   // posición de la cola (estela)
+    ctx.lineCap = 'round'; ctx.lineWidth = 1.2;
+    for (const pt of pts) {
+      const x = pt.sx + (pt.ex - pt.sx) * e, y = pt.sy + (pt.ey - pt.sy) * e;
+      const tx = pt.sx + (pt.ex - pt.sx) * e0, ty = pt.sy + (pt.ey - pt.sy) * e0;
+      ctx.strokeStyle = `rgba(${rgb},${(0.18 + 0.62 * e).toFixed(3)})`;
+      ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(x, y); ctx.stroke();
+    }
+  };
+
+  img.onload = () => build();
+  if (img.complete && img.naturalWidth) build();
+  new ResizeObserver(build).observe(fig);
 }
 
 /* ----------------------------- Refs para el scrub ----------------------------- */
@@ -643,10 +723,18 @@ function cacheScrubRefs() {
   e4FmStep = document.querySelector('#e4 .step[data-layer="1"]');
   e5Sec = document.getElementById('e5');
   gorilaStatEl = document.querySelector('#e5 [data-chart="05_cierre_percepcion"]');
+  e7Sec = document.getElementById('e7');
+  e7ChartEl = document.querySelector('#e7 [data-chart="07_aversion_perdidas"]');
   e9Sec = document.getElementById('e9');
   dkEl = document.querySelector('#e9 [data-chart="09_dunning_kruger"]');
+  e10Sec = document.getElementById('e10');
+  e10ChartEl = document.querySelector('#e10 [data-chart="10_mejor_que_promedio"]');
+  fantSec = document.getElementById('fantasmas');
+  ghostFunnelEl = document.getElementById('ghostFunnel');
   e12Sec = document.getElementById('e12');
   e12Track = document.getElementById('e12Track');
+  e13Sec = document.getElementById('e13');
+  brechaEl = document.getElementById('brechaChart');
 }
 
 /* ----------------------------- Motor de scroll ----------------------------- */
@@ -704,15 +792,23 @@ function tick() {
     }
   }
 
-  // E2 · MORPH pato→conejo: la MISMA silueta rota ~90° con el scroll (el pico se
-  // transforma en las orejas). Las marcas aparecen al final, ya con el conejo a
-  // la vista. La rotación es continua y pausada (es el corazón del morph).
+  // E2 · TRANSICIÓN + MORPH. Al entrar desde E1, líneas celestes VIAJAN y se
+  // arman en la figura (no aparece de golpe); recién cuando la silueta está
+  // formada, la MISMA figura rota ~90° con el scroll (el pico → las orejas). Las
+  // marcas aparecen al final, ya con el conejo a la vista.
   if (e2Fig && e2Step) {
     const p = stepScrub(e2Step);
+    if (!REDUCED) {
+      const assemble = clamp(p / 0.30);                 // 0→1 las líneas se arman
+      if (e2LinesDraw) e2LinesDraw(assemble);
+      if (e2LinesCanvas) e2LinesCanvas.style.opacity = (1 - clamp((p - 0.24) / 0.12)).toFixed(3);
+      e2Fig.style.opacity = clamp((p - 0.22) / 0.12).toFixed(3);  // la figura real revela cuando las líneas terminan
+    }
+    const rot = REDUCED ? 1 : clamp((p - 0.34) / 0.66);  // la rotación arranca DESPUÉS de armarse
     const MAXDEG = 90;
-    const deg = state.e2rotate ? (REDUCED ? MAXDEG : easeOut(p) * MAXDEG) : 0;
+    const deg = state.e2rotate ? (REDUCED ? MAXDEG : easeOut(rot) * MAXDEG) : 0;
     e2Fig.style.setProperty('--rot', deg.toFixed(1) + 'deg');
-    if (e2Sec) e2Sec.classList.toggle('cues-on', p > (state.e2rotate ? 0.72 : 0.35));
+    if (e2Sec) e2Sec.classList.toggle('cues-on', rot > (state.e2rotate ? 0.62 : 0.3));
   }
 
   // E2 (gráfico del contexto): al llegar, las barras son IDÉNTICAS al gráfico
@@ -761,6 +857,13 @@ function tick() {
     gorilaStatEl.__setGorila(easeOut(p));
   }
 
+  // E7 (aversión): la moneda dispara un "rayito" que dibuja primero la barra de
+  // pérdida (abajo, grande) y después la de ganancia (arriba, chica), con el scroll.
+  if (!REDUCED && e7ChartEl && e7ChartEl.__setG7 && e7Sec) {
+    const p = clamp((sectionProgress(e7Sec) - 0.42) / 0.5);
+    e7ChartEl.__setG7(p);
+  }
+
   // E9 (Dunning-Kruger): la línea avanza de "Peores" a "Mejores" a medida que
   // bajás por la teórica (el scroll dibuja el gráfico).
   if (!REDUCED && dkEl && dkEl.__setProgress && e9Sec) {
@@ -768,11 +871,28 @@ function tick() {
     dkEl.__setProgress(p);
   }
 
+  // E10 (mejor que el promedio): al seguir scrolleando, sale la flecha que
+  // apunta a la barra del 93% (manejar).
+  if (!REDUCED && e10ChartEl && e10ChartEl.__showCallout && e10Sec) {
+    e10ChartEl.__showCallout(sectionProgress(e10Sec) > 0.4);
+  }
+
+  // Fantasmas: el embudo (50 creen → 15 sintieron → 1 vio) se arma con el scroll.
+  if (!REDUCED && ghostFunnelEl && ghostFunnelEl.__setFunnel && fantSec) {
+    const p = clamp((sectionProgress(fantSec) - 0.04) / 0.42);
+    ghostFunnelEl.__setFunnel(easeOut(p));
+  }
+
   // E12 (caras): scroll vertical → recorrido HORIZONTAL del track.
   if (!REDUCED && e12Track && e12Sec) {
     const p = sectionProgress(e12Sec);
     const max = Math.max(0, e12Track.scrollWidth - window.innerWidth);
     e12Track.style.transform = `translate3d(${(-p * max).toFixed(1)}px,0,0)`;
+  }
+
+  // E13 (la brecha): 3 etapas con el scroll → Ciencia, luego Público, luego la brecha.
+  if (!REDUCED && brechaEl && brechaEl.__setBrecha && e13Sec) {
+    brechaEl.__setBrecha(sectionProgress(e13Sec));
   }
 }
 

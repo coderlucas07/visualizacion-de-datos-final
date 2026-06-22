@@ -14,6 +14,59 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   código pero no este archivo, el contexto del resto queda desactualizado → siempre van juntos.
 - Si algo de acá ya no es cierto, corregilo (no agregues notas sueltas que se contradigan).
 
+## ⚡ ACTUALIZACIÓN jun-2026 (9ª vuelta — E13 a 3 etapas + limpieza de cues) — MANDA sobre todo lo de abajo
+- **COPY de SESGOS rehilado para narrativa clara (pedido del usuario):** progresión = qué es un sesgo (no es
+  equivocarse una vez, es equivocarse siempre parecido) → son predecibles (anticipar = aprovechar) → patrones/
+  fantasmas ("No buscamos fantasmas, buscamos patrones"; tercios = "El misterio cambia de forma" + "distintas
+  experiencias, mismo mecanismo: el cerebro completa lo ambiguo") → exceso de confianza (E10) → brecha
+  ciencia/público (E13: "gana lo que ya creemos, lo que nos da miedo o lo que se repite más fuerte") → cierre
+  ("Saberlo no apaga la ilusión / con los sesgos pasa algo parecido" … "Conocer el truco no lo apaga, pero te
+  permite verlo venir"). Textos cortos, tono inquietante. NO volver a meter los callbacks viejos a las víboras
+  en E12/fantasmas (se sacaron a propósito).
+- **E13 (la brecha) REHECHO como scrollytelling de 3 momentos** (`#e13` sigue `.scrolly--stage`, gráfico pinneado):
+  (1) crecen SOLO las barras de **Ciencia** (texto IZQUIERDA), (2) crecen las de **Público** (texto DERECHA),
+  (3) aparecen **conectores punteados = la brecha** con el `−pp` (texto CENTRADO). Copy nuevo y breve
+  ("La ciencia sí tiene respuestas" / "Pero el público no acompaña" / "Esa distancia no es casual"). Pasos con
+  entrada slide/fade por `.is-active` (clases `.brechastep--left/right/center` en CSS). El handler
+  `13_brecha_consenso` expone `container.__setBrecha(p)` (scrubeado por `sectionProgress(#e13)` en `tick()`,
+  ref `brechaEl`/`#brechaChart`); **filtra los 4 temas de consenso fuerte** (ciencia ≥60: clima/evolución/
+  transgénicos/vacunas) y deja afuera "cura del cáncer oculta" (es inverso: público>ciencia, rompía el relato).
+- **CUES de scroll ELIMINADOS en TODO el sitio (pedido del usuario):** nada de "seguí bajando / seguí
+  scrolleando / pasá el cursor / esto se mueve de costado". Sacados de portada (`cover__go`), E1, E2 (lede +
+  `configureE2`), E3, gorila (`gorila__cue`), E12 (`hscroll__cue` + `hpanel__note`) y subtítulos de gráficos
+  (pareidolia). Si sumás escenas, NO vuelvas a poner textos-guía de scroll.
+- **E10 (flecha del 93%):** la flecha ahora **apunta a la barra** (rotada 90°, sin el rótulo "el 93%" duplicado
+  que flotaba al lado).
+- **Fantasmas · tercios:** las tarjetas van ARRIBA (`.thirds` flex-start con `padding-top`) y el panel de texto
+  ABAJO-CENTRO (`#fantasmas .step[data-layer="1"]` centrado) para que el texto no tape los cuadros.
+- **Cierre:** pasos 2 y 3 entran SUBIENDO, uno a la izquierda y otro a la derecha (`.cierrestep--left/right`),
+  para no tapar el tablero centrado; el kicker del 1º arranca con "**Para concluir**" para anticipar el cierre.
+
+## ⚡ ACTUALIZACIÓN jun-2026 (8ª vuelta — SESGOS reconstruido, centro = FANTASMAS) — MANDA sobre todo lo de abajo
+- **Tesis del módulo Sesgos = espejo de Percepción:** "creer es ver lo que no está / no ver lo que sí".
+  Todo cuelga del *"el mismo cerebro que…"* (snakes/gorila). El Sesgos viejo (sesgos sueltos) estaba
+  desconectado; las teóricas (Módulo 13, PDFs Sesgos 1 y 2) aportan el material que sí conecta.
+- **NUEVA escena CENTRO `#fantasmas`** (insertada después de `sesgos-intro`, antes de E10; sumada a `SESGOS`
+  en `setupModuleColors` para heredar el carmesí, y al menú): el cerebro INVENTA presencias. Hero viz = **EMBUDO
+  que se arma con el scroll** (`14_fantasmas_embudo`, HTML `.funnel`, `container.__setFunnel(p)` scrubeado por
+  `sectionProgress(#fantasmas)` en `tick()`): de cada 100, **50 creen → 15 sintieron algo → 1 vio una aparición**
+  (el desplome 50→1 ES el dato; el cerebro infla la creencia más allá de la experiencia). Layer 1 = **reportes en
+  tercios** (`14b_fantasmas_reportes`, HTML `.thirds`: 33% visual / 33% sonoro / 34% sensorial, íconos
+  ojo/oído/mano). Copy clave: *"el mismo cerebro que le agregó movimiento a las víboras quietas te agrega una
+  presencia en una habitación vacía"* + parálisis nocturna (miedo + parálisis + alucinación = fantasma). Datos
+  reales de la cátedra + Ipsos 2018 (Argentina lidera la creencia en fantasmas).
+- **Arco nuevo de Sesgos (REORDENADO, E11 ELIMINADO — pedido del usuario):** portal3 → ¿qué es un sesgo? →
+  **fantasmas** (embudo *de cada 100* + reportes en tercios) → **E12** (caras/pareidolia, scroll horizontal — el
+  cerebro que ve fantasmas → aparecen las caras, conecta directo) → **E10** (confianza / "mejor que el promedio",
+  ya pulida: "la mayoría se cree mejor que la mayoría" + flecha al 93%) → E13 (la brecha / "la duda es nuestro
+  producto") → cierre (Checker Shadow). **E11 (Forer/Barnum, "leé esto con atención" + 4,26/5) se SACÓ por completo**
+  (sección, link de menú y `e11` de `SESGOS`); los handlers `11_*` quedan en charts.js sin uso. El `.thirds`
+  (reportes) se centró vertical (antes el `.viz__chart .chart{height:100%}` lo estiraba y el contenido caía arriba:
+  ahora `.thirds` es flex column centrado con `padding-top` para que el título no quede tapado por el menú).
+- **PENDIENTE de evaluar con el usuario (quedaron afuera de esta vuelta, eran candidatos fuertes de las teóricas):**
+  survivorship bias (el avión de Wald, callback directo al gorila), "sos predecible" (Forer interactivo
+  color+martillo), Ouija/efecto ideomotor (Faraday), disponibilidad (lo que tememos vs lo que mata).
+
 ## ⚡ ACTUALIZACIÓN jun-2026 (7ª vuelta — MORPHS entre visuales, pilotos) — MANDA sobre todo lo de abajo
 - **DIRECCIÓN nueva (decidida con el usuario):** romper la repetición "texto izq / visual der" con **morphs**:
   un visual SE TRANSFORMA en el siguiente con el scroll. Layouts centrados con aire. Se arranca por pocas
