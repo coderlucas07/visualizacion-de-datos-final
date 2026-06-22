@@ -52,8 +52,13 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
     fila con `/con/i.test(estado)`, que matchea **"Sin contexto"** (por "**con**texto") → mostraba Pato 74/Conejo 26
     CON la pista (al revés, contradecía la tesis y el copy "3 de cada 4 ven al conejo"). Fix: `/^con/i`. Ahora con
     contexto = Conejo 74 / Pato 26. (Si tocás textos de estado, ojo con regex que matcheen subcadenas de "contexto".)
-  - **PENDIENTE en (b):** auditar escenas que se pisan (sticky bleed entre secciones — requiere capturas de
-    transición), y revisar el `padding-top:55vh` de la portada de snakes (`#e3 .step--center`) por "contenido bajo".
+  - **Escenas que se pisan:** verificado en los límites complejos (serpientes full-bleed → waffle): corte limpio,
+    sin bleed. El `padding-top:55vh` del título de snakes se dejó (se lee como "frase editorial", intencional).
+- **PASADA (d, parcial) — video del gorila des-embebido:** el embed de YouTube mostraba título/logo (rompía la
+  estética). Se reforzó `.gorila__scrim` (bandas arriba/abajo casi opacas hasta ~9%, fade a 0) para TAPAR el título
+  (arriba-izq) y el logo (abajo) sin recortar al gorila (la acción es centrada). Los playerVars ya estaban bien
+  (`controls:0, modestbranding:1, rel:0, fs:0, iv_load_policy:3, playsinline, mute`). La placa "Selective Attention
+  Test" que se ve es del propio video (contenido), no chrome.
 - **PENDIENTE (próximas pasadas, en orden sugerido):** (c) variedad de layouts / menos tarjetas
   translúcidas; (d) video de atención des-embebido y con escena propia; (e) responsive mobile con `svh`.
 

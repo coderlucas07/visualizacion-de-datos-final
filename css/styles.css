@@ -473,8 +473,10 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .gorila__scrim {
   position: absolute; inset: 0; z-index: 2; pointer-events: none;
   background:
-    linear-gradient(to bottom, rgba(4, 6, 8, 0.82) 0%, rgba(4, 6, 8, 0) 26%),
-    linear-gradient(to top, rgba(4, 6, 8, 0.72) 0%, rgba(4, 6, 8, 0) 20%);
+    /* banda superior: tapa el título de YouTube; el centro (la acción) queda limpio */
+    linear-gradient(to bottom, rgba(4, 6, 8, 0.98) 0%, rgba(4, 6, 8, 0.96) 9%, rgba(4, 6, 8, 0) 27%),
+    /* banda inferior: tapa el logo de YouTube y los controles */
+    linear-gradient(to top, rgba(4, 6, 8, 0.98) 0%, rgba(4, 6, 8, 0.95) 9%, rgba(4, 6, 8, 0) 22%);
 }
 .gorila__caption {
   position: absolute; z-index: 3; left: 0; right: 0;
