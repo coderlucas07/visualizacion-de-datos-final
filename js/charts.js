@@ -194,15 +194,15 @@ export const CHARTS = {
     container.__setMorph(opts.reduced ? 1 : 0);
   },
 
-  /* ---------- G3 · MORPH número → waffle (E3) — canvas de partículas ----------
-     100 puntos arrancan formando el número (ej. "96") y, con el scroll, vuelan a
-     una grilla 10×10: los primeros `onTotal` quedan en el acento y el resto se
-     apaga. El número se vuelve gente. Expone __setWaffle(p) (lo scrubea main.js). */
+  /* ---------- G3 · Waffle (E3) — grilla 10×10 que se PINTA con el scroll ----------
+     100 personitas GRISES, grandes y quietas desde el arranque (NO crecen). Con el
+     scroll se pintan de a una en celeste hasta llegar a las `onTotal` (96) que ven
+     movimiento; las 4 restantes quedan grises. Expone __setWaffle(p) (lo scrubea main.js). */
   '03_ilusiones_movimiento_waffle'(container, data, opts) {
     const sheet = data['03_ilusiones_movimiento_waffle'];
     const accent = accentOf(container);
     const onTotal = sheet.resumen.ven_movimiento;  // 96
-    const dimRGB = '120,134,146';
+    const dim = 'rgba(120,134,146,0.55)';
     container.classList.add('morphwaffle');
     container.setAttribute('role', 'img');
     container.setAttribute('aria-label', `${onTotal} de 100 personas ven movimiento donde no lo hay.`);
@@ -210,10 +210,8 @@ export const CHARTS = {
     const canvas = container.querySelector('canvas');
     const ctx = canvas.getContext('2d');
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const N = 100;
-    let W = 0, H = 0, parts = [], cellSize = 0, lastP = opts.reduced ? 1 : 0;
-
-    const easeInOut = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+    const N = 100, cols = 10;
+    let W = 0, H = 0, cells = [], cellSize = 0, lastP = opts.reduced ? 1 : 0;
 
     // Dibuja una "personita" (cabeza + torso) centrada en (x,y), alto ≈ h.
     function person(x, y, h, color) {
@@ -234,44 +232,24 @@ export const CHARTS = {
     }
 
     function build() {
-      // --- layout GRID (10×10 centrado) ---
-      const cols = 10, rows = 10;
-      const span = Math.min(W * 0.62, H * 0.86);
+      // grilla 10×10 GRANDE y centrada (ocupa casi todo el canvas)
+      const span = Math.min(W, H) * 0.94;
       const cell = span / cols;
       cellSize = cell;
       const gx0 = W / 2 - span / 2 + cell / 2, gy0 = H / 2 - span / 2 + cell / 2;
-      // --- layout NÚMERO (puntos muestreados del texto onTotal) ---
-      const off = document.createElement('canvas'); off.width = W; off.height = H;
-      const o = off.getContext('2d');
-      o.fillStyle = '#fff'; o.textAlign = 'center'; o.textBaseline = 'middle';
-      o.font = `700 ${Math.min(W * 0.52, H * 0.92)}px Spectral, Georgia, serif`;
-      o.fillText(String(onTotal), W / 2, H / 2);
-      const px = o.getImageData(0, 0, W, H).data;
-      const hit = [];
-      for (let i = 0; i < 90000 && hit.length < N * 9; i++) {
-        const x = (Math.random() * W) | 0, y = (Math.random() * H) | 0;
-        if (px[(y * W + x) * 4 + 3] > 128) hit.push([x, y]);
-      }
-      parts = [];
+      cells = [];
       for (let i = 0; i < N; i++) {
         const r = (i / cols) | 0, c = i % cols;
-        const np = hit.length ? hit[(i / N * hit.length) | 0] : [W / 2, H / 2];
-        parts.push({ nx: np[0], ny: np[1], gx: gx0 + c * cell, gy: gy0 + r * cell, lit: i < onTotal });
+        cells.push({ x: gx0 + c * cell, y: gy0 + r * cell });
       }
     }
     function draw(p) {
       lastP = p; ctx.clearRect(0, 0, W, H);
-      if (!W || !parts.length) return;
-      const e = easeInOut(Math.max(0, Math.min(1, p)));
-      // Apretadas mientras forman el número; tamaño "persona" al llegar a la grilla.
-      const h = (Math.min(W, H) * 0.026) + (cellSize * 0.66 - Math.min(W, H) * 0.026) * e;
-      for (const pt of parts) {
-        const x = pt.nx + (pt.gx - pt.nx) * e;
-        const y = pt.ny + (pt.gy - pt.ny) * e;
-        // mientras es número va todo en acento; al llegar a la grilla, los 4 que
-        // "no ven" se apagan (fade con el avance del morph).
-        const color = pt.lit ? accent : `rgba(${dimRGB},${(0.85 - 0.55 * e).toFixed(3)})`;
-        person(x, y, h, color);
+      if (!W || !cells.length) return;
+      const lit = Math.round(Math.max(0, Math.min(1, p)) * onTotal);  // 0 → 96 con el scroll
+      const h = cellSize * 0.72;
+      for (let i = 0; i < N; i++) {
+        person(cells[i].x, cells[i].y, h, i < lit ? accent : dim);
       }
     }
     const resize = () => {
@@ -361,7 +339,9 @@ export const CHARTS = {
     const option = {
       ...baseOption(accent),
       title: titleBlock('El contexto decide lo que oís', '% que oye la palabra sugerida, con y sin pista de texto'),
-      grid: { left: 6, right: 64, top: 96, bottom: 24, containLabel: true },
+      // Barras corridas a la izquierda: el espacio de la derecha queda libre para
+      // el título de la escena (.pista-cap, a la derecha de la barra "sin contexto").
+      grid: { left: 6, right: '50%', top: 56, bottom: 40, containLabel: true },
       xAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 14 } }),
       yAxis: catAxis({ data: items.map((i) => i.label), axisLabel: { color: INK, fontSize: 15 } }),
       tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong>: ${p.value}%<br>${items[p.dataIndex].nota}` },

@@ -642,8 +642,27 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
    (el morph ocupa el centro) y la sección tiene recorrido para que complete. */
 .morphwaffle { width: min(84vw, 76vh); aspect-ratio: 1; }
 .morphwaffle__cv { width: 100%; height: 100%; display: block; }
-#e3b .step { min-height: 180vh; align-items: flex-start; padding: 8vh var(--pad-x) 0; }
+#e3b .step { min-height: 200vh; align-items: flex-start; padding: 8vh var(--pad-x) 0; }
 #e3b .step__card { position: sticky; top: 8vh; }
+
+/* E3b en COLUMNA CENTRADA (sin recuadro): título arriba, el 96 GRANDE en el
+   medio (se vuelve gente con el scroll) y la explicación abajo. Al terminar de
+   ordenarse la grilla, todo el bloque se apaga con el scroll → entra el audio. */
+.e3b--stack .scrolly__graphic { transition: opacity 0.25s linear; }
+.e3b--stack .scrolly__graphic::after { display: none; }   /* sin scrim inferior */
+.e3b--stack .step__card { display: none; }                /* el texto vive en el stage */
+.waffle-stack {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: clamp(0.8rem, 2vh, 1.6rem); text-align: center;
+  height: 100%; padding: 3.5vh var(--pad-x);
+}
+.waffle-stack__title { margin: 0; font-size: clamp(1.7rem, 1.2rem + 2.2vw, 3rem); }
+.e3b--stack .morphwaffle { width: min(64vh, 72vw); }
+.waffle-stack__note {
+  margin: 0; max-width: 44rem; color: var(--ink-dim);
+  font-size: clamp(1.08rem, 1rem + 0.5vw, 1.35rem); line-height: 1.55;
+}
+.waffle-stack .chart-src { position: static; margin-top: 0.2rem; }
 
 /* ===== FANTASMAS (Sesgos) — embudo 50→15→1 que se arma con el scroll ===== */
 .funnel { width: min(88vw, 760px); display: flex; flex-direction: column; align-items: center; gap: clamp(1.4rem, 3.5vh, 2.8rem); color: var(--ink); }
@@ -731,8 +750,52 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   #cierre .cierrestep .step__card { opacity: 1; transform: none; transition: none; }
 }
 
-/* E4: el paso del 85/15 va ARRIBA-derecha para no tapar la barra del 15% (abajo). */
-#e4 .step[data-layer="2"] { align-items: flex-start; justify-content: flex-end; padding: 12vh var(--pad-x) 0; }
+/* ===== E4 (oído) · sin recuadros: texto a un lado, visual al otro =====
+   El stage sigue a pantalla completa, pero el texto pierde la tarjeta y vive en
+   una columna izquierda; el visual (onda / dial / barras) se corre a la derecha. */
+.e4--split .scrolly__graphic::after { display: none; }   /* sin scrim */
+.e4--split .step__card {
+  background: none; border: none; box-shadow: none; backdrop-filter: none;
+  padding: 0; max-width: 30rem;
+  opacity: 0;                       /* solo el paso activo se ve (sin fantasmas al cruzar) */
+  transition: opacity 0.5s var(--ease);
+}
+.e4--split .step.is-active .step__card { opacity: 1; transform: none; }
+/* pasos 0 y 1: el TEXTO queda FIJO (sticky) mientras scrolleás —no sube ni baja—;
+   el scroll solo avanza la escena (paso 0) o estira la onda (paso 1). */
+#e4 .step[data-layer="0"] { min-height: 150vh; }
+#e4 .step[data-layer="1"] { min-height: 210vh; }   /* recorrido para estirar la onda FM */
+#e4 .step[data-layer="0"],
+#e4 .step[data-layer="1"] { align-items: flex-start; justify-content: flex-start; padding: 0 var(--pad-x); }
+#e4 .step[data-layer="0"] .step__card,
+#e4 .step[data-layer="1"] .step__card { position: sticky; top: 34vh; }
+/* y el visual de esos pasos se corre a la mitad derecha (deja libre la columna de texto) */
+#e4 .viz__layer[data-layer="0"],
+#e4 .viz__layer[data-layer="1"] { place-items: center; padding-left: 42%; }
+/* paso 2: el gráfico ocupa todo el ancho y el texto va dentro (.pista-cap) */
+#e4 .step[data-layer="2"] .step__card { display: none; }
+.viz__chart--pista { position: relative; }
+.pista-cap {
+  position: absolute; right: 3%; bottom: 11%;
+  width: min(40%, 25rem); text-align: left; pointer-events: none; z-index: 2;
+}
+.pista-cap__title {
+  margin: 0 0 0.5em; font-family: var(--font-display); font-weight: 600;
+  font-size: clamp(1.4rem, 1.05rem + 1.5vw, 2.3rem); line-height: 1.15; color: var(--ink);
+}
+.pista-cap__sub { margin: 0; color: var(--ink-dim); font-size: clamp(1rem, 0.95rem + 0.35vw, 1.2rem); line-height: 1.5; }
+
+@media (max-width: 640px) {
+  /* mobile: sin columna; el visual full width y el texto en banda inferior */
+  #e4 .viz__layer[data-layer="0"],
+  #e4 .viz__layer[data-layer="1"] { padding-left: 0; }
+  #e4 .step[data-layer="0"],
+  #e4 .step[data-layer="1"] { align-items: flex-end; justify-content: center; padding: 0 var(--pad-x) 6vh; }
+  #e4 .step[data-layer="0"] .step__card,
+  #e4 .step[data-layer="1"] .step__card { position: static; }
+  .pista-cap { position: static; width: auto; margin-top: 1rem; }
+  .viz__chart--pista { display: flex; flex-direction: column; }
+}
 
 /* E9 (Dunning-Kruger): las líneas viven en la franja de arriba; el texto va en una
    BANDA INFERIOR centrada, sin tapar el arranque de la línea punteada. */
@@ -1003,6 +1066,10 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 /* En E2 la figura también es contorno (no tarjeta): se saca el papel y la sombra. */
 #e2 .figure-card { background: none; box-shadow: none; border-radius: 0; overflow: visible; }
 #e2 .flip-figure { transition: transform 0.1s linear; transform: rotate(var(--rot, 0deg)); transform-origin: center; }
+/* Tipografía propia de E2: el título pasa a sans (Hanken) — más limpio y
+   distinto del serif del resto. El texto queda FIJO (sticky) en su columna. */
+#e2 [data-e2-title] { font-family: var(--font-body); font-weight: 700; letter-spacing: -0.02em; }
+#e2 [data-e2-lede]  { font-family: var(--font-body); }
 .annot {
   position: absolute;
   width: 11px; height: 11px; border-radius: 50%;
@@ -1012,7 +1079,9 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   opacity: 0;
   transition: opacity 0.5s var(--ease);
 }
-/* Rótulo fuera de la figura (posición la pone el JS según el rasgo) */
+/* Rótulo ANCLADO al rasgo (mismas coords que el punto, las pone el JS): vive
+   dentro de la figura y gira con ella, pero su texto se CONTRA-rota con --rot
+   para quedar siempre horizontal y caer justo sobre la oreja / el hocico. */
 .annot-label {
   position: absolute; z-index: 3;
   background: rgba(10, 13, 16, 0.92);
@@ -1022,12 +1091,13 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   padding: 0.3rem 0.8rem;
   font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.04em;
   white-space: nowrap;
-  opacity: 0; transform: translateY(4px);
-  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(calc(-1 * var(--rot, 0deg)));
+  transition: opacity 0.5s var(--ease);
   pointer-events: none;
 }
 #e2.cues-on .annot,
-#e2.cues-on .annot-label { opacity: 1; transform: none; }
+#e2.cues-on .annot-label { opacity: 1; }
 #e2.cues-on .annot { transform: translate(-50%, -50%); }
 
 /* ----------------------------- Onda de audio (E4) ----------------------------- */

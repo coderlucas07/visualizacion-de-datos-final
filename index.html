@@ -194,8 +194,12 @@
       </div>
     </section>
 
-    <!-- ====================== E2 · La pista (gira con el scroll) ====================== -->
-    <section class="scrolly scrolly--stage" id="e2" aria-labelledby="e2-h">
+    <!-- ====================== E2 · La pista (gira con el scroll) ======================
+         Dos columnas: texto FIJO (sticky) a la izquierda, figura que gira a la
+         derecha. Los rótulos viven DENTRO de la figura (anclados a la anatomía):
+         giran con ella y solo su texto se contra-rota para quedar horizontal, así
+         "las orejas" y "el hocico" siempre caen sobre el rasgo correcto. -->
+    <section class="scrolly" id="e2" aria-labelledby="e2-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -206,10 +210,10 @@
                 </div>
                 <span class="annot" id="e2Annot1"></span>
                 <span class="annot" id="e2Annot2"></span>
+                <!-- Rótulos anclados a la anatomía (giran con la figura) -->
+                <span class="annot-label" id="e2Label1"></span>
+                <span class="annot-label" id="e2Label2"></span>
               </figure>
-              <!-- Rótulos FUERA del recuadro de la figura (no rotan) -->
-              <span class="annot-label" id="e2Label1"></span>
-              <span class="annot-label" id="e2Label2"></span>
             </div>
           </div>
           <div class="viz__layer" data-layer="1">
@@ -261,7 +265,7 @@
         <div class="step step--tall" data-layer="1">
           <div class="step__card step__card--final">
             <p class="lede">Esta imagen está <strong>completamente quieta</strong>.</p>
-            <p class="muted">Ni un solo píxel se mueve. Y, sin embargo, gira.</p>
+            <p class="muted">Ni un solo píxel se mueve.</p> Y, sin embargo, gira.</p>
             <p class="chart-src chart-src--static">Fuente: Kitaoka (2003), “Rotating Snakes”.</p>
           </div>
         </div>
@@ -272,28 +276,30 @@
          Dos columnas: el texto (izq.) queda alineado con el waffle (der., sticky)
          en vez de caer al fondo de la pantalla. -->
     <!-- E3b · MORPH: el número "96" se desarma en la grilla de 100 personas con el scroll -->
-    <section class="scrolly scrolly--stage" id="e3b" aria-labelledby="e3b-h">
-      <div class="scrolly__graphic">
+    <section class="scrolly scrolly--stage e3b--stack" id="e3b" aria-labelledby="e3b-h">
+      <div class="scrolly__graphic" id="e3bGraphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
-            <div class="chart morphwaffle" id="e3Waffle" data-chart="03_ilusiones_movimiento_waffle"></div>
+            <div class="waffle-stack">
+              <h2 class="waffle-stack__title" id="e3b-h">Pero no sos el único.</h2>
+              <div class="chart morphwaffle" id="e3Waffle" data-chart="03_ilusiones_movimiento_waffle"></div>
+              <p class="waffle-stack__note"><strong>96 de cada 100</strong> ven movimiento donde no lo hay. No es un error tuyo: tu cerebro <em>agrega</em> un movimiento que no existe en la imagen.</p>
+              <p class="chart-src chart-src--static" data-src-for="03_ilusiones_movimiento_waffle"></p>
+            </div>
           </div>
         </div>
       </div>
       <div class="scrolly__steps">
-        <div class="step is-active" data-layer="0">
-          <div class="step__card">
-            <p class="kicker" id="e3b-h">Pero no sos el único</p>
-            <p class="lede"><strong>96 de cada 100</strong> ven movimiento donde no lo hay.</p>
-            <p class="muted">No es un error tuyo: tu cerebro <em>agrega</em> un movimiento que no existe en la imagen.</p>
-            <p class="chart-src chart-src--static" data-src-for="03_ilusiones_movimiento_waffle"></p>
-          </div>
-        </div>
+        <div class="step is-active" data-layer="0"><div class="step__card" aria-hidden="true"></div></div>
       </div>
     </section>
 
-    <!-- ====================== E4 · También el oído (INTERACCIÓN 2) ====================== -->
-    <section class="scrolly scrolly--stage" id="e4" aria-labelledby="e4-h">
+    <!-- ====================== E4 · También el oído (INTERACCIÓN 2) ======================
+         Sin recuadros: el texto vive en una columna lateral (izquierda) y el
+         visual (onda / dial / barras) ocupa el otro lado. En el paso del 85/15 el
+         título va DENTRO del gráfico, a la derecha de la barra corta (sin contexto),
+         que es donde queda el espacio libre. -->
+    <section class="scrolly scrolly--stage e4--split" id="e4" aria-labelledby="e4-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
@@ -316,7 +322,13 @@
             <div class="viz__chart"><div class="chart" data-chart="04_ilusion_auditiva" role="img" aria-label="Con el mismo audio, la gente se reparte entre bicicleta y alquiler."></div></div>
           </div>
           <div class="viz__layer" data-layer="2">
-            <div class="viz__chart"><div class="chart" data-chart="04b_auditiva_con_pista" role="img" aria-label="Leer una palabra antes fuerza esa interpretación del audio."></div></div>
+            <div class="viz__chart viz__chart--pista">
+              <div class="chart" data-chart="04b_auditiva_con_pista" role="img" aria-label="Leer una palabra antes fuerza esa interpretación del audio."></div>
+              <div class="pista-cap">
+                <p class="pista-cap__title">Y si te muestro una palabra antes, el mismo audio cambia.</p>
+                <p class="pista-cap__sub">Con esa pista, 85% oye justo esa palabra; sin pista, apenas 15%. El mismo truco del contexto —ahora en tus oídos.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -338,12 +350,8 @@
             <p class="muted">Lo que oís no depende del sonido: depende de lo que tu cerebro esperaba oír.</p>
           </div>
         </div>
-        <div class="step" data-layer="2">
-          <div class="step__card">
-            <p class="lede">Y si te muestro una palabra antes, el mismo audio cambia.</p>
-            <p class="muted">Con esa pista, 85% oye justo esa palabra; sin pista, apenas 15%. El mismo truco del contexto —ahora en tus oídos.</p>
-          </div>
-        </div>
+        <!-- El texto de este paso vive DENTRO del gráfico (.pista-cap) -->
+        <div class="step" data-layer="2"><div class="step__card" aria-hidden="true"></div></div>
       </div>
     </section>
 

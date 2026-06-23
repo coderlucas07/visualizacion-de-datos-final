@@ -32,7 +32,7 @@ let introEl = null, duoEl = null, introAfterEl = null;
 let e2Sec = null, e2Fig = null, e2Step = null, e2ChartEl = null, e2ChartStep = null;
 let e2LinesCanvas = null, e2LinesDraw = null;
 let e3Img = null, e3Step = null, e3TitleCard = null, e3TitleStep = null, e3FinalCard = null;
-let e3bSec = null, waffleEl = null, e3CountEl = null;
+let e3bSec = null, waffleEl = null, e3CountEl = null, e3bGraphicEl = null;
 let fmEl = null, e4FmStep = null;
 let e5Sec = null, gorilaStatEl = null;
 let e7Sec = null, e7ChartEl = null;
@@ -607,24 +607,25 @@ function configureE2(firstChoice) {
   const target = firstChoice === 'conejo' ? 'pato' : 'conejo';
   state.e2rotate = target === 'conejo';
 
-  // El punto marca la anatomía (en % de la imagen, gira con ella).
-  const dot = (el, left, top) => { el.style.left = left + '%'; el.style.top = top + '%'; };
-  // El rótulo va FUERA del recuadro de la figura (no rota): se ubica por bordes
-  // del wrapper y trae una flecha que apunta hacia adentro.
-  const label = (el, text, css) => { el.textContent = text; el.removeAttribute('style'); Object.assign(el.style, css); };
+  // Punto + rótulo ANCLADOS al mismo rasgo (en % de la imagen): viven dentro de
+  // la figura, giran con ella y caen siempre sobre la anatomía correcta. El
+  // texto del rótulo se contra-rota por CSS (var --rot) para quedar horizontal.
+  const mark = (dotEl, labelEl, text, left, top) => {
+    dotEl.style.left = left + '%';  dotEl.style.top = top + '%';
+    labelEl.textContent = text;
+    labelEl.style.left = left + '%'; labelEl.style.top = top + '%';
+  };
 
-  // Rótulos ARRIBA y a la DERECHA de la figura (el panel de texto flota
-  // abajo-izquierda: así el scroll no los tapa).
   if (target === 'conejo') {
     titleEl.textContent = 'Dale vuelta la cabeza.';
     ledeEl.innerHTML = 'La figura gira: eso que era un pico ahora son <strong>dos orejas</strong>, y atrás aparece el <strong>hocico</strong>. ¿Ves el conejo?';
-    dot(a1, 20, 22);   label(l1, 'las orejas ↑', { left: '54%', bottom: '104%' });
-    dot(a2, 92, 51);   label(l2, '← el hocico',  { left: '103%', top: '46%' });
+    mark(a1, l1, 'las orejas', 20, 22);   // las puntas (pico del pato → orejas)
+    mark(a2, l2, 'el hocico',  90, 64);   // el morro redondeado, abajo a la derecha
   } else {
     titleEl.textContent = 'Mirá otra vez.';
     ledeEl.innerHTML = 'Eso que parecían <strong>orejas</strong> es un <strong>pico</strong>, y el ojo mira hacia el agua. ¿Aparece el pato?';
-    dot(a1, 20, 22);     label(l1, 'el pico ↑', { left: '8%', bottom: '104%' });
-    dot(a2, 68.5, 30);   label(l2, '← el ojo',  { left: '103%', top: '24%' });
+    mark(a1, l1, 'el pico', 20, 22);
+    mark(a2, l2, 'el ojo',  68.5, 30);
   }
 }
 
@@ -719,6 +720,7 @@ function cacheScrubRefs() {
   e3bSec = document.getElementById('e3b');
   waffleEl = document.getElementById('e3Waffle');
   e3CountEl = document.getElementById('e3Count');
+  e3bGraphicEl = document.getElementById('e3bGraphic');
   fmEl = document.querySelector('#e4 [data-chart="04_ilusion_auditiva"]');
   e4FmStep = document.querySelector('#e4 .step[data-layer="1"]');
   e5Sec = document.getElementById('e5');
@@ -839,11 +841,14 @@ function tick() {
     if (e3FinalCard) e3FinalCard.style.opacity = clamp((raw - 0.84) / 0.1).toFixed(3);
   }
 
-  // Waffle (E3b): se pinta con el scroll
+  // Waffle (E3b): el "96" se ordena en grilla con el scroll y, una vez armado,
+  // TODO el bloque se apaga (fundido) → da paso a la sección del audio.
   if (!REDUCED && waffleEl && waffleEl.__setWaffle && e3bSec) {
-    const p = clamp((sectionProgress(e3bSec) - 0.08) / 0.72);
+    const sp = sectionProgress(e3bSec);
+    const p = clamp((sp - 0.08) / 0.58);   // el morph completa antes (deja cola para el fundido)
     waffleEl.__setWaffle(p);
     if (e3CountEl) e3CountEl.textContent = Math.round(p * 96);
+    if (e3bGraphicEl) e3bGraphicEl.style.opacity = (1 - clamp((sp - 0.72) / 0.22)).toFixed(3);
   }
 
   // E4 (onda FM): las ondas se alargan a medida que scrolleás el resultado
