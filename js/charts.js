@@ -387,16 +387,12 @@ export const CHARTS = {
     const target = noVio.porcentaje;   // 50
     container.classList.add('gorilla');
     container.style.setProperty('--accent', accent);
+    // Solo el porcentaje: un anillo que se llena con el scroll y el número en el
+    // centro. (Se sacaron la figura del gorila y los textos: el dato manda solo.)
     container.innerHTML = `
-      <p class="gorilla__title">La mitad no vio al gorila</p>
       <div class="gorilla__ring" style="--deg:0deg">
-        <svg class="gorilla__icon" viewBox="0 0 64 64" aria-hidden="true">
-          <path fill="currentColor" d="M32 8c-7 0-12 4-13 10-5 1-9 5-9 11 0 4 2 7 5 9 0 8 7 14 17 14s17-6 17-14c3-2 5-5 5-9 0-6-4-10-9-11-1-6-6-10-13-10Zm-9 21a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm18 0a3 3 0 1 1 0 6 3 3 0 0 1 0-6ZM24 44c2 2 5 3 8 3s6-1 8-3c-2 3-5 4-8 4s-6-1-8-4Z"/>
-        </svg>
         <span class="gorilla__num">0%</span>
-        <span class="gorilla__lbl">no vio al gorila</span>
-      </div>
-      <p class="gorilla__cap">De quienes contaban los pases, la mitad no registró un gorila que cruzó la pantalla y se golpeó el pecho.</p>`;
+      </div>`;
     const ring = container.querySelector('.gorilla__ring');
     const num = container.querySelector('.gorilla__num');
     let last = -1;

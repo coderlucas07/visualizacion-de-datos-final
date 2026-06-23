@@ -388,29 +388,22 @@
     </section>
 
     <!-- ====================== E5 · Cierre del módulo · el gorila invisible ======================
-         Dos columnas: el anillo (der., sticky) aprovecha el ancho y el texto
-         (izq.) lo acompaña; antes era full-bleed con todo el lado derecho vacío. -->
-    <section class="scrolly" id="e5" aria-labelledby="e5-h">
-      <div class="scrolly__graphic">
-        <div class="viz">
-          <div class="viz__layer is-active" data-layer="0">
-            <div class="viz__chart"><div class="chart" data-chart="05_cierre_percepcion" role="img" aria-label="La mitad de las personas no ve un gorila que cruza la pantalla mientras cuenta pases."></div></div>
-          </div>
+         Dos columnas CONGELADAS (pin sticky): el título a la izquierda y el porcentaje
+         (anillo más chico) a la derecha; el número sube de 0% a 50% con el scroll y
+         recién al 50% se libera para seguir a Decisión. Solo se muestra el porcentaje
+         (sin la figura del gorila ni textos en el gráfico). -->
+    <section class="closer-stat" id="e5" aria-labelledby="e5-h">
+      <div class="closer-stat__pin">
+        <div class="closer-stat__text">
+          <p class="kicker">Para cerrar</p>
+          <h2 id="e5-h">No ves lo que<br />no estás mirando.</h2>
+          <p class="lede">Se llama <strong>ceguera por falta de atención</strong>.</p>
+          <p class="muted">Cuando tu foco está ocupado en una tarea —contar pases—, lo demás no llega a tu conciencia, aunque te pase por delante. No es que lo viste y lo olvidaste: el gorila nunca entró. Tu atención es un reflector que ilumina una porción mínima del mundo y deja el resto a oscuras.</p>
         </div>
-      </div>
-      <div class="scrolly__steps">
-        <div class="step is-active" data-layer="0">
-          <div class="step__card">
-            <p class="kicker">Para cerrar</p>
-            <h2 id="e5-h">No ves lo que<br />no estás mirando.</h2>
-            <p class="lede">Mirá el número de al lado mientras bajás. Esa es la mitad que no registró un gorila cruzando la pantalla por estar contando pases.</p>
-          </div>
-        </div>
-        <div class="step" data-layer="0">
-          <div class="step__card">
-            <p class="lede">Se llama <strong>ceguera por falta de atención</strong>.</p>
-            <p class="muted">Cuando tu foco está ocupado en una tarea —contar pases—, lo demás no llega a tu conciencia, aunque te pase por delante. No es que lo viste y lo olvidaste: el gorila nunca entró. Tu atención es un reflector que ilumina una porción mínima del mundo y deja el resto a oscuras.</p>
-          </div>
+        <div class="closer-stat__viz">
+          <div class="chart" data-chart="05_cierre_percepcion" role="img"
+               aria-label="El porcentaje de personas que no registra el hecho sube de 0% a 50% a medida que scrolleás."></div>
+          <p class="chart-src" data-src-for="05_cierre_percepcion"></p>
         </div>
       </div>
     </section>

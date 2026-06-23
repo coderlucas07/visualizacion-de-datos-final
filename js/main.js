@@ -851,10 +851,11 @@ function tick() {
     fmEl.__setFM(stepScrub(e4FmStep));
   }
 
-  // E5 (gorila): el anillo se llena y el número cuenta de 0% al 50% con el scroll
+  // E5 (cierre): la pantalla queda CONGELADA (pin sticky) y el número sube de
+  // 0% a 50% siguiendo el scroll (lineal, 1:1); llega al 50% cerca del final del
+  // recorrido y ahí se libera para seguir scrolleando normal hacia Decisión.
   if (!REDUCED && gorilaStatEl && gorilaStatEl.__setGorila && e5Sec) {
-    const p = clamp((sectionProgress(e5Sec) - 0.06) / 0.5);
-    gorilaStatEl.__setGorila(easeOut(p));
+    gorilaStatEl.__setGorila(clamp(sectionProgress(e5Sec) / 0.85));
   }
 
   // E7 (aversión): la moneda dispara un "rayito" que dibuja primero la barra de

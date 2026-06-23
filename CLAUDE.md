@@ -187,9 +187,13 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
 - **E4 (onda FM):** la onda se **achicó** (`.fmwave max-width 880px / max-height 60vh`, centrada) y el
   **dial tiene mucho más contraste** (bici celeste pleno, alquiler en blanco con borde; números más
   grandes). En el canvas, el tramo "alquiler" pasó de gris tenue a **blanco** (`second = INK`).
-- **E5 (gorila):** pasó a **dos columnas** (aprovecha el lado derecho que quedaba negro). Se ocultan
-  `.gorilla__title/__cap` (el narrativo va en la columna de texto) y se achicó el número + rótulo para
-  que **no se superpongan** con el anillo.
+- **E5 (gorila):** sección `.closer-stat` de **dos columnas CONGELADAS** (pin `position:sticky`, 200vh):
+  título a la **izquierda** y el porcentaje (anillo más chico) a la **derecha**. **Solo se muestra el
+  porcentaje**: el handler `05_cierre_percepcion` (charts.js) ahora dibuja únicamente el anillo + número
+  (se sacaron del HTML la figura del gorila `__icon`, el `__title`, el `__lbl` y el `__cap`). El número
+  **sube de 0% a 50% siguiendo el scroll** (lineal, `__setGorila` scrubeado en `tick()` con
+  `sectionProgress(#e5)/0.85`); al 50% se **libera** el pin y se sigue a Decisión. Reduced-motion: 50% fijo,
+  sin pin alto. (Reemplaza al `.scrolly` de dos columnas que tenía el gorila visible.)
 - **E6 (bate):** pasó a **dos columnas** (problema a la derecha, tarea/explicación a la izquierda; ya no
   queda espacio negro). Foto del bate y textos **más grandes** (`#e6 .batball-photo min(34vh,420px)`).
 - **DECISIÓN sin verde/rojo:** regla nueva → **cada módulo usa SOLO sus colores**. Decisión define
