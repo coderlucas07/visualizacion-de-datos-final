@@ -1399,11 +1399,19 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 /* ===== SESGOS: carteles más grandes, centrados y con más aire (pedido del equipo).
    Aplica a las escenas full-bleed del módulo (intro, E10, E13, cierre): la tarjeta
    deja de estar pegada abajo-izquierda y pasa a centrada, más grande y legible. ===== */
-#sesgos-intro .scrolly__steps .step,
 #cierre .scrolly__steps .step { justify-content: center; padding-bottom: 9vh; }
-#sesgos-intro .step__card,
 #cierre .step__card {
   max-width: 46rem; padding: 1.9rem 2.3rem; text-align: center;
+}
+/* Sesgos-intro: la DIANA es protagonista (corrida a la derecha) y el texto va en
+   columna izquierda → el centro y el cluster de la diana quedan despejados. */
+#sesgos-intro .viz__layer[data-layer="0"] { justify-items: end; padding-right: clamp(2rem, 8vw, 9rem); }
+#sesgos-intro .scrolly__steps .step { align-items: center; justify-content: flex-start; padding: 0 var(--pad-x); }
+#sesgos-intro .step__card { width: min(30vw, 25rem); max-width: 25rem; text-align: left; }
+@media (max-width: 760px) {
+  #sesgos-intro .viz__layer[data-layer="0"] { justify-items: center; padding-right: 0; }
+  #sesgos-intro .scrolly__steps .step { align-items: flex-end; justify-content: center; padding: 0 var(--pad-x) 6vh; }
+  #sesgos-intro .step__card { width: auto; max-width: none; text-align: center; }
 }
 /* E13 (brecha) NO se centra: el texto va en columna izquierda (ver bloque .e13--brecha). */
 /* E10 (mejor que el promedio): el gráfico ocupa la franja de arriba; el texto va
@@ -1442,17 +1450,11 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 #e13 .step__card .muted,
 #cierre .step__card .muted { font-size: clamp(1.1rem, 1rem + 0.45vw, 1.35rem); line-height: 1.6; }
 
-/* ----------------------------- Intro de Sesgos (diana) ----------------------------- */
-.bias-intro { width: min(58vh, 84%); margin: 0; }
+/* ----------------------------- Intro de Sesgos (diana) -----------------------------
+   Los puntos los crea y anima el JS con el scroll (setupBiasDiana). */
+.bias-intro { width: min(62vh, 86%); margin: 0; }
 .bias-intro svg { width: 100%; height: auto; display: block; }
-.bias-intro g circle { animation: biasIn 0.5s var(--ease) both; transform-box: fill-box; transform-origin: center; }
-.viz__layer.is-active .bias-intro g circle:nth-child(1) { animation-delay: 0.05s; }
-.viz__layer.is-active .bias-intro g circle:nth-child(2) { animation-delay: 0.12s; }
-.viz__layer.is-active .bias-intro g circle:nth-child(3) { animation-delay: 0.19s; }
-.viz__layer.is-active .bias-intro g circle:nth-child(4) { animation-delay: 0.26s; }
-.viz__layer.is-active .bias-intro g circle:nth-child(5) { animation-delay: 0.33s; }
-.viz__layer.is-active .bias-intro g circle:nth-child(6) { animation-delay: 0.4s; }
-@keyframes biasIn { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: none; } }
+.bias-intro #biasDots circle { transition: opacity 0.3s var(--ease); }
 
 /* ----------------------------- Pareidolia (E12) ----------------------------- */
 .faces { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(8px, 1.2vw, 14px); width: 100%; max-width: 820px; }

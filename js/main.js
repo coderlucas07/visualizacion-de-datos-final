@@ -41,6 +41,7 @@ let e10Sec = null, e10ChartEl = null;
 let fantSec = null, ghostFunnelEl = null;
 let e12Sec = null, e12Track = null;
 let e13Sec = null, brechaEl = null;
+let biasSec = null, biasPts = null, biasAim = null, biasLast = -1;
 
 const state = { first: null, e2rotate: true, e1answered: false };
 const progressBar = document.getElementById('progressBar');
@@ -737,6 +738,49 @@ function cacheScrubRefs() {
   e12Track = document.getElementById('e12Track');
   e13Sec = document.getElementById('e13');
   brechaEl = document.getElementById('brechaChart');
+  setupBiasDiana();
+}
+
+/* Diana animada (sesgos-intro): genera los puntos y los anima con el scroll.
+   Empiezan dispersos alrededor del centro (error aleatorio, sin dirección) y se
+   AGRUPAN hacia un lado (sesgo = errar siempre para el mismo lado). */
+function setupBiasDiana() {
+  biasSec = document.getElementById('sesgos-intro');
+  const g = document.getElementById('biasDots');
+  biasAim = document.getElementById('biasAim');
+  if (!g || !biasSec) return;
+  const N = 9;
+  const cx = 160, cy = 160;
+  const cluster = { x: 222, y: 100 };   // hacia dónde se agrupa el sesgo (arriba-derecha)
+  const rnd = (seed) => { const x = Math.sin(seed * 99.13) * 43758.5; return x - Math.floor(x); };
+  biasPts = Array.from({ length: N }, (_, i) => {
+    // disperso: ángulo y radio repartidos alrededor del centro
+    const ang = rnd(i + 1) * Math.PI * 2;
+    const rad = 36 + rnd(i + 7) * 92;
+    const sx = cx + Math.cos(ang) * rad, sy = cy + Math.sin(ang) * rad;
+    // agrupado: nube chica alrededor del punto de sesgo
+    const gx = cluster.x + (rnd(i + 3) - 0.5) * 46, gy = cluster.y + (rnd(i + 5) - 0.5) * 40;
+    const el = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    el.setAttribute('r', '7'); el.setAttribute('cx', sx); el.setAttribute('cy', sy); el.style.opacity = '0';
+    g.appendChild(el);
+    return { el, sx, sy, gx, gy };
+  });
+  biasAim.setAttribute('d', `M${cx} ${cy} L${cluster.x} ${cluster.y}`);
+  if (REDUCED) setBias(1);
+}
+
+function setBias(p) {
+  if (!biasPts) return;
+  p = clamp(p);
+  if (Math.abs(p - biasLast) < 0.004) return; biasLast = p;
+  const appear = clamp(p / 0.22);                 // los puntos aparecen (dispersos)
+  const move = easeOut(clamp((p - 0.32) / 0.45)); // se agrupan hacia un lado
+  for (const pt of biasPts) {
+    pt.el.setAttribute('cx', (pt.sx + (pt.gx - pt.sx) * move).toFixed(1));
+    pt.el.setAttribute('cy', (pt.sy + (pt.gy - pt.sy) * move).toFixed(1));
+    pt.el.style.opacity = appear.toFixed(2);
+  }
+  if (biasAim) biasAim.style.opacity = (0.7 * clamp((move - 0.4) / 0.6)).toFixed(2);
 }
 
 /* ----------------------------- Motor de scroll ----------------------------- */
@@ -899,6 +943,11 @@ function tick() {
   // E13 (la brecha): 3 etapas con el scroll → Ciencia, luego Público, luego la brecha.
   if (!REDUCED && brechaEl && brechaEl.__setBrecha && e13Sec) {
     brechaEl.__setBrecha(sectionProgress(e13Sec));
+  }
+
+  // Diana de sesgo: los disparos aparecen dispersos y se agrupan a un lado con el scroll.
+  if (!REDUCED && biasPts && biasSec) {
+    setBias(clamp((sectionProgress(biasSec) - 0.02) / 0.62));
   }
 }
 

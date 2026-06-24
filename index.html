@@ -643,18 +643,17 @@
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
+            <!-- Diana animada con el scroll (setupBiasDiana en main.js): vacía →
+                 puntos dispersos (error aleatorio) → agrupados a un lado (sesgo). -->
             <figure class="bias-intro" aria-hidden="true">
-              <svg viewBox="0 0 320 320" fill="none">
+              <svg viewBox="0 0 320 320" fill="none" id="biasSvg">
                 <circle cx="160" cy="160" r="150" stroke="var(--ink-faint)" stroke-width="1.5" />
                 <circle cx="160" cy="160" r="112" stroke="var(--ink-faint)" stroke-width="1.5" />
                 <circle cx="160" cy="160" r="74" stroke="var(--ink-faint)" stroke-width="1.5" />
                 <circle cx="160" cy="160" r="34" stroke="var(--ink-dim)" stroke-width="1.5" />
                 <circle cx="160" cy="160" r="4" fill="var(--ink-dim)" />
-                <path d="M170 150 L224 100" stroke="var(--accent)" stroke-width="2" stroke-dasharray="3 6" opacity="0.7" />
-                <g fill="var(--accent)">
-                  <circle cx="226" cy="98" r="7" /><circle cx="240" cy="112" r="7" /><circle cx="214" cy="116" r="7" />
-                  <circle cx="232" cy="84" r="7" /><circle cx="248" cy="100" r="7" /><circle cx="219" cy="83" r="7" />
-                </g>
+                <path id="biasAim" stroke="var(--accent)" stroke-width="2" stroke-dasharray="3 6" opacity="0" />
+                <g id="biasDots" fill="var(--accent)"></g>
               </svg>
             </figure>
           </div>
