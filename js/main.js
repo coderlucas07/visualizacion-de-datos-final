@@ -338,25 +338,12 @@ function setupCover() {
     // TODO el scroll de la portada y el clímax cae en el quiebre. Avanza solo
     // mientras scrolleás (se congela si frenás); fade-in al entrar y fade-out
     // pasado el quiebre.
-    if (audio && soundOn && audioDur > 0) {
-      const target = clamp(p / SCRUB_END) * (audioDur - 0.05);
-      const moving = Math.abs(target - lastTargetA) > 0.0008;
-      lastTargetA = target;
-      if (moving) {
-        idleA = 0;
-        const diff = target - audio.currentTime;
-        if (diff > 0.16) {            // el scroll fue más rápido → adelanto el audio (nunca rebobina)
-          if (audio.paused) audio.play().catch(() => { /* noop */ });
-          try { audio.currentTime = target; } catch { /* noop */ }
-        } else if (diff < -0.06) {    // el audio se adelantó al scroll → espero (no rebobinar)
-          if (!audio.paused) audio.pause();
-        } else if (audio.paused) {    // en sync → reproduzco
-          audio.play().catch(() => { /* noop */ });
-        }
-      } else if (++idleA > 6 && !audio.paused) {
-        audio.pause();               // scroll quieto → congelo el riser donde está
-      }
-      audio.volume = VOL * clamp(p / 0.05) * (1 - clamp((p - 0.76) / 0.14));
+    // Con el Sonido activado el riser LOOPEA y se escuche siempre en la portada
+    // (sube suave al principio, baja al final). Ya no se pausa al frenar el scroll.
+    if (audio && soundOn) {
+      audio.loop = true;
+      if (audio.paused) audio.play().catch(() => { /* el click ya desbloqueó */ });
+      audio.volume = VOL * Math.min(1, 0.35 + p / 0.06) * (1 - clamp((p - 0.82) / 0.12));
     }
 
     if (visible) raf = requestAnimationFrame(frame);
@@ -624,9 +611,10 @@ function configureE2(firstChoice) {
     mark(a2, l2, 'el hocico',  90, 64);   // el morro redondeado, abajo a la derecha
   } else {
     titleEl.textContent = 'Mirá otra vez.';
-    ledeEl.innerHTML = 'Eso que parecían <strong>orejas</strong> es un <strong>pico</strong>, y el ojo mira hacia el agua. ¿Aparece el pato?';
+    ledeEl.innerHTML = 'Eso que parecían <strong>orejas</strong> es un <strong>pico</strong>, y ahí aparece el <strong>ojo</strong>. ¿Ves el pato?';
     mark(a1, l1, 'el pico', 20, 22);
     mark(a2, l2, 'el ojo',  68.5, 30);
+    l2.style.left = '84%'; l2.style.top = '13%';   // el rótulo va arriba-derecha: no tapa el ojo
   }
 }
 
