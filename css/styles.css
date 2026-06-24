@@ -30,8 +30,8 @@
   /* 3 familias con intención: SPECTRAL = impacto + títulos + citas (hero y
      display comparten familia, se diferencian por peso/estilo) · HANKEN = cuerpo
      · IBM PLEX MONO = datos/fuentes/UI. (Se quitó Unbounded.) */
-  --font-hero:    "Spectral", Georgia, "Times New Roman", serif;
-  --font-display: "Spectral", Georgia, "Times New Roman", serif;
+  --font-hero:    "Syne", "Spectral", Georgia, sans-serif;   /* IMPACTO: portada, módulos, cierre */
+  --font-display: "Spectral", Georgia, "Times New Roman", serif;  /* títulos de escena + citas */
   --font-body:    "Hanken Grotesk", system-ui, -apple-system, sans-serif;
   --font-mono:    "IBM Plex Mono", ui-monospace, Menlo, monospace;
 
@@ -239,16 +239,16 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .cover__title { margin: 0; font-family: var(--font-hero); text-transform: uppercase; }
 .cover__title .t1 {
   display: block;
-  font-weight: 400;
+  font-weight: 500;
   font-size: clamp(0.85rem, 0.62rem + 1.2vw, 1.4rem);
-  letter-spacing: 0.32em;
+  letter-spacing: 0.3em;
   color: var(--ink-dim);
   margin-bottom: 1.1rem;
 }
 .cover__title .t2 {
   display: block;
-  font-weight: 600;
-  font-size: clamp(1.7rem, 0.9rem + 4vw, 4.2rem);
+  font-weight: 800;
+  font-size: clamp(1.9rem, 0.95rem + 4.3vw, 4.6rem);
   letter-spacing: 0.02em;
   color: var(--accent);
   text-shadow: 0 0 38px rgba(143, 216, 255, 0.4), 0 0 120px rgba(143, 216, 255, 0.18);

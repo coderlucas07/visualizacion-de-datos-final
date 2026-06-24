@@ -69,6 +69,18 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   reducidos). La galería de caras (E12) se APILA vertical en mobile (`@media max-width:640` con las mismas reglas
   que `prefers-reduced-motion`). Intro/charts de banda (E10/E9) ya andaban. El gorila en mobile es un strip 16:9
   centrado estándar (el scrim de desktop no aplica; aceptable, el brief prioriza desktop).
+- **PASADA (f) — SISTEMA TIPOGRÁFICO (4 tiers con intención):** se sumó **Syne** (display geométrica con
+  carácter) SOLO para el **tier de IMPACTO** → `--font-hero` ahora es Syne (portada hero `.cover__title .t2` weight
+  800, nombres de módulo `.portal__name` 600, cierre `.closing-line` 600). El resto NO cambia: **Spectral**
+  (`--font-display`) = títulos de escena + citas/itálicas + frases-pausa; **Hanken Grotesk** = cuerpo; **IBM Plex
+  Mono** = datos/UI/kickers/fuentes. Esto reemplaza la regla vieja de "Spectral para todo lo de impacto" (la 6ª
+  vuelta había sacado Unbounded; ahora el impacto vuelve a tener una display propia, pero distinta). Para cambiar la
+  display de impacto: 1 línea (`--font-hero`) + el `family=Syne:...` del link de fuentes.
+- **PAUSAS editoriales (coreografía):** se sumaron 3 escenas `.interlude` full-screen (1 frase fuerte por módulo,
+  2ª línea en itálica del color del módulo, fade-up con `data-reveal`): `#pausa1` Percepción "La imagen no cambió.
+  Cambió el contexto." (celeste, tras pato/conejo) · `#pausa2` Decisión "Elegir también es interpretar." (naranja,
+  tras bate) · `#pausa3` Sesgos "Cuando el error se repite, deja de ser ruido." (carmesí, tras la diana). pausa2/3
+  sumadas a `setupModuleColors` (pausa1 hereda el celeste global).
 - **PENDIENTE (lo que queda):** **nombres del equipo en el `<footer>`** (placeholder `[completar nombres del equipo]`
   en index.html:851 — REQUIERE que el usuario los dé). Opcional/subjetivo: seguir variando tarjetas / acortar más
   copy (conviene input del usuario).
