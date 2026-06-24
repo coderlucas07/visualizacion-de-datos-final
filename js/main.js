@@ -38,13 +38,14 @@ let e5Sec = null, gorilaStatEl = null;
 let e7Sec = null, e7ChartEl = null, e7CoinEl = null, e7CoinStep = null;
 let e7ChartStep = null, e7CapEl = null, e7BoxEl = null;
 let e9Sec = null, dkEl = null;
-let e10Sec = null, e10ChartEl = null;
+let e10Sec = null, e10ChartEl = null, e10Pin = null, e10Lead = null, e10LeadIn = null, e10ChartWrap = null, e10After = null;
 let fantSec = null, ghostFunnelEl = null;
 let e12Sec = null, e12Track = null;
 let e13Sec = null, brechaEl = null;
 let biasSec = null, biasPts = null, biasAim = null, biasLast = -1;
 let e6Sec = null, bateEl = null;
-let cierreSec = null, proofBridge = null, proofA = null, proofB = null;
+let cierreSec = null, proofZoom = null, proofSqA = null, proofSqB = null;
+let proofLblA = null, proofLblB = null, cierreImg = null;
 
 const state = { first: null, e2rotate: true, e1answered: false };
 const progressBar = document.getElementById('progressBar');
@@ -738,6 +739,11 @@ function cacheScrubRefs() {
   dkEl = document.querySelector('#e9 [data-chart="09_dunning_kruger"]');
   e10Sec = document.getElementById('e10');
   e10ChartEl = document.querySelector('#e10 [data-chart="10_mejor_que_promedio"]');
+  e10Pin = document.querySelector('#e10 .e10__pin');
+  e10Lead = document.getElementById('e10Lead');
+  e10LeadIn = document.querySelector('#e10 .e10__lead-in');
+  e10ChartWrap = document.getElementById('e10ChartWrap');
+  e10After = document.getElementById('e10After');
   fantSec = document.getElementById('fantasmas');
   ghostFunnelEl = document.getElementById('ghostFunnel');
   e12Sec = document.getElementById('e12');
@@ -747,9 +753,12 @@ function cacheScrubRefs() {
   e6Sec = document.getElementById('e6');
   bateEl = document.getElementById('bateChart');
   cierreSec = document.getElementById('cierre');
-  proofBridge = document.getElementById('proofBridge');
-  proofA = document.getElementById('proofA');
-  proofB = document.getElementById('proofB');
+  proofZoom = document.getElementById('proofZoom');
+  proofSqA = document.getElementById('proofSqA');
+  proofSqB = document.getElementById('proofSqB');
+  proofLblA = document.getElementById('proofLblA');
+  proofLblB = document.getElementById('proofLblB');
+  cierreImg = cierreSec && cierreSec.querySelector('.checker img');
   setupBiasDiana();
 }
 
@@ -863,14 +872,11 @@ function tick() {
       e2Fig.style.opacity = clamp((p - 0.22) / 0.12).toFixed(3);  // la figura real revela cuando las líneas terminan
     }
     const rot = REDUCED ? 1 : clamp((p - 0.34) / 0.66);  // la rotación arranca DESPUÉS de armarse
-    const MAXDEG = 90;
+    const MAXDEG = 45;
     const deg = state.e2rotate ? (REDUCED ? MAXDEG : easeOut(rot) * MAXDEG) : 0;
     e2Fig.style.setProperty('--rot', deg.toFixed(1) + 'deg');
-    // La figura es apaisada (840×560); al girar 90° crecería en alto. Una escala
-    // que compensa la rotación mantiene el MISMO tamaño que sin girar (caso pato).
-    const rad = deg * Math.PI / 180, ar = 560 / 840;
-    const rotscale = ar / (Math.abs(Math.sin(rad)) + ar * Math.abs(Math.cos(rad)));
-    e2Fig.style.setProperty('--rotscale', rotscale.toFixed(4));
+    // La figura mantiene el MISMO tamaño al girar (solo rota, no se escala).
+    e2Fig.style.setProperty('--rotscale', '1');
     if (e2Sec) e2Sec.classList.toggle('cues-on', rot > (state.e2rotate ? 0.62 : 0.3));
   }
 
@@ -970,10 +976,27 @@ function tick() {
     dkEl.__setProgress(p);
   }
 
-  // E10 (mejor que el promedio): al seguir scrolleando, sale la flecha que
-  // apunta a la barra del 93% (manejar).
-  if (!REDUCED && e10ChartEl && e10ChartEl.__showCallout && e10Sec) {
-    e10ChartEl.__showCallout(sectionProgress(e10Sec) > 0.4);
+  // E10 (mejor que el promedio): coreografía propia con el scroll.
+  // (1) el título arranca centrado; (2) al scrollear se va a la IZQUIERDA y se achica
+  // mientras el gráfico ENTRA desde la derecha y las barras se ESTIRAN hasta el tope;
+  // (3) al llegar, aparece la CONCLUSIÓN (el 93%) donde estaba el título.
+  if (!REDUCED && e10Sec && e10Pin) {
+    const sp = sectionProgress(e10Sec);
+    const enter = easeOut(clamp((sp - 0.06) / 0.5));   // título→izq · gráfico entra · barras crecen
+    const concl = easeOut(clamp((sp - 0.66) / 0.18));  // aparece la conclusión · el gráfico se atenúa
+    if (e10LeadIn) {
+      const W = window.innerWidth, narrow = W < 760;
+      const shift = narrow ? 0 : -W * 0.32 * enter;
+      const sc = 1 - (narrow ? 0.06 : 0.20) * enter;
+      e10LeadIn.style.transform = `translateX(${shift.toFixed(0)}px) scale(${sc.toFixed(3)})`;
+    }
+    if (e10Lead) e10Lead.style.opacity = (1 - concl).toFixed(2);   // el título se va al entrar la conclusión
+    if (e10ChartWrap) {
+      e10ChartWrap.style.opacity = (enter * (1 - 0.7 * concl)).toFixed(2);   // entra y luego se atenúa
+      e10ChartWrap.style.transform = `translateX(${(8 * (1 - enter)).toFixed(1)}%)`;   // entra desde la derecha
+    }
+    if (e10ChartEl && e10ChartEl.__setGrow) e10ChartEl.__setGrow(enter);   // las barras se estiran al tope
+    if (e10After) e10After.style.opacity = concl.toFixed(2);   // conclusión donde estaba el título
   }
 
   // Fantasmas: el embudo (50 creen → 15 sintieron → 1 vio) se arma con el scroll.
@@ -1007,16 +1030,21 @@ function tick() {
   }
 
   // Cierre (Adelson): ANTES del texto "Son iguales", el scroll DEMUESTRA que A y B
-  // son el mismo gris: aparecen los aros y se tiende un puente del color real
-  // (#6F6F6F) entre los dos casilleros. Cuando el puente está completo, el siguiente
-  // paso revela "Son iguales".
-  if (!REDUCED && cierreSec && proofBridge) {
+  // son el mismo gris: el tablero se BORRA y quedan SOLO los dos casilleros (su mismo
+  // gris real #6F6F6F, marcados A y B), aislados y zoomeados al centro. Sin la sombra
+  // ni el contexto alrededor, se ven idénticos → el siguiente paso revela "Son iguales".
+  if (!REDUCED && cierreSec && proofZoom) {
     const sp = sectionProgress(cierreSec);
-    const mark = clamp((sp - 0.12) / 0.08);          // aros A/B aparecen
-    const draw = easeOut(clamp((sp - 0.18) / 0.2));  // el puente se dibuja (antes de "Son iguales")
-    if (proofA) proofA.style.opacity = mark.toFixed(2);
-    if (proofB) proofB.style.opacity = mark.toFixed(2);
-    proofBridge.style.strokeDashoffset = (1 - draw).toFixed(3);
+    const zoom = easeOut(clamp((sp - 0.20) / 0.22));
+    if (proofSqA) proofSqA.style.opacity = zoom.toFixed(2);
+    if (proofSqB) proofSqB.style.opacity = zoom.toFixed(2);
+    if (proofLblA) proofLblA.style.opacity = zoom.toFixed(2);
+    if (proofLblB) proofLblB.style.opacity = zoom.toFixed(2);
+    if (cierreImg) cierreImg.style.opacity = (1 - zoom).toFixed(2);   // el tablero se borra
+    // zoom centrado en el punto medio de A(546,254) y B(506,423) → centro del viewBox (505.5, 384.5)
+    const S = 2.6, s = 1 + (S - 1) * zoom;
+    const tx = zoom * (505.5 - S * 526), ty = zoom * (384.5 - S * 338.5);
+    proofZoom.setAttribute('transform', `translate(${tx.toFixed(1)} ${ty.toFixed(1)}) scale(${s.toFixed(3)})`);
   }
 }
 

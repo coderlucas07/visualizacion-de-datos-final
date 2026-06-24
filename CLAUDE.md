@@ -93,6 +93,17 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   tras bate) · `#pausa3` Sesgos "Cuando el error se repite, deja de ser ruido." (carmesí, tras la diana). pausa2/3
   sumadas a `setupModuleColors` (pausa1 hereda el celeste global).
 - **RE-ESCENAS con coreografía de scroll (batch de pulido, EN CURSO):**
+  - **Mejor que el promedio (E10) — REHECHA (pedido del usuario):** se SACARON los cuadros/`.step__card`. Ahora la
+    sección (`#e10`, sin `.scrolly`; markup propio `.e10__pin/.e10__lead/.e10__chart/.e10__after`, 280vh, pin
+    sticky) arranca con el **título centrado sobre negro**; al scrollear, el **título se va a la izquierda y se
+    achica** (`.e10__lead-in` translateX/scale), el **gráfico entra desde la derecha** (`.e10__chart` translateX+
+    opacity, `left:36%`) y las **barras se ESTIRAN de 0 al tope** (`__setGrow(p)` en el handler `10_mejor_que_promedio`,
+    `animation:false`, sin título interno ni flecha/markPoint); al llegar al tope aparece la **conclusión** ("El 93%
+    dice manejar mejor…") **donde estaba el título** (`.e10__after`, centrada, scrim radial; el gráfico se atenúa).
+    Todo scrubeado en `tick()` por `sectionProgress(#e10)` (`enter=(sp-0.06)/0.5`, `concl=(sp-0.66)/0.18`; refs
+    `e10Pin/e10Lead/e10LeadIn/e10ChartWrap/e10After/e10ChartEl`). Fallbacks: mobile `@max-width:760` apila (título
+    arriba, gráfico abajo, sin corrimiento); `prefers-reduced-motion` apila todo estático con barras llenas
+    (`__setGrow(1)`). La fuente sale en el slot `[data-src-for]` dentro de `.e10__after`.
   - **Bate y pelota (#12) — HECHA:** `scrolly--stage e6--bate`, sin cuadro; las barras crecen → flecha a la más
     elegida → marca roja en la trampa → ✓ en $0,05 (`__setBate`, scrubeado por `sectionProgress(#e6)`).
   - **Moneda +$50/−$50 (E7, #13) — HECHA:** `scrolly--stage e7--coin`, SIN cuadro/tarjeta (se sacó el texto
@@ -144,6 +155,16 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   pregunta y la revelación (el cierre pasó de 3 a 4 pasos). `.checker` ahora es `position:relative` y la imagen es
   GRANDE (`#cierre .checker width:min(94vh,60vw)`, ocupa gran parte de la derecha). Si se cambia el SVG del tablero,
   re-muestrear A/B y recalibrar las coords del puente.
+  - **AÍSLA + ZOOM (sin línea, pedido del usuario):** se SACÓ el puente/línea que unía A y B (y los aros). Ahora,
+    al arrancar la prueba con el scroll, el **tablero se BORRA** (la `<img>` se funde a 0) y quedan **SOLO los dos
+    casilleros, grandes y zoomeados**, marcados **A** y **B**. Los cuadrados son `<rect id="proofSqA/proofSqB">`
+    (88×88) pintados con el **mismo gris real `#6F6F6F`** (por eso sobreviven al fundido de la foto) + dos `<text
+    id="proofLblA/proofLblB">` (IBM Plex Mono, sobre cada cuadrado), todo dentro del grupo `#proofZoom`. El zoom es
+    un `transform` `translate+scale` del grupo (S=2.6) centrado en el punto medio de A/B → centro del viewBox,
+    scrubeado por `sectionProgress(#cierre)` en `tick()` (`zoom = easeOut((sp-0.20)/0.22)`; refs
+    `proofZoom/proofSqA/proofSqB/proofLblA/proofLblB/cierreImg`). El copy del paso 2 ya no habla de "puente/tira"
+    sino de aislar los dos casilleros. Si se recalibran A/B, mover también los `rect` y los `text`
+    (centro = A`(546,254)`/B`(506,423)`).
 - **PENDIENTE (lo que queda):** **nombres del equipo en el `<footer>`** → el usuario los dio: **Lucas Dayan,
   Gerónimo Cantalejos, Marcos Bustamante** (2026). Verificar que estén en el colofón del `<footer>` (`.pie__authors`).
   Opcional/subjetivo: seguir variando tarjetas / acortar más copy.

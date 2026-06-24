@@ -446,9 +446,8 @@
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
             <div class="statement statement--bate">
-              <p class="kicker">Tercera prueba · respondé sin pensarlo</p>
-              <figure class="batball-photo figure-card">
-                <img src="./assets/bate_pelota.jpeg"
+              <figure class="batball-photo">
+                <img src="./assets/bate.png"
                      alt="Un bate de béisbol de madera junto a una pelota blanca con costuras rojas." />
               </figure>
               <p class="statement__line">Un bate y una pelota cuestan <strong>$1,10</strong>. El bate cuesta <strong>$1 más</strong> que la pelota.</p>
@@ -760,26 +759,26 @@
     </section>
 
     <!-- ====================== E10 · Mejor que el promedio · PANTALLA COMPLETA ====================== -->
-    <section class="scrolly scrolly--stage stage--right" id="e10" aria-labelledby="e10-h">
-      <div class="scrolly__graphic">
-        <div class="viz">
-          <div class="viz__layer is-active" data-layer="0">
-            <div class="viz__chart"><div class="chart" data-chart="10_mejor_que_promedio" role="img" aria-label="En todos los dominios, mucho más de la mitad se cree por encima del promedio."></div></div>
-          </div>
+    <!-- Coreografía propia con el scroll (scrub en tick(), refs e10*):
+         (1) arranca con el título centrado sobre negro; (2) al scrollear, el título se
+         va a la izquierda y se achica mientras el gráfico entra desde la derecha y las
+         barras se estiran hasta el tope; (3) al llegar, aparece la conclusión (el 93%)
+         donde estaba el título. Sin cuadros de texto. -->
+    <section id="e10" aria-labelledby="e10-h">
+      <div class="e10__pin">
+        <div class="e10__chart" id="e10ChartWrap">
+          <div class="viz__chart"><div class="chart" data-chart="10_mejor_que_promedio" role="img" aria-label="En todos los dominios, mucho más de la mitad se cree por encima del promedio."></div></div>
         </div>
-      </div>
-      <div class="scrolly__steps">
-        <div class="step is-active" data-layer="0">
-          <div class="step__card">
+        <div class="e10__lead" id="e10Lead">
+          <div class="e10__lead-in">
             <h2 id="e10-h">La mayoría se cree mejor<br />que la mayoría.</h2>
             <p class="lede">No mide habilidad real: mide <strong>exceso de confianza</strong>. Si todos se comparan con el mismo grupo, <strong>no todos pueden estar arriba</strong>.</p>
           </div>
         </div>
-        <div class="step" data-layer="0">
-          <div class="step__card">
-            <p class="lede">El <strong>93%</strong> dice manejar mejor que el promedio.</p>
-            <p class="muted">Pero el gráfico no demuestra que manejemos mejor. Demuestra que nos <strong>evaluamos con demasiada confianza</strong>.</p>
-          </div>
+        <div class="e10__after" id="e10After">
+          <p class="e10__big">El <strong>93%</strong> dice manejar mejor que el promedio.</p>
+          <p class="muted">Pero el gráfico no demuestra que manejemos mejor. Demuestra que nos <strong>evaluamos con demasiada confianza</strong>.</p>
+          <p class="chart-src chart-src--static" data-src-for="10_mejor_que_promedio"></p>
         </div>
       </div>
     </section>
@@ -827,12 +826,17 @@
           <div class="viz__layer is-active" data-layer="0">
             <figure class="checker">
               <img src="./assets/Checker_shadow_illusion.svg" alt="Ilusión del tablero de Adelson: los cuadrados A y B son exactamente del mismo gris, aunque parezcan distintos." />
-              <!-- PRUEBA: una tira del MISMO gris (#6F6F6F, el color real de A y B) se
-                   dibuja entre los dos casilleros con el scroll → demuestra que son iguales. -->
+              <!-- PRUEBA: al scrollear, el tablero se BORRA y quedan SOLO los dos casilleros (A y B),
+                   dibujados con su mismo gris real (#6F6F6F), aislados y zoomeados → se ven iguales. -->
               <svg class="checker__proof" id="checkerProof" viewBox="0 0 1011 769" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-                <line id="proofBridge" x1="546" y1="254" x2="506" y2="423" stroke="#6F6F6F" stroke-width="74" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" />
-                <circle id="proofA" cx="546" cy="254" r="44" fill="none" stroke="#fff" stroke-width="3" opacity="0" />
-                <circle id="proofB" cx="506" cy="423" r="44" fill="none" stroke="#fff" stroke-width="3" opacity="0" />
+                <g id="proofZoom">
+                  <!-- Los dos casilleros REALES, dibujados con su mismo gris (#6F6F6F) y marcados A/B,
+                       para que sobrevivan cuando se borra el tablero y queden solos, grandes. -->
+                  <rect id="proofSqA" x="502" y="210" width="88" height="88" rx="4" fill="#6F6F6F" opacity="0" />
+                  <rect id="proofSqB" x="462" y="379" width="88" height="88" rx="4" fill="#6F6F6F" opacity="0" />
+                  <text id="proofLblA" x="546" y="254" text-anchor="middle" dominant-baseline="central" font-family="'IBM Plex Mono', monospace" font-weight="700" font-size="42" fill="#0A0D10" opacity="0">A</text>
+                  <text id="proofLblB" x="506" y="423" text-anchor="middle" dominant-baseline="central" font-family="'IBM Plex Mono', monospace" font-weight="700" font-size="42" fill="#0A0D10" opacity="0">B</text>
+                </g>
               </svg>
             </figure>
           </div>
@@ -851,8 +855,8 @@
         <div class="step" data-layer="0">
           <div class="step__card">
             <p class="kicker">Mirá bien</p>
-            <p class="lede">Tendemos un puente <strong>del mismo gris</strong> entre los dos casilleros.</p>
-            <p class="muted">La tira no cambia de color en ningún punto. A y B son <strong>su mismo gris</strong>.</p>
+            <p class="lede">Saquemos el tablero y dejemos <strong>solos los dos casilleros</strong>, A y B.</p>
+            <p class="muted">Sin la sombra ni el resto del tablero alrededor, se ven como lo que son: <strong>el mismo gris</strong>.</p>
           </div>
         </div>
         <!-- Paso 3 · la revelación -->

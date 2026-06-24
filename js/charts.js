@@ -617,24 +617,24 @@ export const CHARTS = {
       ...baseOption(accent),
       title: titleBlock('El mismo plan, decisión opuesta', '% que elige el plan SEGURO vs. el arriesgado · según cómo se cuenta'),
       grid: narrow
-        ? { left: 8, right: 16, top: 58, bottom: '42%', containLabel: true }
-        : { left: '46%', right: '8%', top: 80, bottom: 40, containLabel: true },
+        ? { left: 8, right: 16, top: 92, bottom: '42%', containLabel: true }
+        : { left: '46%', right: '8%', top: 100, bottom: 40, containLabel: true },
       xAxis: catAxis({ data: items.map((i) => i.label), axisLabel: { color: INK, fontSize: 15, lineHeight: 17, interval: 0 } }),
       yAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 14 } }),
       tooltip: {
         ...baseOption(accent).tooltip, trigger: 'axis', axisPointer: { type: 'shadow' },
         formatter: (ps) => { const it = items[ps[0].dataIndex]; return `<strong>Plan seguro · ${it.seguro}%</strong> — ${it.descS}<br><strong>Plan arriesgado · ${100 - it.seguro}%</strong> — ${it.descR}`; },
       },
-      legend: { data: ['Plan seguro', 'Plan arriesgado'], top: 76, textStyle: { color: INK_DIM, fontSize: 14, fontFamily: FONT }, icon: 'roundRect' },
+      legend: { data: ['Plan seguro', 'Plan arriesgado'], top: 70, textStyle: { color: INK_DIM, fontSize: 14, fontFamily: FONT }, icon: 'roundRect' },
       series: [
         {
-          name: 'Plan seguro', type: 'bar', stack: 'f', barWidth: '52%',
+          name: 'Plan seguro', type: 'bar', stack: 'f', barWidth: '52%', itemStyle: { color: gain },
           data: items.map((i) => ({ value: i.seguro, itemStyle: { color: gain, borderRadius: [6, 6, 0, 0] } })),
           label: { show: true, position: 'inside', color: '#0A0D10', fontFamily: DISPLAY, fontSize: 26, fontWeight: 700, formatter: lbl },
           animationDuration: 1100, animationEasing: 'cubicOut',
         },
         {
-          name: 'Plan arriesgado', type: 'bar', stack: 'f', barWidth: '52%',
+          name: 'Plan arriesgado', type: 'bar', stack: 'f', barWidth: '52%', itemStyle: { color: hexA(loss, 0.55) },
           data: items.map((i) => ({ value: 100 - i.seguro, itemStyle: { color: hexA(loss, 0.55) } })),
           label: { show: true, position: 'inside', color: INK, fontFamily: DISPLAY, fontSize: 18, fontWeight: 600, formatter: lbl },
           animationDuration: 1100, animationEasing: 'cubicOut',
@@ -711,47 +711,41 @@ export const CHARTS = {
 
   /* ===================== ACTO 3 · SESGOS (acento violeta) ===================== */
 
-  /* ---------- G10 · Mejor que el promedio (E10) ---------- */
+  /* ---------- G10 · Mejor que el promedio (E10) — las barras se ESTIRAN con el scroll ----------
+     El titular vive en el HTML (el texto que se corre a la izquierda), así que el gráfico
+     NO lleva título. Las barras crecen de 0 a su valor con container.__setGrow(p), scrubeado
+     en tick() a medida que el gráfico entra desde la derecha. */
   '10_mejor_que_promedio'(container, data, opts) {
     const rows = rowsToObjects(data['10_mejor_que_promedio']);
     const accent = accentOf(container);
     const lbl = (r) => /EE\.UU\./.test(r.muestra) ? 'Manejar (EE.UU.)' : /Suecia/.test(r.muestra) ? 'Manejar (Suecia)' : r.dominio;
     const items = rows.map((r) => ({ label: lbl(r), value: r.pct_arriba_del_promedio, muestra: r.muestra, fuente: r.fuente }))
       .sort((a, b) => a.value - b.value); // asc: el más alto queda arriba (category pinta abajo→arriba)
-    // Barra "manejar" del 93% (la del título): le apunta una flecha al scrollear.
-    const driveIdx = items.reduce((best, it, i) => (/Manejar/i.test(it.label) && it.value > items[best].value ? i : best), 0);
+    const barStyle = items.map((i) => ({ color: hexA(accent, 0.45 + 0.5 * (i.value / 100)), borderRadius: [0, 8, 8, 0] }));
     const option = {
       ...baseOption(accent),
-      title: titleBlock('Casi todos se creen por encima de la media', '% que se cree mejor que el promedio · la línea marca el 50% (lo posible)'),
-      // el gráfico ocupa el ~58% superior; la banda inferior queda libre para el texto (no lo tapa).
-      grid: { left: 16, right: 76, top: 54, bottom: '42%', containLabel: true },
+      title: { show: false },     // el titular es el texto del HTML (lead), no compite
+      grid: { left: 12, right: 92, top: '12%', bottom: '11%', containLabel: true },
       xAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 14 } }),
-      yAxis: catAxis({ data: items.map((i) => i.label), axisLabel: { fontSize: 14 } }),
-      tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong> — ${p.value}%<br>${items[p.dataIndex].muestra} · ${items[p.dataIndex].fuente}` },
+      yAxis: catAxis({ data: items.map((i) => i.label), axisLabel: { fontSize: 15 } }),
+      tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong> — ${items[p.dataIndex].value}%<br>${items[p.dataIndex].muestra} · ${items[p.dataIndex].fuente}` },
       series: [{
-        type: 'bar', barWidth: '58%',
-        data: items.map((i) => ({ value: i.value, itemStyle: { color: hexA(accent, 0.45 + 0.5 * (i.value / 100)), borderRadius: [0, 8, 8, 0] } })),
-        label: { show: true, position: 'right', color: INK, fontFamily: DISPLAY, fontSize: 16, fontWeight: 600, formatter: '{c}%' },
+        type: 'bar', barWidth: '60%', animation: false,
+        data: items.map((i, idx) => ({ value: 0, itemStyle: barStyle[idx] })),
+        label: { show: true, position: 'right', color: INK, fontFamily: DISPLAY, fontSize: 17, fontWeight: 600, formatter: (pm) => pm.value >= 1 ? Math.round(pm.value) + '%' : '' },
         markLine: { silent: true, symbol: 'none', lineStyle: { color: INK_DIM, type: 'dashed', width: 1.5 }, label: { show: true, formatter: '50%', position: 'end', color: INK_DIM, fontFamily: DISPLAY }, data: [{ xAxis: 50 }] },
-        markPoint: { data: [] },
-        animationDuration: 1100, animationEasing: 'cubicOut', animationDelay: (i) => i * 110,
       }],
     };
     const chart = mountChart(container, option, opts);
-    // Flecha que sale apuntando a la barra del 93% cuando seguís scrolleando.
-    let calloutOn = false;
-    container.__showCallout = (on) => {
-      on = !!on;
-      if (on === calloutOn) return; calloutOn = on;
-      chart.setOption({ series: [{ markPoint: {
-        symbol: 'arrow', symbolRotate: 90, symbolSize: on ? [15, 21] : 0, symbolOffset: [40, 0],
-        itemStyle: { color: accent },
-        label: { show: false },
-        animation: true,
-        data: on ? [{ coord: [items[driveIdx].value, items[driveIdx].label] }] : [],
-      } }] });
+    // Las barras se estiran de 0 → su valor con el scroll (scrubeado desde tick()).
+    let lastG = -1;
+    container.__setGrow = (p) => {
+      p = Math.max(0, Math.min(1, p));
+      const q = Math.round(p * 100) / 100;
+      if (q === lastG) return; lastG = q;
+      chart.setOption({ series: [{ data: items.map((it, idx) => ({ value: +(it.value * q).toFixed(1), itemStyle: barStyle[idx] })) }] });
     };
-    if (opts.reduced) container.__showCallout(true);
+    container.__setGrow(opts.reduced ? 1 : 0);
   },
 
   /* ---------- G11 · Lectura Barnum (E11, capa 0) — HTML ---------- */

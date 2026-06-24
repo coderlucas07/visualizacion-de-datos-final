@@ -1069,9 +1069,9 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .choices--spread { gap: clamp(1.5rem, 6vw, 4rem); }
 .choice {
   display: inline-flex; align-items: center; gap: 0.7rem;
-  background: transparent;
-  color: var(--ink);
-  border: 1px solid var(--line);
+  background: rgba(228, 234, 239, 0.08);
+  color: var(--paper);
+  border: 1.5px solid rgba(228, 234, 239, 0.55);
   border-radius: var(--radius);
   padding: 0.85rem 1.5rem;
   font-family: var(--font-display); font-style: italic;
@@ -1081,7 +1081,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
               color 0.3s var(--ease), transform 0.15s var(--ease);
 }
 .choice svg { width: 30px; height: 30px; flex: none; fill: currentColor; opacity: 0.85; }
-.choice:hover { border-color: var(--ink); background: rgba(228,234,239,0.06); }
+.choice:hover { border-color: var(--ink); background: rgba(228,234,239,0.16); }
 .choice:active { transform: scale(0.97); }
 .choice[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: #fff; }
 
@@ -1546,11 +1546,48 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   #sesgos-intro .step__card { width: auto; max-width: none; text-align: center; }
 }
 /* E13 (brecha) NO se centra: el texto va en columna izquierda (ver bloque .e13--brecha). */
-/* E10 (mejor que el promedio): el gráfico ocupa la franja de arriba; el texto va
-   en una BANDA INFERIOR centrada, sin tapar las barras. */
-#e10 .scrolly__steps .step { align-items: flex-end; justify-content: center; padding-bottom: 7vh; }
-#e10 .step__card { max-width: 44rem; padding: 1.6rem 2.1rem; text-align: center; }
-#e10 .step__card h2 { font-size: clamp(1.8rem, 1.25rem + 2vw, 2.9rem); }
+/* E10 (mejor que el promedio) — coreografía propia con el scroll (sin cuadros):
+   arranca con el título CENTRADO sobre negro; al scrollear el título se va a la
+   IZQUIERDA y se achica, el gráfico ENTRA desde la derecha y las barras se ESTIRAN
+   hasta el tope; al llegar, la CONCLUSIÓN aparece donde estaba el título. El
+   posicionamiento fino (translate/opacity/crecimiento de barras) lo maneja tick(). */
+#e10 { position: relative; min-height: 280vh; background: var(--bg); }
+.e10__pin { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+.e10__lead, .e10__after {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
+  padding: 0 6vw; pointer-events: none;
+}
+.e10__lead { z-index: 3; }
+.e10__lead-in { max-width: 30rem; transform-origin: center; will-change: transform; }
+.e10__lead h2 { font-size: clamp(2rem, 1.3rem + 2.6vw, 3.4rem); line-height: 1.06; margin: 0 0 0.7rem; }
+.e10__lead .lede { font-size: clamp(1.3rem, 1.05rem + 1vw, 1.85rem); margin: 0; }
+.e10__chart { position: absolute; top: 0; right: 0; bottom: 0; left: 36%; z-index: 1; opacity: 0; will-change: transform, opacity; }
+.e10__chart .viz__chart { max-width: none; width: 100%; height: 100%; }
+.e10__chart .viz__chart .chart { width: 100%; height: 100%; }
+.e10__after { z-index: 2; opacity: 0; }
+.e10__after::before {   /* scrim radial para leer la conclusión sobre las barras tenues */
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  background: radial-gradient(62% 62% at 50% 50%, rgba(10,13,16,0.88), rgba(10,13,16,0.55) 68%, rgba(10,13,16,0));
+}
+.e10__big { font-family: var(--font-display); font-weight: 600; font-size: clamp(2rem, 1.3rem + 2.6vw, 3.4rem); line-height: 1.08; margin: 0 0 0.8rem; }
+.e10__big strong { color: var(--accent); }
+.e10__after .muted { font-size: clamp(1.1rem, 1rem + 0.5vw, 1.4rem); line-height: 1.6; max-width: 40rem; }
+.e10__after .chart-src { margin-top: 1.2rem; }
+@media (max-width: 760px) {
+  /* mobile: se apila (el título no se corre); el gráfico ocupa la franja inferior. */
+  .e10__chart { left: 0; top: 38vh; }
+  .e10__lead { justify-content: flex-start; padding-top: 9vh; }
+  .e10__lead-in { max-width: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* sin scroll-anim: se muestra todo apilado y con las barras llenas. */
+  #e10 { min-height: auto; }
+  .e10__pin { position: static; height: auto; overflow: visible; display: flex; flex-direction: column; gap: 4vh; padding: 9vh 6vw; }
+  .e10__lead, .e10__after { position: static; inset: auto; opacity: 1; padding: 0; }
+  .e10__lead-in { transform: none !important; max-width: none; }
+  .e10__chart { position: static; left: auto; opacity: 1; height: 62vh; }
+}
 
 /* E8 (framing · enfermedad de 600): el gráfico de las dos barras se corre a la
    derecha; el texto del gráfico (capa 1) va en columna izquierda, sin taparlas.
@@ -1565,7 +1602,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
    barras cortas dejan ese hueco libre). */
 #e6 .statement--bate { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.7rem; max-width: 42rem; margin: 0 auto; }
 #e6 .statement--bate .kicker { margin: 0; }
-#e6 .batball-photo { width: min(26vh, 320px); margin: 0.4rem 0 0.6rem; }
+#e6 .batball-photo { width: 500px ; margin: 0 0 0.3rem; }
 #e6 .statement--bate .statement__line { margin: 0; max-width: 32ch; }
 #e6 .statement__q { font-size: clamp(1.7rem, 1.2rem + 2vw, 2.8rem); margin: 0.4rem 0 1.1rem; }
 #e6 .statement--bate .choices { pointer-events: auto; }
