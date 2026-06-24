@@ -131,14 +131,21 @@ export const CHARTS = {
     const fmt = (v) => String(Math.round(v * 10) / 10).replace('.', ',');
     const items = rows.map((r) => {
       const item = document.createElement('div');
-      item.className = 'duo__item' + (r.porcentaje === max ? ' duo__item--max' : '');
+      item.className = 'duo__item';
+      item.dataset.k = r.respuesta.toLowerCase();
       item.innerHTML = `
         <div class="duo__track"><div class="duo__bar"></div><span class="duo__pct">0%</span></div>
         <span class="duo__name">${r.respuesta}</span>`;
       item.title = r.tooltip;
       container.appendChild(item);
-      return { pct: item.querySelector('.duo__pct'), track: item.querySelector('.duo__track'), value: r.porcentaje };
+      return { el: item, k: r.respuesta.toLowerCase(), pct: item.querySelector('.duo__pct'), track: item.querySelector('.duo__track'), value: r.porcentaje };
     });
+    // Resalta (barra en acento) la barra elegida; sin elección, la más votada.
+    container.__highlight = (animal) => {
+      const key = String(animal || '').toLowerCase();
+      items.forEach((it) => it.el.classList.toggle('duo__item--max', key ? it.k === key : it.value === max));
+    };
+    container.__highlight(null);
     let last = -1;
     container.__setDuo = (p) => {
       if (p === last) return;
@@ -181,6 +188,11 @@ export const CHARTS = {
       </div>`;
     const get = (k) => { const it = container.querySelector(`.duo__item[data-k="${k}"]`); return { track: it.querySelector('.duo__track'), pct: it.querySelector('.duo__pct') }; };
     const pato = get('pato'), conejo = get('conejo');
+    // Resalta el animal REVELADO por el contexto (el otro al que elegiste).
+    container.__highlight = (animal) => {
+      const key = String(animal || 'conejo').toLowerCase();
+      container.querySelectorAll('.duo__item').forEach((el) => el.classList.toggle('duo__item--max', el.dataset.k === key));
+    };
     let last = -1;
     container.__setMorph = (p) => {
       p = Math.max(0, Math.min(1, p));

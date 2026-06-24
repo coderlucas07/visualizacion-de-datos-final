@@ -1067,7 +1067,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 #e2 .viz__media { width: 100%; }
 /* En E2 la figura también es contorno (no tarjeta): se saca el papel y la sombra. */
 #e2 .figure-card { background: none; box-shadow: none; border-radius: 0; overflow: visible; }
-#e2 .flip-figure { transition: transform 0.1s linear; transform: rotate(var(--rot, 0deg)); transform-origin: center; }
+#e2 .flip-figure { transition: transform 0.1s linear; transform: rotate(var(--rot, 0deg)) scale(var(--rotscale, 1)); transform-origin: center; }
 /* Tipografía propia de E2: el título pasa a sans (Hanken) — más limpio y
    distinto del serif del resto. El texto queda FIJO (sticky) en su columna. */
 #e2 [data-e2-title] { font-family: var(--font-body); font-weight: 700; letter-spacing: -0.02em; }

@@ -595,6 +595,13 @@ function configureE2(firstChoice) {
   const target = firstChoice === 'conejo' ? 'pato' : 'conejo';
   state.e2rotate = target === 'conejo';
 
+  // Resaltado de las barras: G1 (primera respuesta) ilumina el animal ELEGIDO;
+  // G2 (contexto) ilumina el REVELADO (el otro), porque la lámina es la misma.
+  const g1 = document.getElementById('duoChart');
+  if (g1 && g1.__highlight && firstChoice) g1.__highlight(firstChoice);
+  const g2 = document.querySelector('#e2 [data-chart="02_contexto_cambio"]');
+  if (g2 && g2.__highlight) g2.__highlight(target);
+
   // Punto + rótulo ANCLADOS al mismo rasgo (en % de la imagen): viven dentro de
   // la figura, giran con ella y caen siempre sobre la anatomía correcta. El
   // texto del rótulo se contra-rota por CSS (var --rot) para quedar horizontal.
@@ -842,6 +849,11 @@ function tick() {
     const MAXDEG = 90;
     const deg = state.e2rotate ? (REDUCED ? MAXDEG : easeOut(rot) * MAXDEG) : 0;
     e2Fig.style.setProperty('--rot', deg.toFixed(1) + 'deg');
+    // La figura es apaisada (840×560); al girar 90° crecería en alto. Una escala
+    // que compensa la rotación mantiene el MISMO tamaño que sin girar (caso pato).
+    const rad = deg * Math.PI / 180, ar = 560 / 840;
+    const rotscale = ar / (Math.abs(Math.sin(rad)) + ar * Math.abs(Math.cos(rad)));
+    e2Fig.style.setProperty('--rotscale', rotscale.toFixed(4));
     if (e2Sec) e2Sec.classList.toggle('cues-on', rot > (state.e2rotate ? 0.62 : 0.3));
   }
 
