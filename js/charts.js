@@ -519,23 +519,19 @@ export const CHARTS = {
     const pain = at(-50) || 79;        // dolor de perder $50 (≈ 2,25× la alegría)
     // Mobile: barras más cortas (más lim) y rótulos/márgenes chicos para que entren en pantalla angosta.
     const narrow = container.clientWidth < 640;
-    const lim = pain * (narrow ? 2.4 : 1.7);   // deja aire en los extremos para los rótulos
-    // Texto del rótulo de cada barra (grande, lo "lleva" el rayito).
-    const lblFor = (which) => which === 'loss'
-      ? '{n|−$50}\n{l|casi el DOBLE de dolor}'
-      : '{n|+$50}\n{g|la alegría de ganar}';
-    const richLbl = {
-      n: { fontFamily: DISPLAY, fontWeight: 700, fontSize: narrow ? 20 : 32, color: INK, lineHeight: narrow ? 24 : 36 },
-      g: { fontFamily: FONT, fontSize: narrow ? 11 : 14, color: gain, lineHeight: narrow ? 15 : 19 },
-      l: { fontFamily: FONT, fontSize: narrow ? 11 : 14, color: loss, lineHeight: narrow ? 15 : 19 },
-    };
+    const lim = pain * (narrow ? 2.0 : 1.28);  // barras LARGAS (se nota el doble); deja sólo aire para los rótulos
+    // El rótulo de cada barra es sólo el valor (−$50 / +$50); la frase narrativa
+    // ("Perder $50 duele casi el doble…") la lleva la caption del stage (#e7Cap).
+    const lblFor = (which) => (which === 'loss' ? '−$50' : '+$50');
+    const numLbl = { fontFamily: DISPLAY, fontWeight: 700, fontSize: narrow ? 22 : 40, color: INK };
     const option = {
       ...baseOption(accent), animation: false,
       title: titleBlock('Perder pesa el doble que ganar', 'Cuánto pesa, para tu cerebro, ganar o perder los mismos $50'),
-      // las dos barras suben a la franja de arriba; el texto vive en la banda inferior sin tocarlas.
+      // las dos barras quedan CENTRADAS verticalmente (grid simétrico); la caption va
+      // arriba y la caja estática abajo (HTML del stage), sin tocar las barras.
       grid: narrow
-        ? { left: 10, right: 10, top: 54, bottom: '42%', containLabel: true }
-        : { left: 90, right: 90, top: 72, bottom: '40%', containLabel: true },
+        ? { left: 10, right: 10, top: '30%', bottom: '30%', containLabel: true }
+        : { left: 90, right: 90, top: '32%', bottom: '32%', containLabel: true },
       xAxis: {
         type: 'value', min: -lim, max: lim,
         axisLine: { show: false }, axisTick: { show: false }, splitLine: { show: false },
@@ -552,8 +548,8 @@ export const CHARTS = {
           : '<strong>Perder $50</strong><br>Duele casi el <strong>doble</strong> de lo que alegra ganarlos.'),
       },
       series: [{
-        type: 'bar', barWidth: narrow ? 32 : 52,
-        label: { show: true, fontFamily: DISPLAY, lineHeight: 18, rich: richLbl },
+        type: 'bar', barWidth: narrow ? 40 : 78,
+        label: { show: true, ...numLbl },
         data: [
           { value: 0, itemStyle: { color: loss, borderRadius: [6, 0, 0, 6] },
             label: { position: 'left', formatter: '' } },
@@ -949,14 +945,14 @@ export const CHARTS = {
     container.classList.add('thirds');
     container.innerHTML = `
       <p class="thirds__head">¿Qué forma toma ese <strong>“algo”</strong>?</p>
-      <p class="thirds__sub">Entre quienes dijeron sentir “algo”, la experiencia se reparte casi en tercios.</p>
       <div class="thirds__grid">
         ${rows.map((r) => `
-          <div class="thirds__cell">
+          <div class="thirds__cell" tabindex="0" aria-label="${r.tipo}: ${r.pct}%. ${r.ejemplos}">
+            <span class="thirds__info" aria-hidden="true">i</span>
             <svg class="thirds__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ico[r.tipo] || ''}</svg>
             <span class="thirds__pct">${r.pct}%</span>
             <strong>${r.tipo}</strong>
-            <p>${r.ejemplos}</p>
+            <p class="thirds__tip">${r.ejemplos}</p>
           </div>`).join('')}
       </div>`;
   },

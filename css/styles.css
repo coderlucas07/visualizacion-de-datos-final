@@ -688,23 +688,64 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .funnel__label strong { display: block; font-family: var(--font-display); font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.45rem); color: var(--ink); }
 .funnel__label span { font-size: 0.94rem; color: var(--ink-dim); }
 
-/* Reportes en tercios (vista / oído / sensación) */
+/* Reportes en tercios (vista / oído / sensación) — cuadros GRANDES y llamativos
+   que llenan todo el alto; sin texto descriptivo (sólo % + tipo). */
 .thirds {
   width: 100%; height: 100%;
-  display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
-  padding: 11vh 4vw 8vh; box-sizing: border-box;
+  display: flex; flex-direction: column; justify-content: stretch; align-items: center;
+  padding: 6vh 3vw 5vh; box-sizing: border-box;
   color: var(--ink); text-align: center;
 }
-.thirds__head { font-family: var(--font-display); font-size: clamp(1.4rem, 1.05rem + 1.4vw, 2.2rem); margin: 0 0 0.7rem; max-width: 22ch; }
+.thirds__head { font-family: var(--font-display); font-size: clamp(1.7rem, 1.1rem + 2vw, 3rem); margin: 0 0 clamp(2.2rem, 4vh, 4rem); max-width: 24ch; }
 .thirds__head strong { color: var(--accent); }
-.thirds__sub { font-family: var(--font-body); font-size: clamp(0.95rem, 0.9rem + 0.3vw, 1.12rem); color: var(--ink-dim); margin: 0 0 2.4rem; max-width: 44ch; }
-.thirds__grid { width: 100%; max-width: 920px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; }
-.thirds__cell { border: 1px solid var(--line); border-radius: var(--radius); padding: 1.7rem 1.2rem; background: rgba(228, 234, 239, 0.025); display: flex; flex-direction: column; align-items: center; gap: 0.45rem; }
-.thirds__ico { width: 40px; height: 40px; color: var(--accent); }
-.thirds__pct { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.9rem, 1.2rem + 2vw, 2.9rem); color: var(--ink); line-height: 1; }
-.thirds__cell strong { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
-.thirds__cell p { font-size: 0.95rem; color: var(--ink-dim); margin: 0; line-height: 1.4; }
+.thirds__grid {
+  flex: 1 1 auto; width: 100%; max-width: 1200px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1rem, 2vw, 2.2rem);
+  align-items: stretch; min-height: 0;
+}
+.thirds__cell {
+  position: relative; overflow: hidden; cursor: help;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
+  border-radius: var(--radius);
+  padding: clamp(1.5rem, 4vh, 3rem) 1.2rem;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 12%, transparent), color-mix(in srgb, var(--accent) 3%, transparent));
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: clamp(1rem, 2.5vh, 2rem);
+  transition: border-color 0.25s var(--ease), background 0.25s var(--ease);
+}
+.thirds__cell:hover, .thirds__cell:focus-visible {
+  border-color: var(--accent); outline: none;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 18%, transparent), color-mix(in srgb, var(--accent) 5%, transparent));
+}
+.thirds__ico { width: clamp(52px, 6vw, 96px); height: clamp(52px, 6vw, 96px); color: var(--accent); }
+.thirds__pct { font-family: var(--font-display); font-weight: 700; font-size: clamp(3.2rem, 2rem + 5vw, 7rem); color: var(--ink); line-height: 0.95; }
+.thirds__cell strong { font-family: var(--font-mono); font-size: clamp(0.8rem, 0.7rem + 0.4vw, 1.05rem); letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
+/* pista "i" arriba a la derecha: indica que el cuadro tiene más info al pasar el cursor */
+.thirds__info {
+  position: absolute; top: 0.9rem; right: 0.9rem; width: 1.5rem; height: 1.5rem;
+  display: grid; place-items: center; border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--line));
+  font-family: var(--font-display); font-style: italic; font-size: 0.9rem;
+  color: var(--accent); opacity: 0.7; transition: opacity 0.25s var(--ease), background 0.25s var(--ease);
+}
+.thirds__cell:hover .thirds__info, .thirds__cell:focus-visible .thirds__info { opacity: 0; }
+/* tooltip: sube desde abajo del cuadro al pasar el cursor (o con foco de teclado) */
+.thirds__tip {
+  position: absolute; left: 0; right: 0; bottom: 0; margin: 0;
+  padding: clamp(1rem, 2.5vh, 1.6rem) clamp(1rem, 2vw, 1.6rem);
+  background: color-mix(in srgb, var(--accent) 18%, rgba(10, 13, 16, 0.97));
+  border-top: 1px solid color-mix(in srgb, var(--accent) 50%, var(--line));
+  font-family: var(--font-body); font-size: clamp(0.98rem, 0.9rem + 0.4vw, 1.18rem);
+  line-height: 1.5; color: var(--ink); text-align: center;
+  transform: translateY(101%); transition: transform 0.32s var(--ease);
+}
+.thirds__cell:hover .thirds__tip, .thirds__cell:focus-visible .thirds__tip { transform: translateY(0); }
 @media (max-width: 700px) { .thirds__grid { grid-template-columns: 1fr; } }
+/* sin hover (touch/reduced): el ejemplo queda visible abajo, no escondido */
+@media (hover: none) {
+  .thirds__tip { position: static; transform: none; background: transparent; border-top: 0; padding-top: 0.4rem; }
+  .thirds__info { display: none; }
+}
 
 /* E8/E7: el planteo (layer 0) queda CENTRADO pero en la mitad superior, para
    no chocar con el panel de la tarea/botones que flota abajo. (E6 pasó a dos
@@ -714,10 +755,11 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 /* el panel a la derecha (para gráficos con info a la izquierda, ej. E10) */
 .scrolly--stage.stage--right .step { justify-content: flex-end; }
 
-/* Fantasmas · paso de los tercios: el panel va ABAJO-CENTRO (los cuadros están
-   arriba), así el texto no tapa las tarjetas. */
-#fantasmas .step[data-layer="1"] { justify-content: center; }
-#fantasmas .step[data-layer="1"] .step__card { text-align: center; }
+/* Fantasmas · los pasos del embudo (capa 0) son MÁS LARGOS para que el texto
+   acompañe al armado del embudo y no se vaya antes de que se complete la última fila. */
+#fantasmas .step[data-layer="0"] { min-height: 150vh; }
+/* Tercios (capa 1): SIN texto flotante (los cuadros son los protagonistas). */
+#fantasmas .step[data-layer="1"] .step__card { display: none; }
 
 /* E13 (la brecha) · 3 etapas. El gráfico vive en el lado DERECHO (grid.left 40%);
    el texto va SIEMPRE en una columna izquierda, centrado vertical, sin tapar las
@@ -824,9 +866,6 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   max-height: 64vh; max-width: 82vw; width: auto; border-radius: var(--radius);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
 }
-/* la cara en la pared es vertical (450×1000): a 64vh quedaba angosta → más alta
-   para que tenga el mismo peso visual que las otras dos. */
-.hpanel--face img[src*="450_1000"] { max-height: 82vh; }
 .hpanel--face figcaption {
   font-family: var(--font-display); font-style: italic;
   font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.4rem); color: var(--ink-dim); text-align: center;
@@ -1246,7 +1285,8 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
    (--ty = viaje vertical, --cscale = escala); al asentarse aparece la apuesta +
    botones abajo (--reveal). */
 .e7--coin .step[data-layer="0"] { min-height: 260vh; }
-.e7--coin .step[data-layer="0"] .step__card { display: none; }   /* sin cuadro: el contenido vive en el stage */
+.e7--coin .step[data-layer="1"] { min-height: 220vh; }            /* recorrido para dibujar el gráfico de aversión */
+.e7--coin .step .step__card { display: none; }                   /* sin cuadro: el contenido vive en el stage */
 .coin-scene {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: clamp(1.4rem, 4vh, 2.8rem); text-align: center; padding: 4vh var(--pad-x);
@@ -1265,17 +1305,60 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .coin-scene__body .statement__q { margin-top: 0.6rem; }
 .coin-scene__body .choices { margin-top: 1.1rem; }
 .coin-scene.is-ready .coin-scene__body { pointer-events: auto; }
-/* Botones Acepto / No juego — bien visibles sobre el negro */
+/* Botones Acepto / No juego — bien VISIBLES sobre el negro (borde claro grueso,
+   fondo más marcado, texto blanco, más grandes) */
 .coin-scene__body .choice {
-  border-color: rgba(228, 234, 239, 0.55);
-  background: rgba(228, 234, 239, 0.07);
-  color: var(--ink);
-  font-size: 1.2rem; padding: 0.95rem 2rem;
+  border: 2px solid rgba(228, 234, 239, 0.92);
+  background: rgba(228, 234, 239, 0.18);
+  color: #fff;
+  font-size: 1.34rem; font-style: normal; font-weight: 600;
+  padding: 1.05rem 2.5rem;
 }
-.coin-scene__body .choice:hover { border-color: var(--accent); background: var(--accent-soft); color: #fff; }
+.coin-scene__body .choice:hover { border-color: var(--accent); background: var(--accent); color: #1a1207; }
 @media (prefers-reduced-motion: reduce) {
   .e7--coin .coin { transform: translateY(0) scale(1); }
   .coin-scene__body { opacity: 1; transform: none; pointer-events: auto; }
+}
+
+/* E7 · GRÁFICO de aversión (capa 1): barras CENTRADAS, frase que se construye
+   ARRIBA con cada barra y caja ESTÁTICA abajo (todo pinneado, no scrollea). */
+.aversion-stage { position: relative; width: 100%; height: 100%; }
+.aversion-stage .viz__chart {
+  position: absolute; left: 50%; top: 44%; transform: translate(-50%, -50%);
+  width: min(96vw, 1180px); height: min(60vh, 620px); max-width: none;
+}
+.aversion-cap {
+  position: absolute; left: 50%; top: 12vh; transform: translateX(-50%);
+  width: 100%; max-width: 36rem; margin: 0; text-align: center;
+  font-family: var(--font-display); line-height: 1.25; color: var(--ink);
+  font-size: clamp(1.5rem, 1.1rem + 1.7vw, 2.5rem);
+}
+.aversion-cap__a { font-weight: 700; opacity: 0; transition: opacity 0.45s var(--ease); }
+.aversion-cap__b { opacity: 0; transition: opacity 0.45s var(--ease); }
+.aversion-cap.show-a .aversion-cap__a { opacity: 1; }
+.aversion-cap.show-b .aversion-cap__b { opacity: 1; }
+.aversion-box {
+  position: absolute; left: 50%; bottom: 6vh; transform: translateX(-50%) translateY(18px);
+  width: 100%; max-width: 44rem;
+  background: rgba(10, 13, 16, 0.96); border: 1px solid var(--line); border-radius: var(--radius);
+  backdrop-filter: blur(6px);
+  padding: 1.2rem 1.6rem; opacity: 0;
+  transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
+}
+.aversion-box.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.aversion-box p {
+  margin: 0; color: var(--ink-dim); line-height: 1.55;
+  font-size: clamp(1rem, 0.95rem + 0.4vw, 1.22rem);
+}
+.aversion-box strong { color: var(--ink); }
+@media (prefers-reduced-motion: reduce) {
+  .aversion-cap__a, .aversion-cap__b { opacity: 1; }
+  .aversion-box { opacity: 1; transform: translateX(-50%); }
+}
+@media (max-width: 640px) {
+  .aversion-stage .viz__chart { height: 48vh; width: 96vw; }
+  .aversion-cap { top: 5vh; font-size: clamp(1.3rem, 1rem + 3vw, 1.8rem); }
+  .aversion-box { bottom: 3vh; padding: 1rem 1.1rem; }
 }
 
 /* Planteo grande del encuadre (E8): el problema y los dos planes, centrado */
@@ -1441,8 +1524,8 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 /* Cierre · el tablero de Adelson es protagonista (a la derecha) y el texto va en
    columna izquierda → los dos casilleros quedan SIEMPRE visibles (clave para la
    pregunta "¿cuál es más claro?" y la revelación "son iguales"). */
-#cierre .viz__layer[data-layer="0"] { justify-items: end; padding-right: clamp(2rem, 7vw, 8rem); }
-#cierre .checker { width: min(62vh, 52vw); }
+#cierre .viz__layer[data-layer="0"] { justify-items: end; padding-right: clamp(1rem, 2.5vw, 3rem); }
+#cierre .checker { width: min(94vh, 60vw); }
 #cierre .scrolly__steps .step { align-items: center; justify-content: flex-start; padding: 0 var(--pad-x); }
 #cierre .step__card { width: min(34vw, 27rem); max-width: 27rem; text-align: left; }
 #cierre .closing-line { margin-top: 1.6rem; color: var(--ink); font-size: clamp(1.5rem, 1rem + 2.4vw, 3rem); text-shadow: 0 0 40px rgba(225, 29, 72, 0.35); }
@@ -1454,7 +1537,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 }
 /* Sesgos-intro: la DIANA es protagonista (corrida a la derecha) y el texto va en
    columna izquierda → el centro y el cluster de la diana quedan despejados. */
-#sesgos-intro .viz__layer[data-layer="0"] { justify-items: end; padding-right: clamp(2rem, 8vw, 9rem); }
+#sesgos-intro .viz__layer[data-layer="0"] { justify-items: end; padding-right: clamp(1rem, 2.5vw, 3rem); }
 #sesgos-intro .scrolly__steps .step { align-items: center; justify-content: flex-start; padding: 0 var(--pad-x); }
 #sesgos-intro .step__card { width: min(30vw, 25rem); max-width: 25rem; text-align: left; }
 @media (max-width: 760px) {
@@ -1522,7 +1605,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 
 /* ----------------------------- Intro de Sesgos (diana) -----------------------------
    Los puntos los crea y anima el JS con el scroll (setupBiasDiana). */
-.bias-intro { width: min(62vh, 86%); margin: 0; }
+.bias-intro { width: min(94vh, 58vw); margin: 0; }
 .bias-intro svg { width: 100%; height: auto; display: block; }
 .bias-intro #biasDots circle { transition: opacity 0.3s var(--ease); }
 
@@ -1541,8 +1624,16 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .faces img:hover { filter: grayscale(0) contrast(1.04); }
 
 /* ----------------------------- Cierre · Checker Shadow ----------------------------- */
-.checker { width: min(72vh, 96%); margin: 0 auto; }
-.checker img { width: 100%; border-radius: var(--radius); }
+.checker { width: min(72vh, 96%); margin: 0 auto; position: relative; }
+.checker img { width: 100%; border-radius: var(--radius); display: block; }
+/* Overlay de la PRUEBA: el puente del mismo gris + los aros que marcan A y B. */
+.checker__proof { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+#proofBridge { filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.55)); transition: none; }
+#proofA, #proofB { filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.6)); }
+@media (prefers-reduced-motion: reduce) {
+  #proofBridge { stroke-dashoffset: 0; }
+  #proofA, #proofB { opacity: 1; }
+}
 .closing-line {
   font-family: var(--font-hero); font-weight: 600;
   text-transform: uppercase; letter-spacing: 0.05em;

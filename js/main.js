@@ -36,6 +36,7 @@ let e3bSec = null, waffleEl = null, e3CountEl = null, e3bGraphicEl = null;
 let fmEl = null, e4FmStep = null;
 let e5Sec = null, gorilaStatEl = null;
 let e7Sec = null, e7ChartEl = null, e7CoinEl = null, e7CoinStep = null;
+let e7ChartStep = null, e7CapEl = null, e7BoxEl = null;
 let e9Sec = null, dkEl = null;
 let e10Sec = null, e10ChartEl = null;
 let fantSec = null, ghostFunnelEl = null;
@@ -43,6 +44,7 @@ let e12Sec = null, e12Track = null;
 let e13Sec = null, brechaEl = null;
 let biasSec = null, biasPts = null, biasAim = null, biasLast = -1;
 let e6Sec = null, bateEl = null;
+let cierreSec = null, proofBridge = null, proofA = null, proofB = null;
 
 const state = { first: null, e2rotate: true, e1answered: false };
 const progressBar = document.getElementById('progressBar');
@@ -729,6 +731,9 @@ function cacheScrubRefs() {
   e7ChartEl = document.querySelector('#e7 [data-chart="07_aversion_perdidas"]');
   e7CoinEl = document.getElementById('e7Coin');
   e7CoinStep = document.querySelector('#e7 .step[data-layer="0"]');
+  e7ChartStep = document.querySelector('#e7 .step[data-layer="1"]');
+  e7CapEl = document.getElementById('e7Cap');
+  e7BoxEl = document.getElementById('e7Box');
   e9Sec = document.getElementById('e9');
   dkEl = document.querySelector('#e9 [data-chart="09_dunning_kruger"]');
   e10Sec = document.getElementById('e10');
@@ -741,6 +746,10 @@ function cacheScrubRefs() {
   brechaEl = document.getElementById('brechaChart');
   e6Sec = document.getElementById('e6');
   bateEl = document.getElementById('bateChart');
+  cierreSec = document.getElementById('cierre');
+  proofBridge = document.getElementById('proofBridge');
+  proofA = document.getElementById('proofA');
+  proofB = document.getElementById('proofB');
   setupBiasDiana();
 }
 
@@ -938,11 +947,20 @@ function tick() {
     e7CoinEl.classList.toggle('is-ready', reveal > 0.5);
   }
 
-  // E7 (aversión): la moneda dispara un "rayito" que dibuja primero la barra de
-  // pérdida (abajo, grande) y después la de ganancia (arriba, chica), con el scroll.
-  if (!REDUCED && e7ChartEl && e7ChartEl.__setG7 && e7Sec) {
-    const p = clamp((sectionProgress(e7Sec) - 0.42) / 0.5);
+  // E7 (aversión): con el scroll crece primero la barra de PÉRDIDA (−$50) y la
+  // frase arranca con "Perder $50"; después crece la de GANANCIA (+$50) y la frase
+  // CONTINÚA ("duele casi el doble…"); al terminar, aparece la CAJA estática.
+  // Todo scrubeado por el recorrido del paso del gráfico (no por la sección).
+  if (!REDUCED && e7ChartEl && e7ChartEl.__setG7 && e7ChartStep) {
+    const p = stepScrub(e7ChartStep);
     e7ChartEl.__setG7(p);
+    const lossP = clamp(p / 0.55);
+    const gainP = clamp((p - 0.5) / 0.5);
+    if (e7CapEl) {
+      e7CapEl.classList.toggle('show-a', lossP > 0.32);
+      e7CapEl.classList.toggle('show-b', gainP > 0.22);
+    }
+    if (e7BoxEl) e7BoxEl.classList.toggle('show', p > 0.9);
   }
 
   // E9 (Dunning-Kruger): la línea avanza de "Peores" a "Mejores" a medida que
@@ -959,9 +977,11 @@ function tick() {
   }
 
   // Fantasmas: el embudo (50 creen → 15 sintieron → 1 vio) se arma con el scroll.
+  // Build LENTO y lineal (sobre más recorrido) para que la última fila ("1 vio")
+  // se complete mientras el texto del paso sigue en pantalla.
   if (!REDUCED && ghostFunnelEl && ghostFunnelEl.__setFunnel && fantSec) {
-    const p = clamp((sectionProgress(fantSec) - 0.04) / 0.42);
-    ghostFunnelEl.__setFunnel(easeOut(p));
+    const p = clamp((sectionProgress(fantSec) - 0.03) / 0.6);
+    ghostFunnelEl.__setFunnel(p);
   }
 
   // E12 (caras): scroll vertical → recorrido HORIZONTAL del track.
@@ -984,6 +1004,19 @@ function tick() {
   // Bate y pelota: las barras crecen → señala la más elegida → marca la correcta.
   if (!REDUCED && bateEl && bateEl.__setBate && e6Sec) {
     bateEl.__setBate(clamp((sectionProgress(e6Sec) - 0.28) / 0.66));
+  }
+
+  // Cierre (Adelson): ANTES del texto "Son iguales", el scroll DEMUESTRA que A y B
+  // son el mismo gris: aparecen los aros y se tiende un puente del color real
+  // (#6F6F6F) entre los dos casilleros. Cuando el puente está completo, el siguiente
+  // paso revela "Son iguales".
+  if (!REDUCED && cierreSec && proofBridge) {
+    const sp = sectionProgress(cierreSec);
+    const mark = clamp((sp - 0.12) / 0.08);          // aros A/B aparecen
+    const draw = easeOut(clamp((sp - 0.18) / 0.2));  // el puente se dibuja (antes de "Son iguales")
+    if (proofA) proofA.style.opacity = mark.toFixed(2);
+    if (proofB) proofB.style.opacity = mark.toFixed(2);
+    proofBridge.style.strokeDashoffset = (1 - draw).toFixed(3);
   }
 }
 

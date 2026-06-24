@@ -526,24 +526,20 @@
             </div>
           </div>
           <div class="viz__layer" data-layer="1">
-            <div class="viz__chart"><div class="chart" data-chart="07_aversion_perdidas" role="img" aria-label="El dolor de perder $50 es casi el doble que la alegría de ganar los mismos $50."></div></div>
+            <!-- Caja estática: el texto NO se mueve con el scroll (vive en el stage pinneado). -->
+            <div class="aversion-stage">
+              <p class="aversion-cap" id="e7Cap" aria-hidden="true"><span class="aversion-cap__a">Perder $50</span><span class="aversion-cap__b"> duele casi el doble de lo que alegra ganarlos.</span></p>
+              <div class="viz__chart"><div class="chart" data-chart="07_aversion_perdidas" role="img" aria-label="El dolor de perder $50 es casi el doble que la alegría de ganar los mismos $50."></div></div>
+              <aside class="aversion-box" id="e7Box">
+                <p>Se llama <strong>aversión a las pérdidas</strong>: el sistema rápido que se asusta ante una pérdida (la amígdala, el miedo) le gana al que celebra una ganancia. Por eso una apuesta 50 y 50 se siente como un mal negocio.</p>
+              </aside>
+            </div>
           </div>
         </div>
       </div>
       <div class="scrolly__steps">
         <div class="step is-active" data-layer="0"><div class="step__card"></div></div>
-        <div class="step" data-layer="1">
-          <div class="step__card">
-            <p class="lede">Casi nadie acepta —y vos probablemente tampoco. La apuesta es <strong>justa</strong>, pero no se <em>siente</em> justa.</p>
-            <p class="muted">Mirá el gráfico: ganar y perder los mismos $50 no pesan igual en tu cabeza.</p>
-          </div>
-        </div>
-        <div class="step" data-layer="1">
-          <div class="step__card">
-            <p class="lede">Perder $50 <strong>duele casi el doble</strong> de lo que alegra ganarlos.</p>
-            <p class="muted">Se llama <strong>aversión a las pérdidas</strong>: el sistema rápido que se asusta ante una pérdida (la amígdala, el miedo) le gana al que celebra una ganancia. Por eso una apuesta 50 y 50 se siente como un mal negocio.</p>
-          </div>
-        </div>
+        <div class="step" data-layer="1"><div class="step__card"></div></div>
       </div>
     </section>
 
@@ -720,13 +716,7 @@
             <p class="muted">La creencia es enorme; la “prueba” es casi nada. Entre una cosa y la otra, el cerebro rellenó el resto.</p>
           </div>
         </div>
-        <div class="step" data-layer="1">
-          <div class="step__card">
-            <p class="lede">Ese “algo” no siempre se ve.<br />A veces se escucha.<br />A veces se siente.</p>
-            <p class="muted">Distintas señales, <strong>mismo mecanismo</strong>: el cerebro completa lo ambiguo.</p>
-            <p class="chart-src chart-src--static" data-src-for="14b_fantasmas_reportes"></p>
-          </div>
-        </div>
+        <div class="step" data-layer="1"><div class="step__card"></div></div>
       </div>
     </section>
 
@@ -751,8 +741,8 @@
           </figure>
 
           <figure class="hpanel hpanel--face">
-            <img src="./assets/450_1000.webp" alt="Una 'cara' que aparece en la textura de una pared." />
-            <figcaption>Una cara en la textura de una pared.</figcaption>
+            <img src="./assets/cara2.jpg" alt="Una 'cara' que aparece en el tronco de un árbol." />
+            <figcaption>Una cara en el tronco de un árbol.</figcaption>
           </figure>
 
           <figure class="hpanel hpanel--face">
@@ -835,7 +825,16 @@
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
-            <figure class="checker"><img src="./assets/Checker_shadow_illusion.svg" alt="Ilusión del tablero de Adelson: los cuadrados A y B son exactamente del mismo gris, aunque parezcan distintos." /></figure>
+            <figure class="checker">
+              <img src="./assets/Checker_shadow_illusion.svg" alt="Ilusión del tablero de Adelson: los cuadrados A y B son exactamente del mismo gris, aunque parezcan distintos." />
+              <!-- PRUEBA: una tira del MISMO gris (#6F6F6F, el color real de A y B) se
+                   dibuja entre los dos casilleros con el scroll → demuestra que son iguales. -->
+              <svg class="checker__proof" id="checkerProof" viewBox="0 0 1011 769" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                <line id="proofBridge" x1="546" y1="254" x2="506" y2="423" stroke="#6F6F6F" stroke-width="74" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" />
+                <circle id="proofA" cx="546" cy="254" r="44" fill="none" stroke="#fff" stroke-width="3" opacity="0" />
+                <circle id="proofB" cx="506" cy="423" r="44" fill="none" stroke="#fff" stroke-width="3" opacity="0" />
+              </svg>
+            </figure>
           </div>
         </div>
       </div>
@@ -848,7 +847,15 @@
             <p class="lede">El que está a plena luz, o el que cae bajo la sombra del cilindro.</p>
           </div>
         </div>
-        <!-- Paso 2 · la revelación -->
+        <!-- Paso 2 · la PRUEBA (la tira del mismo gris se dibuja con el scroll) -->
+        <div class="step" data-layer="0">
+          <div class="step__card">
+            <p class="kicker">Mirá bien</p>
+            <p class="lede">Tendemos un puente <strong>del mismo gris</strong> entre los dos casilleros.</p>
+            <p class="muted">La tira no cambia de color en ningún punto. A y B son <strong>su mismo gris</strong>.</p>
+          </div>
+        </div>
+        <!-- Paso 3 · la revelación -->
         <div class="step" data-layer="0">
           <div class="step__card">
             <h2>Son iguales.</h2>

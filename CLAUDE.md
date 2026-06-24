@@ -107,8 +107,43 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
     /0.5)` (la moneda ocupa el primer ~50%; `#e7 .step[data-layer="0"]` mide 260vh para el recorrido; después
     entra el gráfico G7 en capa 1). Los botones viven en el stage (no en un `.step`): el handler de choice los
     detecta y avanza al primer `.step[data-layer="1"]`.
-  - **Aversión (G7 `07_aversion_perdidas`, #14) — PENDIENTE:** centrar la línea, textos "Perder $50" / "duele casi
-    el doble…" que aparecen con cada barra, y una **caja ESTÁTICA** (que NO suba con el scroll) con el cierre.
+  - **Aversión (G7 `07_aversion_perdidas`, #14) — HECHA:** todo el texto vive PINNEADO en el stage (`.aversion-stage`
+    dentro de `viz__layer[data-layer="1"]`), así NO se mueve con el scroll. Barras **centradas verticalmente**
+    (grid simétrico `top/bottom 32%`; el chart va `position:absolute` centrado). Con el scroll: primero la **línea**
+    punteada del centro, después crece la barra de **PÉRDIDA** (−$50) y la frase arranca **"Perder $50"**
+    (`.aversion-cap__a`), después crece la de **GANANCIA** (+$50) y la frase CONTINÚA **"duele casi el doble de lo
+    que alegra ganarlos."** (`.aversion-cap__b`), y al terminar aparece la **caja ESTÁTICA** abajo
+    (`.aversion-box`, opaca) con "Se llama aversión a las pérdidas…". Rótulos de barra = sólo el valor (−$50/+$50);
+    se sacó la frase descriptiva de las barras y los 2 `.step__card` de texto viejos. Scrubeado en `tick()` por
+    `stepScrub(#e7 .step[data-layer="1"])` (220vh): `__setG7(p)` dibuja las barras, y por `lossP=p/0.55` /
+    `gainP=(p-0.5)/0.5` se prenden las clases `.show-a`/`.show-b`/`.show`. El handoff moneda→gráfico crossfadea
+    (IntersectionObserver de capas).
+- **SESGOS (pulido por pedido del usuario) — EN CURSO:**
+  - **Diana (`sesgos-intro`) MÁS GRANDE:** `.bias-intro` pasó a `width:min(94vh,58vw)` y el `padding-right` del
+    layer bajó a `clamp(1rem,2.5vw,3rem)` → la diana ocupa casi todo el lado derecho (texto en columna izquierda).
+  - **Embudo "de cada 100" — el texto DURA más:** los pasos de capa 0 (`#fantasmas .step[data-layer="0"]`) miden
+    150vh y el build del embudo es **lineal y más lento** (`(sectionProgress−0.03)/0.6`, sin easeOut) → la última
+    fila ("1 · Vio una aparición") se completa mientras el texto del paso sigue en pantalla.
+  - **Tercios (33%) — cuadros GRANDES y llamativos, sin texto de abajo:** se sacó `.thirds__sub`, los `<p>` de
+    ejemplos de cada celda y la tarjeta flotante de la capa 1 (`#fantasmas .step[data-layer="1"] .step__card`
+    `display:none`; la fuente cae sola en `.viz__chart` vía addSource). El grid es `flex:1` (llena el alto), celdas
+    con gradiente carmesí + borde acentuado, % gigante (`clamp(3.2rem…7rem)`) e íconos grandes. Cada celda tiene
+    **tooltip** con el ejemplo (`r.ejemplos` del JSON) que SUBE desde abajo al pasar el mouse / con foco (`.thirds__tip`),
+    con una pista "ⓘ" (`.thirds__info`) arriba a la derecha; en touch (`@media hover:none`) el ejemplo queda fijo abajo.
+  - **Galería de caras (E12, scroll horizontal) — HECHA:** se reemplazó la cara de la pared (`450_1000.webp`) por
+    **`assets/cara2.jpg`** (un árbol con cara, pareidolia más fuerte), al MISMO tamaño que las otras (la regla
+    `.hpanel--face img{max-height:64vh}` lo hace solo; se sacó el override `[src*="450_1000"]`). Epígrafe nuevo:
+    "Una cara en el tronco de un árbol." Quedan café y Marte sin cambios.
+- **CIERRE (Adelson) — la PRUEBA con scroll antes de "Son iguales" — HECHA:** sobre la imagen del tablero hay un
+  overlay SVG (`.checker__proof`, `#checkerProof`, viewBox `0 0 1011 769` = tamaño natural del SVG) con un **puente
+  del MISMO gris** (`#proofBridge`, `stroke:#6F6F6F` = color real muestreado de A y B, ambos `rgb(111,111,111)`)
+  que UNE el casillero A `(546,254)` con el B `(506,423)` (≈54%,33% y 50%,55% de la imagen; calibrados muestreando
+  los píxeles) + dos aros (`#proofA/#proofB`). Con el scroll: aparecen los aros y el puente se **dibuja**
+  (`stroke-dashoffset` por `sectionProgress(#cierre)` en `tick()`, refs `proofBridge/proofA/proofB`) ANTES de que el
+  paso revele "Son iguales". Se sumó un paso nuevo de "prueba" ("Tendemos un puente del mismo gris…") entre la
+  pregunta y la revelación (el cierre pasó de 3 a 4 pasos). `.checker` ahora es `position:relative` y la imagen es
+  GRANDE (`#cierre .checker width:min(94vh,60vw)`, ocupa gran parte de la derecha). Si se cambia el SVG del tablero,
+  re-muestrear A/B y recalibrar las coords del puente.
 - **PENDIENTE (lo que queda):** **nombres del equipo en el `<footer>`** → el usuario los dio: **Lucas Dayan,
   Gerónimo Cantalejos, Marcos Bustamante** (2026). Verificar que estén en el colofón del `<footer>` (`.pie__authors`).
   Opcional/subjetivo: seguir variando tarjetas / acortar más copy.
