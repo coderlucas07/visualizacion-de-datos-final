@@ -1399,9 +1399,19 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 /* ===== SESGOS: carteles más grandes, centrados y con más aire (pedido del equipo).
    Aplica a las escenas full-bleed del módulo (intro, E10, E13, cierre): la tarjeta
    deja de estar pegada abajo-izquierda y pasa a centrada, más grande y legible. ===== */
-#cierre .scrolly__steps .step { justify-content: center; padding-bottom: 9vh; }
-#cierre .step__card {
-  max-width: 46rem; padding: 1.9rem 2.3rem; text-align: center;
+/* Cierre · el tablero de Adelson es protagonista (a la derecha) y el texto va en
+   columna izquierda → los dos casilleros quedan SIEMPRE visibles (clave para la
+   pregunta "¿cuál es más claro?" y la revelación "son iguales"). */
+#cierre .viz__layer[data-layer="0"] { justify-items: end; padding-right: clamp(2rem, 7vw, 8rem); }
+#cierre .checker { width: min(62vh, 52vw); }
+#cierre .scrolly__steps .step { align-items: center; justify-content: flex-start; padding: 0 var(--pad-x); }
+#cierre .step__card { width: min(34vw, 27rem); max-width: 27rem; text-align: left; }
+#cierre .closing-line { margin-top: 1.6rem; color: var(--ink); font-size: clamp(1.5rem, 1rem + 2.4vw, 3rem); text-shadow: 0 0 40px rgba(225, 29, 72, 0.35); }
+@media (max-width: 760px) {
+  #cierre .viz__layer[data-layer="0"] { justify-items: center; padding-right: 0; }
+  #cierre .checker { width: min(60vh, 90%); }
+  #cierre .scrolly__steps .step { align-items: flex-end; justify-content: center; padding: 0 var(--pad-x) 6vh; }
+  #cierre .step__card { width: auto; max-width: none; text-align: center; }
 }
 /* Sesgos-intro: la DIANA es protagonista (corrida a la derecha) y el texto va en
    columna izquierda → el centro y el cluster de la diana quedan despejados. */
