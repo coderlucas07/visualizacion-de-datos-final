@@ -35,7 +35,7 @@ let e3Img = null, e3Step = null, e3TitleCard = null, e3TitleStep = null, e3Final
 let e3bSec = null, waffleEl = null, e3CountEl = null, e3bGraphicEl = null;
 let fmEl = null, e4FmStep = null;
 let e5Sec = null, gorilaStatEl = null;
-let e7Sec = null, e7ChartEl = null;
+let e7Sec = null, e7ChartEl = null, e7CoinEl = null, e7CoinStep = null;
 let e9Sec = null, dkEl = null;
 let e10Sec = null, e10ChartEl = null;
 let fantSec = null, ghostFunnelEl = null;
@@ -727,6 +727,8 @@ function cacheScrubRefs() {
   gorilaStatEl = document.querySelector('#e5 [data-chart="05_cierre_percepcion"]');
   e7Sec = document.getElementById('e7');
   e7ChartEl = document.querySelector('#e7 [data-chart="07_aversion_perdidas"]');
+  e7CoinEl = document.getElementById('e7Coin');
+  e7CoinStep = document.querySelector('#e7 .step[data-layer="0"]');
   e9Sec = document.getElementById('e9');
   dkEl = document.querySelector('#e9 [data-chart="09_dunning_kruger"]');
   e10Sec = document.getElementById('e10');
@@ -911,6 +913,29 @@ function tick() {
   // recorrido y ahí se libera para seguir scrolleando normal hacia Decisión.
   if (!REDUCED && gorilaStatEl && gorilaStatEl.__setGorila && e5Sec) {
     gorilaStatEl.__setGorila(clamp(sectionProgress(e5Sec) / 0.85));
+  }
+
+  // E7 (moneda): con el scroll SALE de arriba, CAE hasta abajo girando, gira un
+  // par de veces abajo y vuelve a SUBIR para acomodarse arriba; al asentarse
+  // aparece la apuesta + los botones Acepto/No juego (--ty viaje, --reveal texto).
+  if (!REDUCED && e7CoinEl && e7Sec) {
+    const cp = clamp(sectionProgress(e7Sec) / 0.5);   // la moneda ocupa el primer ~50% del recorrido
+    const eIO = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+    // --ty es relativo a la posición natural de la moneda (arriba, ya asentada = 0).
+    // Empieza apenas asomada arriba (-42vh), cae hasta abajo (+58vh), gira, y vuelve a 0.
+    let ty, sc;
+    if (cp < 0.32) {                       // sale de arriba y CAE hasta abajo
+      const t = cp / 0.32; ty = -42 + 100 * easeOut(t); sc = 1.25;
+    } else if (cp < 0.52) {                // gira un par de veces abajo
+      ty = 58; sc = 1.25;
+    } else if (cp < 0.82) {                // vuelve a SUBIR y se acomoda arriba
+      const t = (cp - 0.52) / 0.30; ty = 58 - 58 * eIO(t); sc = 1.25 - 0.25 * eIO(t);
+    } else { ty = 0; sc = 1; }
+    const reveal = clamp((cp - 0.84) / 0.16);
+    e7CoinEl.style.setProperty('--ty', ty.toFixed(1) + 'vh');
+    e7CoinEl.style.setProperty('--cscale', sc.toFixed(3));
+    e7CoinEl.style.setProperty('--reveal', reveal.toFixed(3));
+    e7CoinEl.classList.toggle('is-ready', reveal > 0.5);
   }
 
   // E7 (aversión): la moneda dispara un "rayito" que dibuja primero la barra de

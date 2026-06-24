@@ -92,9 +92,26 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   Cambió el contexto." (celeste, tras pato/conejo) · `#pausa2` Decisión "Elegir también es interpretar." (naranja,
   tras bate) · `#pausa3` Sesgos "Cuando el error se repite, deja de ser ruido." (carmesí, tras la diana). pausa2/3
   sumadas a `setupModuleColors` (pausa1 hereda el celeste global).
-- **PENDIENTE (lo que queda):** **nombres del equipo en el `<footer>`** (placeholder `[completar nombres del equipo]`
-  en index.html:851 — REQUIERE que el usuario los dé). Opcional/subjetivo: seguir variando tarjetas / acortar más
-  copy (conviene input del usuario).
+- **RE-ESCENAS con coreografía de scroll (batch de pulido, EN CURSO):**
+  - **Bate y pelota (#12) — HECHA:** `scrolly--stage e6--bate`, sin cuadro; las barras crecen → flecha a la más
+    elegida → marca roja en la trampa → ✓ en $0,05 (`__setBate`, scrubeado por `sectionProgress(#e6)`).
+  - **Moneda +$50/−$50 (E7, #13) — HECHA:** `scrolly--stage e7--coin`, SIN cuadro/tarjeta (se sacó el texto
+    redundante del `.step__card`, oculto con `display:none`). La moneda (`.coin-scene`, id `e7Coin`) hace un
+    **viaje completo con el scroll**: asoma arriba → **CAE hasta abajo** girando → gira un par de veces abajo →
+    **vuelve a SUBIR y se acomoda arriba** (CSS var `--ty` = viaje vertical relativo a su posición natural, que
+    es la asentada=0; `--cscale` 1.25→1; el spin es el keyframe `coinflip` infinito). Empieza apenas asomada
+    arriba (`--ty:-42vh`, evita el negro muerto del arranque, antes "se bugeaba" porque la moneda popeaba). Al
+    asentarse **aparece abajo** la apuesta (`.gamble__row` cara/ceca) + `¿Aceptás jugar?` + botones Acepto/No
+    juego (`.coin-scene__body`, var `--reveal`; `.is-ready` habilita pointer-events; los botones tienen borde+fill
+    propios para ser bien visibles sobre el negro). Scrubeado en `tick()`, piecewise por `clamp(sectionProgress(#e7)
+    /0.5)` (la moneda ocupa el primer ~50%; `#e7 .step[data-layer="0"]` mide 260vh para el recorrido; después
+    entra el gráfico G7 en capa 1). Los botones viven en el stage (no en un `.step`): el handler de choice los
+    detecta y avanza al primer `.step[data-layer="1"]`.
+  - **Aversión (G7 `07_aversion_perdidas`, #14) — PENDIENTE:** centrar la línea, textos "Perder $50" / "duele casi
+    el doble…" que aparecen con cada barra, y una **caja ESTÁTICA** (que NO suba con el scroll) con el cierre.
+- **PENDIENTE (lo que queda):** **nombres del equipo en el `<footer>`** → el usuario los dio: **Lucas Dayan,
+  Gerónimo Cantalejos, Marcos Bustamante** (2026). Verificar que estén en el colofón del `<footer>` (`.pie__authors`).
+  Opcional/subjetivo: seguir variando tarjetas / acortar más copy.
 
 ## ⚡ ACTUALIZACIÓN jun-2026 (9ª vuelta — E13 a 3 etapas + limpieza de cues) — MANDA sobre todo lo de abajo
 - **COPY de SESGOS rehilado para narrativa clara (pedido del usuario):** progresión = qué es un sesgo (no es

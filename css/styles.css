@@ -709,8 +709,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 /* E8/E7: el planteo (layer 0) queda CENTRADO pero en la mitad superior, para
    no chocar con el panel de la tarea/botones que flota abajo. (E6 pasó a dos
    columnas, así que ya no necesita ese hueco.) */
-#e8 .viz__layer[data-layer="0"],
-#e7 .viz__layer[data-layer="0"] { padding-bottom: 8vh; }
+#e8 .viz__layer[data-layer="0"] { padding-bottom: 8vh; }
 
 /* el panel a la derecha (para gráficos con info a la izquierda, ej. E10) */
 .scrolly--stage.stage--right .step { justify-content: flex-end; }
@@ -1241,6 +1240,43 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .gamble__row span { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .gamble__row--win span { color: var(--gain); }
 .gamble__row--lose span { color: var(--loss); }
+
+/* E7 · ESCENA de la moneda (sin cuadro): con el scroll sale de arriba, CAE hasta
+   abajo girando, gira un par de veces y vuelve a SUBIR para acomodarse arriba
+   (--ty = viaje vertical, --cscale = escala); al asentarse aparece la apuesta +
+   botones abajo (--reveal). */
+.e7--coin .step[data-layer="0"] { min-height: 260vh; }
+.e7--coin .step[data-layer="0"] .step__card { display: none; }   /* sin cuadro: el contenido vive en el stage */
+.coin-scene {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: clamp(1.4rem, 4vh, 2.8rem); text-align: center; padding: 4vh var(--pad-x);
+}
+.e7--coin .coin {
+  width: min(32vh, 280px); height: min(32vh, 280px); margin: 0;
+  transform: translateY(var(--ty, -42vh)) scale(var(--cscale, 1.25));
+  will-change: transform;
+}
+.coin-scene__body {
+  display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+  width: 100%; max-width: 30rem; margin: 0 auto;
+  opacity: var(--reveal, 0); transform: translateY(calc((1 - var(--reveal, 0)) * 26px));
+  pointer-events: none;
+}
+.coin-scene__body .statement__q { margin-top: 0.6rem; }
+.coin-scene__body .choices { margin-top: 1.1rem; }
+.coin-scene.is-ready .coin-scene__body { pointer-events: auto; }
+/* Botones Acepto / No juego — bien visibles sobre el negro */
+.coin-scene__body .choice {
+  border-color: rgba(228, 234, 239, 0.55);
+  background: rgba(228, 234, 239, 0.07);
+  color: var(--ink);
+  font-size: 1.2rem; padding: 0.95rem 2rem;
+}
+.coin-scene__body .choice:hover { border-color: var(--accent); background: var(--accent-soft); color: #fff; }
+@media (prefers-reduced-motion: reduce) {
+  .e7--coin .coin { transform: translateY(0) scale(1); }
+  .coin-scene__body { opacity: 1; transform: none; pointer-events: auto; }
+}
 
 /* Planteo grande del encuadre (E8): el problema y los dos planes, centrado */
 .statement--framing { max-width: 40rem; }

@@ -501,21 +501,28 @@
     </section>
 
     <!-- ====================== E7 · Aversión a las pérdidas ====================== -->
-    <section class="scrolly scrolly--stage" id="e7" aria-labelledby="e7-h">
+    <!-- Moneda que CAE desde arriba girando con el scroll; al acomodarse aparece la
+         apuesta + botones (sin cuadro). El gráfico llega después (capa 1). -->
+    <section class="scrolly scrolly--stage e7--coin" id="e7" aria-labelledby="e7-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
-            <div class="statement gamble">
-              <p class="statement__eyebrow" id="e7-h">Una moneda al aire</p>
+            <div class="coin-scene" id="e7Coin">
               <div class="coin" aria-hidden="true">
                 <div class="coin__inner">
                   <div class="coin__face coin__face--cara"><span>+$50</span><small>Cara</small></div>
                   <div class="coin__face coin__face--ceca"><span>−$50</span><small>Ceca</small></div>
                 </div>
               </div>
-              <p class="gamble__row gamble__row--win">Sale <strong>cara</strong> <small>(50%)</small> → ganás <span>+$50</span></p>
-              <p class="gamble__row gamble__row--lose">Sale <strong>ceca</strong> <small>(50%)</small> → perdés <span>−$50</span></p>
-              <p class="statement__q">¿Aceptás jugar?</p>
+              <div class="coin-scene__body" id="e7Body">
+                <p class="gamble__row gamble__row--win">Sale <strong>cara</strong> <small>(50%)</small> → ganás <span>+$50</span></p>
+                <p class="gamble__row gamble__row--lose">Sale <strong>ceca</strong> <small>(50%)</small> → perdés <span>−$50</span></p>
+                <p class="statement__q" id="e7-h">¿Aceptás jugar?</p>
+                <div class="choices" role="group" aria-label="¿Aceptás la apuesta?">
+                  <button class="choice" data-choice="acepto" aria-pressed="false"><span>Acepto</span></button>
+                  <button class="choice" data-choice="no" aria-pressed="false"><span>No juego</span></button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="viz__layer" data-layer="1">
@@ -524,17 +531,7 @@
         </div>
       </div>
       <div class="scrolly__steps">
-        <div class="step is-active" data-layer="0">
-          <div class="step__card">
-            <p class="kicker">Cuarta prueba</p>
-            <h3>Una apuesta justa.</h3>
-            <p class="lede">Tiramos una moneda. Misma chance de ganar $50 que de perderlos. Decidí:</p>
-            <div class="choices" role="group" aria-label="¿Aceptás la apuesta?">
-              <button class="choice" data-choice="acepto" aria-pressed="false"><span>Acepto</span></button>
-              <button class="choice" data-choice="no" aria-pressed="false"><span>No juego</span></button>
-            </div>
-          </div>
-        </div>
+        <div class="step is-active" data-layer="0"><div class="step__card"></div></div>
         <div class="step" data-layer="1">
           <div class="step__card">
             <p class="lede">Casi nadie acepta —y vos probablemente tampoco. La apuesta es <strong>justa</strong>, pero no se <em>siente</em> justa.</p>
