@@ -42,6 +42,7 @@ let fantSec = null, ghostFunnelEl = null;
 let e12Sec = null, e12Track = null;
 let e13Sec = null, brechaEl = null;
 let biasSec = null, biasPts = null, biasAim = null, biasLast = -1;
+let e6Sec = null, bateEl = null;
 
 const state = { first: null, e2rotate: true, e1answered: false };
 const progressBar = document.getElementById('progressBar');
@@ -565,7 +566,10 @@ function setupInteractions() {
     const btns = sec.querySelectorAll('[data-choice]');
     btns.forEach((b) => b.addEventListener('click', () => {
       btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-      scrollToNextStep(b);
+      if (b.closest('.step')) { scrollToNextStep(b); return; }
+      // botones en el statement (E6): avanzar al primer paso del gráfico
+      const first = sec.querySelector('.step[data-layer="1"]');
+      if (first) setTimeout(() => first.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'center' }), 260);
     }));
   });
 }
@@ -733,6 +737,8 @@ function cacheScrubRefs() {
   e12Track = document.getElementById('e12Track');
   e13Sec = document.getElementById('e13');
   brechaEl = document.getElementById('brechaChart');
+  e6Sec = document.getElementById('e6');
+  bateEl = document.getElementById('bateChart');
   setupBiasDiana();
 }
 
@@ -948,6 +954,11 @@ function tick() {
   // Diana de sesgo: los disparos aparecen dispersos y se agrupan a un lado con el scroll.
   if (!REDUCED && biasPts && biasSec) {
     setBias(clamp((sectionProgress(biasSec) - 0.02) / 0.62));
+  }
+
+  // Bate y pelota: las barras crecen → señala la más elegida → marca la correcta.
+  if (!REDUCED && bateEl && bateEl.__setBate && e6Sec) {
+    bateEl.__setBate(clamp((sectionProgress(e6Sec) - 0.28) / 0.66));
   }
 }
 

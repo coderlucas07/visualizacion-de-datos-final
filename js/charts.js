@@ -436,34 +436,71 @@ export const CHARTS = {
 
   /* ===================== ACTO 2 · DECISIÓN (acento ámbar) ===================== */
 
-  /* ---------- G6 · Bate y pelota (E6) ---------- */
+  /* ---------- G6 · Bate y pelota (E6) — ESCENA con el scroll (sin título) ----------
+     container.__setBate(p): las barras CRECEN (sin marcar) → una flecha señala la
+     más elegida ($0,10) → esa se marca MAL (rojo) → se marca la CORRECTA ($0,05, ✓).
+     El texto de cada momento vive en los pasos del HTML (scrubeado por #e6). */
   '06_bate_pelota'(container, data, opts) {
     const rows = rowsToObjects(data['06_bate_pelota']);
     const accent = accentOf(container);
+    const loss = cssVar(container, '--loss', LOSS);
     const correct = '$0,05';
     const ordered = rows.slice().reverse();
     const etiBy = Object.fromEntries(rows.map((r) => [r.respuesta, r.etiqueta]));
+    const maxV = Math.max(...ordered.map((r) => r.porcentaje));
+    const mostResp = (ordered.find((r) => r.porcentaje === maxV) || {}).respuesta;   // $0,10
+    const neutral = hexA(accent, 0.3);
     const option = {
-      ...baseOption(accent),
-      title: titleBlock('La respuesta que salta sola está mal', 'Las cuatro respuestas más elegidas · la correcta es $0,05'),
-      grid: { left: 16, right: 56, top: 96, bottom: 24, containLabel: true },
+      ...baseOption(accent), animation: false,
+      grid: { left: 16, right: 130, top: 56, bottom: 44, containLabel: true },
       xAxis: valAxis({ max: 70, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 14 } }),
       yAxis: catAxis({
         data: ordered.map((r) => r.respuesta),
         axisLabel: {
           formatter: (val) => `{p|${val}}\n{e|${etiBy[val]}}`,
-          rich: { p: { fontFamily: DISPLAY, fontWeight: 600, fontSize: 15, color: INK, lineHeight: 18 }, e: { fontSize: 13, color: INK_DIM, lineHeight: 14 } },
+          rich: { p: { fontFamily: DISPLAY, fontWeight: 700, fontSize: 20, color: INK, lineHeight: 23 }, e: { fontSize: 13, color: INK_DIM, lineHeight: 15 } },
         },
       }),
-      tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong> · ${p.data.eti}<br>${p.data.tip}` },
+      tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong> · ${etiBy[p.name] || ''}` },
       series: [{
-        type: 'bar', barWidth: '54%',
-        data: ordered.map((r) => ({ value: r.porcentaje, eti: r.etiqueta, tip: r.tooltip, itemStyle: { color: r.respuesta === correct ? accent : hexA(accent, 0.32), borderRadius: [0, 8, 8, 0] } })),
-        label: { show: true, position: 'right', color: INK, fontFamily: DISPLAY, fontSize: 18, fontWeight: 600, formatter: (p) => (p.name === correct ? `${p.value}%  ✓` : `${p.value}%`) },
-        animationDuration: 1100, animationEasing: 'cubicOut', animationDelay: (i) => i * 150,
+        type: 'bar', barWidth: '58%',
+        data: ordered.map(() => 0),
+        itemStyle: { color: neutral, borderRadius: [0, 8, 8, 0] },
+        label: { show: true, position: 'right', color: INK, fontFamily: DISPLAY, fontSize: 20, fontWeight: 700, formatter: '{c}%' },
       }],
     };
-    mountChart(container, option, opts);
+    const chart = mountChart(container, option, opts);
+
+    let last = -1;
+    container.__setBate = (p) => {
+      p = Math.max(0, Math.min(1, p));
+      if (Math.abs(p - last) < 0.004) return; last = p;
+      const grow = Math.max(0, Math.min(1, p / 0.2));   // las barras crecen
+      const pointOn = p > 0.16 && p < 0.64;             // flecha a la más elegida
+      const wrongOn = p > 0.4;                          // la más elegida se marca MAL (rojo)
+      const correctOn = p > 0.62;                       // se marca la CORRECTA (✓)
+      const dataArr = ordered.map((r) => {
+        const isMost = r.respuesta === mostResp, isCorrect = r.respuesta === correct;
+        let color = neutral;
+        if (correctOn && isCorrect) color = accent;
+        else if (wrongOn && isMost) color = hexA(loss, 0.85);
+        else if (isMost && pointOn) color = hexA(accent, 0.55);
+        return {
+          value: Math.round(r.porcentaje * grow),
+          itemStyle: { color, borderRadius: [0, 8, 8, 0] },
+          label: { formatter: (correctOn && isCorrect) ? '{c}%  ✓' : '{c}%', color: (correctOn && isCorrect) ? accent : INK },
+        };
+      });
+      chart.setOption({ series: [{
+        data: dataArr,
+        markPoint: {
+          symbol: 'arrow', symbolRotate: 90, symbolSize: pointOn ? [16, 22] : 0, symbolOffset: [40, 0],
+          itemStyle: { color: wrongOn ? loss : accent }, label: { show: false }, animation: false, silent: true,
+          data: pointOn ? [{ coord: [Math.round(maxV * grow), mostResp] }] : [],
+        },
+      }] }, false, true);
+    };
+    container.__setBate(opts.reduced ? 1 : 0);
   },
 
   /* ---------- G7 · Aversión a las pérdidas — BALANZA EMOCIONAL (E7) ----------

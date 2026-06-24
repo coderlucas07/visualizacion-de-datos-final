@@ -436,46 +436,60 @@
       </div>
     </section>
 
-    <!-- ====================== E6 · Bate y pelota ======================
-         Dos columnas: el problema (bate + precios, der.) ocupa el ancho y la
-         tarea/explicación van a la izquierda; antes quedaba todo el lado vacío. -->
-    <section class="scrolly" id="e6" aria-labelledby="e6-h">
+    <!-- ====================== E6 · Bate y pelota · ESCENA con scroll ======================
+         Intro (foto + pregunta + botones, fija/centrada) → el gráfico ocupa toda la
+         pantalla y CRECE → señala la más elegida → la marca mal → marca la correcta →
+         explicación abajo-derecha (donde las barras cortas dejan lugar). El gráfico
+         lo scrubea __setBate(sectionProgress(#e6)) en tick(). -->
+    <section class="scrolly scrolly--stage e6--bate" id="e6" aria-labelledby="e6-h">
       <div class="scrolly__graphic">
         <div class="viz">
           <div class="viz__layer is-active" data-layer="0">
-            <div class="statement">
+            <div class="statement statement--bate">
+              <p class="kicker">Tercera prueba · respondé sin pensarlo</p>
               <figure class="batball-photo figure-card">
                 <img src="./assets/bate_pelota.jpeg"
                      alt="Un bate de béisbol de madera junto a una pelota blanca con costuras rojas." />
               </figure>
-              <p class="statement__line">Un bate y una pelota cuestan <strong>$1,10</strong> en total.</p>
-              <p class="statement__line">El bate cuesta <strong>$1 más</strong> que la pelota.</p>
+              <p class="statement__line">Un bate y una pelota cuestan <strong>$1,10</strong>. El bate cuesta <strong>$1 más</strong> que la pelota.</p>
               <p class="statement__q" id="e6-h">¿Cuánto cuesta la pelota?</p>
+              <div class="choices" role="group" aria-label="¿Cuánto cuesta la pelota?">
+                <button class="choice" data-choice="010" aria-pressed="false"><span>$0,10</span></button>
+                <button class="choice" data-choice="005" aria-pressed="false"><span>$0,05</span></button>
+                <button class="choice" data-choice="100" aria-pressed="false"><span>$1,00</span></button>
+                <button class="choice" data-choice="001" aria-pressed="false"><span>$0,01</span></button>
+              </div>
             </div>
           </div>
           <div class="viz__layer" data-layer="1">
-            <div class="viz__chart"><div class="chart" data-chart="06_bate_pelota" role="img" aria-label="La respuesta intuitiva $0,10 es la más elegida pero está mal; la correcta es $0,05."></div></div>
+            <div class="viz__chart"><div class="chart" id="bateChart" data-chart="06_bate_pelota" role="img" aria-label="La respuesta intuitiva $0,10 es la más elegida pero está mal; la correcta es $0,05."></div></div>
           </div>
         </div>
       </div>
       <div class="scrolly__steps">
-        <div class="step is-active" data-layer="0">
-          <div class="step__card">
-            <p class="kicker">Tercera prueba</p>
-            <h3>Respondé sin pensarlo.</h3>
-            <p class="lede">Rápido, sin lápiz ni papel. Mirá el problema de al lado y elegí lo primero que te salga:</p>
-            <div class="choices" role="group" aria-label="¿Cuánto cuesta la pelota?">
-              <button class="choice" data-choice="010" aria-pressed="false"><span>$0,10</span></button>
-              <button class="choice" data-choice="005" aria-pressed="false"><span>$0,05</span></button>
-              <button class="choice" data-choice="100" aria-pressed="false"><span>$1,00</span></button>
-              <button class="choice" data-choice="001" aria-pressed="false"><span>$0,01</span></button>
-            </div>
-          </div>
-        </div>
+        <!-- intro: el planteo + botones viven en el statement (capa 0); este paso
+             solo mantiene activa la capa 0 mientras leés/elegís. -->
+        <div class="step is-active e6-intro" data-layer="0"><div class="step__card"></div></div>
+        <!-- paso 1: el gráfico crece y aparece la más elegida -->
         <div class="step" data-layer="1">
           <div class="step__card">
-            <p class="lede">Si pensaste <strong>$0,10</strong>, te pasó lo mismo que a la mayoría. Está mal: la pelota cuesta <strong>$0,05</strong>.</p>
-            <p class="muted">Es que tu cabeza tiene <strong>dos motores</strong>: uno <strong>rápido y automático</strong> (el Sistema 1) y otro <strong>lento y analítico</strong> (el Sistema 2). Como pensar gasta energía, contestó el rápido… y el lento ni se molestó en revisar.</p>
+            <p class="lede">Esto eligió la gente.</p>
+            <p class="muted">La respuesta que más salta sola es <strong>$0,10</strong>.</p>
+          </div>
+        </div>
+        <!-- paso 2: la más elegida está mal -->
+        <div class="step" data-layer="1">
+          <div class="step__card">
+            <p class="lede">Si elegiste <strong>$0,10</strong>, está mal.</p>
+            <p class="muted">Es la trampa: la respuesta intuitiva, la que no revisa la cuenta.</p>
+          </div>
+        </div>
+        <!-- paso 3: la correcta + explicación (abajo-derecha) -->
+        <div class="step e6-explain" data-layer="1">
+          <div class="step__card">
+            <p class="lede">La pelota cuesta <strong>$0,05</strong>.</p>
+            <p class="muted">Tu cabeza tiene <strong>dos motores</strong>: uno rápido y automático (Sistema 1) y otro lento y analítico (Sistema 2). Como pensar gasta energía, contestó el rápido… y el lento ni se molestó en revisar.</p>
+            <p class="chart-src chart-src--static" data-src-for="06_bate_pelota"></p>
           </div>
         </div>
       </div>

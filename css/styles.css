@@ -1438,6 +1438,27 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
    El planteo (capa 0, statement + Plan A/B) no se toca. */
 #e8 .step[data-layer="1"] { align-items: center; justify-content: flex-start; padding: 0 var(--pad-x); }
 #e8 .step[data-layer="1"] .step__card { width: min(34vw, 30rem); max-width: 30rem; text-align: left; }
+
+/* E6 (bate · escena con scroll) ----------------------------------------------
+   intro: el planteo (foto + pregunta) va centrado-arriba y los botones abajo-centro
+   (fijo y centrado, #11). El gráfico (capa 1) ocupa la pantalla; el texto de cada
+   momento va en columna izquierda; la explicación final va ABAJO-DERECHA (las
+   barras cortas dejan ese hueco libre). */
+#e6 .statement--bate { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.7rem; max-width: 42rem; margin: 0 auto; }
+#e6 .statement--bate .kicker { margin: 0; }
+#e6 .batball-photo { width: min(26vh, 320px); margin: 0.4rem 0 0.6rem; }
+#e6 .statement--bate .statement__line { margin: 0; max-width: 32ch; }
+#e6 .statement__q { font-size: clamp(1.7rem, 1.2rem + 2vw, 2.8rem); margin: 0.4rem 0 1.1rem; }
+#e6 .statement--bate .choices { pointer-events: auto; }
+#e6 .e6-intro .step__card { display: none; }   /* el intro vive en el statement */
+/* el texto de cada momento va ABAJO-DERECHA (las barras crecen a la izq./centro y
+   las cortas dejan ese hueco libre); no tapa ninguna barra. */
+#e6 .step[data-layer="1"] { align-items: flex-end; justify-content: flex-end; padding: 0 var(--pad-x) 8vh; }
+#e6 .step[data-layer="1"] .step__card { width: min(32vw, 27rem); max-width: 27rem; text-align: left; }
+@media (max-width: 760px) {
+  #e6 .step[data-layer="1"] { justify-content: center; padding: 0 var(--pad-x) 5vh; }
+  #e6 .step[data-layer="1"] .step__card { width: auto; max-width: none; text-align: center; }
+}
 @media (max-width: 640px) {
   /* mobile: framing full width arriba y texto en banda inferior (no hay columna). */
   #e8 .step[data-layer="1"] { align-items: flex-end; justify-content: center; padding: 0 var(--pad-x) 5vh; }
