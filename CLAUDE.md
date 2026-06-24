@@ -76,6 +76,17 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   Mono** = datos/UI/kickers/fuentes. Esto reemplaza la regla vieja de "Spectral para todo lo de impacto" (la 6ª
   vuelta había sacado Unbounded; ahora el impacto vuelve a tener una display propia, pero distinta). Para cambiar la
   display de impacto: 1 línea (`--font-hero`) + el `family=Syne:...` del link de fuentes.
+- **PASADA (g) — escenas protagonistas + achicar repetido:**
+  - **Diana de sesgo ANIMADA** (`sesgos-intro`): dejó de ser SVG estático. `setupBiasDiana()` (main.js) genera 9
+    puntos y los scrubea por `sectionProgress(#sesgos-intro)`: aparecen DISPERSOS (error aleatorio) → se AGRUPAN a
+    un lado (sesgo) + línea de mira. Diana protagonista a la derecha (`#sesgos-intro .viz__layer justify-items:end`),
+    texto en columna izquierda (no tapa centro ni cluster). Se sacó la animación CSS `biasIn` (la maneja el JS).
+  - **Cierre Adelson en 3 pasos** (pregunta "¿cuál casillero parece más claro?" → "Son iguales." → "Saberlo no
+    apaga la ilusión" + tesis "Tu cerebro no te cuenta toda la verdad" en Syne, full-circle con la portada). El
+    tablero pasó a protagonista a la DERECHA (casilleros A/B siempre visibles), texto en columna izquierda; antes
+    la tarjeta tapaba la ilusión. Bajó de 4 pasos a 3.
+  - **Ciencia vs público (brecha):** NO se tocó — ya es UN solo gráfico que evoluciona en 3 etapas (no son varias
+    pantallas de barras rojas repetidas). El brief pedía "achicar si repite": no repite.
 - **PAUSAS editoriales (coreografía):** se sumaron 3 escenas `.interlude` full-screen (1 frase fuerte por módulo,
   2ª línea en itálica del color del módulo, fade-up con `data-reveal`): `#pausa1` Percepción "La imagen no cambió.
   Cambió el contexto." (celeste, tras pato/conejo) · `#pausa2` Decisión "Elegir también es interpretar." (naranja,
