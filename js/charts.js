@@ -210,7 +210,7 @@ export const CHARTS = {
     const canvas = container.querySelector('canvas');
     const ctx = canvas.getContext('2d');
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const N = 100, cols = 10;
+    const N = 100, cols = 20;   // 20×5 = rectángulo ancho (usa el espacio horizontal)
     let W = 0, H = 0, cells = [], cellSize = 0, lastP = opts.reduced ? 1 : 0;
 
     // Dibuja una "personita" (cabeza + torso) centrada en (x,y), alto ≈ h.
@@ -232,11 +232,12 @@ export const CHARTS = {
     }
 
     function build() {
-      // grilla 10×10 GRANDE y centrada (ocupa casi todo el canvas)
-      const span = Math.min(W, H) * 0.94;
-      const cell = span / cols;
+      // rectángulo 20×5 ancho y centrado: usa casi todo el ancho (sin llegar al margen)
+      const rows = Math.ceil(N / cols);   // 5
+      const cell = Math.min((W * 0.97) / cols, (H * 0.84) / rows);
       cellSize = cell;
-      const gx0 = W / 2 - span / 2 + cell / 2, gy0 = H / 2 - span / 2 + cell / 2;
+      const gridW = cell * cols, gridH = cell * rows;
+      const gx0 = W / 2 - gridW / 2 + cell / 2, gy0 = H / 2 - gridH / 2 + cell / 2;
       cells = [];
       for (let i = 0; i < N; i++) {
         const r = (i / cols) | 0, c = i % cols;

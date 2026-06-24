@@ -640,7 +640,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 
 /* MORPH número → waffle (E3b): canvas cuadrado centrado; el panel va ARRIBA-izq
    (el morph ocupa el centro) y la sección tiene recorrido para que complete. */
-.morphwaffle { width: min(84vw, 76vh); aspect-ratio: 1; }
+.morphwaffle { width: min(94vw, 1200px); aspect-ratio: 3.4; }
 .morphwaffle__cv { width: 100%; height: 100%; display: block; }
 #e3b .step { min-height: 200vh; align-items: flex-start; padding: 8vh var(--pad-x) 0; }
 #e3b .step__card { position: sticky; top: 8vh; }
@@ -657,7 +657,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   height: 100%; padding: 3.5vh var(--pad-x);
 }
 .waffle-stack__title { margin: 0; font-size: clamp(1.7rem, 1.2rem + 2.2vw, 3rem); }
-.e3b--stack .morphwaffle { width: min(64vh, 72vw); }
+.e3b--stack .morphwaffle { width: min(94vw, 1180px); aspect-ratio: 3.4; }
 .waffle-stack__note {
   margin: 0; max-width: 44rem; color: var(--ink-dim);
   font-size: clamp(1.08rem, 1rem + 0.5vw, 1.35rem); line-height: 1.55;
@@ -776,12 +776,12 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 #e4 .step[data-layer="2"] .step__card { display: none; }
 .viz__chart--pista { position: relative; }
 .pista-cap {
-  position: absolute; right: 3%; bottom: 11%;
-  width: min(40%, 25rem); text-align: left; pointer-events: none; z-index: 2;
+  position: absolute; right: 3.5%; bottom: 12%;
+  width: min(46%, 30rem); text-align: center; pointer-events: none; z-index: 2;
 }
 .pista-cap__title {
-  margin: 0 0 0.5em; font-family: var(--font-display); font-weight: 600;
-  font-size: clamp(1.4rem, 1.05rem + 1.5vw, 2.3rem); line-height: 1.15; color: var(--ink);
+  margin: 0 0 0.55em; font-family: var(--font-display); font-weight: 600;
+  font-size: clamp(1.7rem, 1.15rem + 2.2vw, 3rem); line-height: 1.12; color: var(--ink);
 }
 .pista-cap__sub { margin: 0; color: var(--ink-dim); font-size: clamp(1rem, 0.95rem + 0.35vw, 1.2rem); line-height: 1.5; }
 
@@ -887,6 +887,8 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   transition: none;             /* el scrub controla la opacidad sin lag */
 }
 #e3 .step--center h2, #e3 .step--center .lede { color: #fff; }
+#e3 .step--center h2 { font-size: clamp(2.6rem, 1.4rem + 4.4vw, 5.4rem); line-height: 1.05; letter-spacing: -0.01em; }
+#e3 .step--center .lede { font-size: clamp(1.2rem, 1rem + 0.9vw, 1.7rem); }
 
 .viz__media--snakes {
   width: 100%; height: 100%;
@@ -897,7 +899,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
    el transform-origin en % apunta de verdad al centro de un círculo. */
 .snakes {
   width: auto; height: auto;
-  max-width: 92%; max-height: 60vh;
+  max-width: 95%; max-height: 84vh;
   transform: scale(var(--snake-zoom, 1));
   transform-origin: 50% 50%;  /* centrado: al entrar (zoom alto) llena parejo, sin negro a un lado */
   will-change: transform;
@@ -1332,9 +1334,10 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .closer-stat__text { max-width: 34rem; }
 .closer-stat__text .kicker { margin-bottom: 1.1rem; }
 .closer-stat__viz { justify-self: end; }
+.closer-stat__pin { grid-template-columns: minmax(20rem, 1fr) auto; }
 .closer-stat .gorilla { max-width: none; height: auto; }
-.closer-stat .gorilla__ring { width: min(32vw, 280px); }
-.closer-stat .gorilla__num { font-size: clamp(2rem, 1.4rem + 2.6vw, 3.2rem); }
+.closer-stat .gorilla__ring { width: min(48vw, 560px); }
+.closer-stat .gorilla__num { font-size: clamp(2.6rem, 1.6rem + 3.6vw, 4.6rem); }
 
 @media (prefers-reduced-motion: reduce) {
   .closer-stat { height: 100vh; height: 100svh; }
