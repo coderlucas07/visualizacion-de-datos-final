@@ -1525,6 +1525,21 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
 [data-reveal].is-visible { opacity: 1; transform: none; }
 
+/* ===== PAUSA / frase editorial entre escenas: pantalla casi vacía, frase grande
+   centrada, fade-up al entrar. Un respiro dramático, 1 por módulo. ===== */
+.interlude {
+  min-height: 88vh; min-height: 88svh;
+  display: grid; place-items: center;
+  padding: 0 var(--pad-x); text-align: center;
+}
+.interlude__line {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: clamp(2.1rem, 1.2rem + 3.6vw, 4.2rem); line-height: 1.12;
+  letter-spacing: -0.01em; color: var(--ink); margin: 0; max-width: 20ch;
+  transition-duration: 1s;
+}
+.interlude__line em { font-style: italic; color: var(--accent); }
+
 /* ----------------------------- Responsive ----------------------------- */
 @media (max-width: 920px) {
   :root { --steps-w: 100%; }
