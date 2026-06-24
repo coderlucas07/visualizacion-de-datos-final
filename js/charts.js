@@ -713,8 +713,8 @@ export const CHARTS = {
 
   /* ---------- G10 · Mejor que el promedio (E10) — las barras se ESTIRAN con el scroll ----------
      El titular vive en el HTML (el texto que se corre a la izquierda), así que el gráfico
-     NO lleva título. Las barras crecen de 0 a su valor con container.__setGrow(p), scrubeado
-     en tick() a medida que el gráfico entra desde la derecha. */
+     NO lleva título. Un solo scrub container.__render(g, h) maneja el crecimiento de las
+     barras (g) y el remarcado de la barra de "manejar" (h), llamado desde tick(). */
   '10_mejor_que_promedio'(container, data, opts) {
     const rows = rowsToObjects(data['10_mejor_que_promedio']);
     const accent = accentOf(container);
@@ -722,6 +722,8 @@ export const CHARTS = {
     const items = rows.map((r) => ({ label: lbl(r), value: r.pct_arriba_del_promedio, muestra: r.muestra, fuente: r.fuente }))
       .sort((a, b) => a.value - b.value); // asc: el más alto queda arriba (category pinta abajo→arriba)
     const barStyle = items.map((i) => ({ color: hexA(accent, 0.45 + 0.5 * (i.value / 100)), borderRadius: [0, 8, 8, 0] }));
+    // Barra de "manejar" (el 93%): es la que se REMARCA antes de quedar sola.
+    const driveIdx = items.reduce((best, it, i) => (/Manejar/i.test(it.label) && it.value > items[best].value ? i : best), 0);
     const option = {
       ...baseOption(accent),
       title: { show: false },     // el titular es el texto del HTML (lead), no compite
@@ -737,15 +739,25 @@ export const CHARTS = {
       }],
     };
     const chart = mountChart(container, option, opts);
-    // Las barras se estiran de 0 → su valor con el scroll (scrubeado desde tick()).
-    let lastG = -1;
-    container.__setGrow = (p) => {
-      p = Math.max(0, Math.min(1, p));
-      const q = Math.round(p * 100) / 100;
-      if (q === lastG) return; lastG = q;
-      chart.setOption({ series: [{ data: items.map((it, idx) => ({ value: +(it.value * q).toFixed(1), itemStyle: barStyle[idx] })) }] });
+    // Un solo scrub (desde tick()): g = crecimiento de las barras (0→valor); h = remarcado
+    // de la barra de "manejar" (color pleno + glow) mientras las demás se atenúan, justo
+    // antes de que el gráfico se desvanezca y quede sólo esa barra (en el HTML).
+    let lastKey = '';
+    container.__render = (g, h) => {
+      g = Math.max(0, Math.min(1, g)); h = Math.max(0, Math.min(1, h));
+      const key = Math.round(g * 100) + ':' + Math.round(h * 100);
+      if (key === lastKey) return; lastKey = key;
+      chart.setOption({ series: [{ data: items.map((it, idx) => {
+        const value = +(it.value * g).toFixed(1);
+        if (idx === driveIdx) {
+          const st = { ...barStyle[idx] };
+          if (h > 0) { st.color = accent; st.shadowBlur = 22 * h; st.shadowColor = hexA(accent, 0.7); st.borderColor = accent; st.borderWidth = 2 * h; }
+          return { value, itemStyle: st };
+        }
+        return { value, itemStyle: { ...barStyle[idx], opacity: 1 - 0.62 * h } };
+      }) }] });
     };
-    container.__setGrow(opts.reduced ? 1 : 0);
+    container.__render(opts.reduced ? 1 : 0, 0);
   },
 
   /* ---------- G11 · Lectura Barnum (E11, capa 0) — HTML ---------- */

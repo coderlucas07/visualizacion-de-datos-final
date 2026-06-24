@@ -39,6 +39,7 @@ let e7Sec = null, e7ChartEl = null, e7CoinEl = null, e7CoinStep = null;
 let e7ChartStep = null, e7CapEl = null, e7BoxEl = null;
 let e9Sec = null, dkEl = null;
 let e10Sec = null, e10ChartEl = null, e10Pin = null, e10Lead = null, e10LeadIn = null, e10ChartWrap = null, e10After = null;
+let e10Scrim = null, e10HeroBar = null, e10HeroText = null;
 let fantSec = null, ghostFunnelEl = null;
 let e12Sec = null, e12Track = null;
 let e13Sec = null, brechaEl = null;
@@ -744,6 +745,9 @@ function cacheScrubRefs() {
   e10LeadIn = document.querySelector('#e10 .e10__lead-in');
   e10ChartWrap = document.getElementById('e10ChartWrap');
   e10After = document.getElementById('e10After');
+  e10Scrim = document.getElementById('e10Scrim');
+  e10HeroBar = document.getElementById('e10HeroBar');
+  e10HeroText = document.getElementById('e10HeroText');
   fantSec = document.getElementById('fantasmas');
   ghostFunnelEl = document.getElementById('ghostFunnel');
   e12Sec = document.getElementById('e12');
@@ -979,24 +983,36 @@ function tick() {
   // E10 (mejor que el promedio): coreografía propia con el scroll.
   // (1) el título arranca centrado; (2) al scrollear se va a la IZQUIERDA y se achica
   // mientras el gráfico ENTRA desde la derecha y las barras se ESTIRAN hasta el tope;
-  // (3) al llegar, aparece la CONCLUSIÓN (el 93%) donde estaba el título.
+  // (3) con el gráfico desplegado, se REMARCA la barra de "manejar" (hi); (4) el gráfico
+  // se desvanece y queda SOLO esa barra, que SUBE a la parte de arriba (iso); (5) debajo
+  // aparece el texto del 93% (txt).
   if (!REDUCED && e10Sec && e10Pin) {
     const sp = sectionProgress(e10Sec);
-    const enter = easeOut(clamp((sp - 0.06) / 0.5));   // título→izq · gráfico entra · barras crecen
-    const concl = easeOut(clamp((sp - 0.66) / 0.18));  // aparece la conclusión · el gráfico se atenúa
+    const enter = easeOut(clamp((sp - 0.06) / 0.40));   // título→izq · gráfico entra · barras crecen (full @0.46)
+    const hi    = easeOut(clamp((sp - 0.56) / 0.10));   // se remarca la barra de "manejar" (full @0.66)
+    const iso   = easeOut(clamp((sp - 0.66) / 0.14));   // el gráfico se va · queda la barra sola y SUBE (full @0.80)
+    const txt   = easeOut(clamp((sp - 0.80) / 0.14));   // el texto aparece DEBAJO de la barra (full @0.94)
+    // título: a la izquierda + se achica; se va cuando queda sola la barra
     if (e10LeadIn) {
       const W = window.innerWidth, narrow = W < 760;
       const shift = narrow ? 0 : -W * 0.32 * enter;
       const sc = 1 - (narrow ? 0.06 : 0.20) * enter;
       e10LeadIn.style.transform = `translateX(${shift.toFixed(0)}px) scale(${sc.toFixed(3)})`;
     }
-    if (e10Lead) e10Lead.style.opacity = (1 - concl).toFixed(2);   // el título se va al entrar la conclusión
+    if (e10Lead) e10Lead.style.opacity = (1 - iso).toFixed(2);
+    // gráfico: entra desde la derecha, barras crecen; se remarca "manejar"; luego se desvanece
     if (e10ChartWrap) {
-      e10ChartWrap.style.opacity = (enter * (1 - 0.7 * concl)).toFixed(2);   // entra y luego se atenúa
-      e10ChartWrap.style.transform = `translateX(${(8 * (1 - enter)).toFixed(1)}%)`;   // entra desde la derecha
+      e10ChartWrap.style.opacity = (enter * (1 - iso)).toFixed(2);
+      e10ChartWrap.style.transform = `translateX(${(8 * (1 - enter)).toFixed(1)}%)`;
     }
-    if (e10ChartEl && e10ChartEl.__setGrow) e10ChartEl.__setGrow(enter);   // las barras se estiran al tope
-    if (e10After) e10After.style.opacity = concl.toFixed(2);   // conclusión donde estaba el título
+    if (e10ChartEl && e10ChartEl.__render) e10ChartEl.__render(enter, hi);
+    // conclusión: queda SOLO la barra remarcada, que SUBE arriba; el texto aparece debajo
+    if (e10Scrim) e10Scrim.style.opacity = iso.toFixed(2);
+    if (e10HeroBar) {
+      e10HeroBar.style.opacity = iso.toFixed(2);
+      e10HeroBar.style.transform = `translateY(${(26 * (1 - iso)).toFixed(1)}vh)`;   // sube hasta arriba
+    }
+    if (e10HeroText) e10HeroText.style.opacity = txt.toFixed(2);
   }
 
   // Fantasmas: el embudo (50 creen → 15 sintieron → 1 vio) se arma con el scroll.

@@ -1555,38 +1555,54 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .e10__pin { position: sticky; top: 0; height: 100vh; overflow: hidden; }
 .e10__lead, .e10__after {
   position: absolute; inset: 0; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; text-align: center;
-  padding: 0 6vw; pointer-events: none;
+  align-items: center; text-align: center; padding: 0 6vw; pointer-events: none;
 }
-.e10__lead { z-index: 3; }
+.e10__lead { z-index: 3; justify-content: center; }
 .e10__lead-in { max-width: 30rem; transform-origin: center; will-change: transform; }
 .e10__lead h2 { font-size: clamp(2rem, 1.3rem + 2.6vw, 3.4rem); line-height: 1.06; margin: 0 0 0.7rem; }
 .e10__lead .lede { font-size: clamp(1.3rem, 1.05rem + 1vw, 1.85rem); margin: 0; }
 .e10__chart { position: absolute; top: 0; right: 0; bottom: 0; left: 36%; z-index: 1; opacity: 0; will-change: transform, opacity; }
 .e10__chart .viz__chart { max-width: none; width: 100%; height: 100%; }
 .e10__chart .viz__chart .chart { width: 100%; height: 100%; }
-.e10__after { z-index: 2; opacity: 0; }
-.e10__after::before {   /* scrim radial para leer la conclusión sobre las barras tenues */
-  content: ''; position: absolute; inset: 0; z-index: -1;
-  background: radial-gradient(62% 62% at 50% 50%, rgba(10,13,16,0.88), rgba(10,13,16,0.55) 68%, rgba(10,13,16,0));
-}
+
+/* Conclusión: al seguir scrolleando con el gráfico desplegado, queda SOLO la barra
+   "manejar" (remarcada), que SUBE a la parte de arriba; debajo aparece el texto.
+   tick() scrubea opacity (scrim/barra/texto) y el translateY de la barra. */
+.e10__after { z-index: 2; justify-content: flex-start; padding-top: 12vh; gap: clamp(1.4rem, 4vh, 3rem); }
+.e10__scrim { position: absolute; inset: 0; z-index: -1; opacity: 0;
+  background: radial-gradient(78% 72% at 50% 36%, rgba(10,13,16,0.93), rgba(10,13,16,0.6) 64%, rgba(10,13,16,0)); }
+.e10__herobar { position: relative; width: min(74vw, 720px); opacity: 0; will-change: transform, opacity; }
+.e10__herobar-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.7rem; }
+.e10__herobar-cat { font-family: var(--font-display); font-size: clamp(1.1rem, 0.95rem + 0.6vw, 1.5rem); color: var(--ink); }
+.e10__herobar-val { font-family: var(--font-display); font-weight: 700; font-size: clamp(2rem, 1.4rem + 2vw, 3rem); color: var(--accent); line-height: 1; }
+.e10__herobar-track { position: relative; height: clamp(40px, 6.5vh, 66px); background: rgba(255,255,255,0.05);
+  border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.e10__herobar-fill { height: 100%; width: 93%; border-radius: 0 12px 12px 0; background: var(--accent); box-shadow: 0 0 30px var(--accent-soft); }
+.e10__herobar-tick { position: absolute; left: 50%; top: 0; bottom: 0; border-left: 2px dashed rgba(255,255,255,0.6); }
+.e10__herobar-tick i { position: absolute; left: 5px; top: 4px; font-family: var(--font-mono); font-style: normal; font-size: 0.72rem; color: rgba(255,255,255,0.85); }
+.e10__herotext { opacity: 0; max-width: 42rem; will-change: opacity; }
 .e10__big { font-family: var(--font-display); font-weight: 600; font-size: clamp(2rem, 1.3rem + 2.6vw, 3.4rem); line-height: 1.08; margin: 0 0 0.8rem; }
 .e10__big strong { color: var(--accent); }
-.e10__after .muted { font-size: clamp(1.1rem, 1rem + 0.5vw, 1.4rem); line-height: 1.6; max-width: 40rem; }
-.e10__after .chart-src { margin-top: 1.2rem; }
+.e10__herotext .muted { font-size: clamp(1.1rem, 1rem + 0.5vw, 1.4rem); line-height: 1.6; }
+.e10__herotext .chart-src { margin-top: 1.2rem; }
+
 @media (max-width: 760px) {
   /* mobile: se apila (el título no se corre); el gráfico ocupa la franja inferior. */
   .e10__chart { left: 0; top: 38vh; }
   .e10__lead { justify-content: flex-start; padding-top: 9vh; }
   .e10__lead-in { max-width: none; }
+  .e10__after { padding-top: 9vh; }
+  .e10__herobar { width: min(88vw, 560px); }
 }
 @media (prefers-reduced-motion: reduce) {
-  /* sin scroll-anim: se muestra todo apilado y con las barras llenas. */
+  /* sin scroll-anim: se apila todo, barras llenas y la conclusión (sin la barra-hero). */
   #e10 { min-height: auto; }
   .e10__pin { position: static; height: auto; overflow: visible; display: flex; flex-direction: column; gap: 4vh; padding: 9vh 6vw; }
-  .e10__lead, .e10__after { position: static; inset: auto; opacity: 1; padding: 0; }
+  .e10__lead, .e10__after { position: static; inset: auto; padding: 0; }
   .e10__lead-in { transform: none !important; max-width: none; }
   .e10__chart { position: static; left: auto; opacity: 1; height: 62vh; }
+  .e10__scrim, .e10__herobar { display: none; }
+  .e10__herotext { opacity: 1; }
 }
 
 /* E8 (framing · enfermedad de 600): el gráfico de las dos barras se corre a la

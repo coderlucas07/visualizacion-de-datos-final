@@ -97,13 +97,17 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
     sección (`#e10`, sin `.scrolly`; markup propio `.e10__pin/.e10__lead/.e10__chart/.e10__after`, 280vh, pin
     sticky) arranca con el **título centrado sobre negro**; al scrollear, el **título se va a la izquierda y se
     achica** (`.e10__lead-in` translateX/scale), el **gráfico entra desde la derecha** (`.e10__chart` translateX+
-    opacity, `left:36%`) y las **barras se ESTIRAN de 0 al tope** (`__setGrow(p)` en el handler `10_mejor_que_promedio`,
-    `animation:false`, sin título interno ni flecha/markPoint); al llegar al tope aparece la **conclusión** ("El 93%
-    dice manejar mejor…") **donde estaba el título** (`.e10__after`, centrada, scrim radial; el gráfico se atenúa).
-    Todo scrubeado en `tick()` por `sectionProgress(#e10)` (`enter=(sp-0.06)/0.5`, `concl=(sp-0.66)/0.18`; refs
-    `e10Pin/e10Lead/e10LeadIn/e10ChartWrap/e10After/e10ChartEl`). Fallbacks: mobile `@max-width:760` apila (título
-    arriba, gráfico abajo, sin corrimiento); `prefers-reduced-motion` apila todo estático con barras llenas
-    (`__setGrow(1)`). La fuente sale en el slot `[data-src-for]` dentro de `.e10__after`.
+    opacity, `left:36%`) y las **barras se ESTIRAN de 0 al tope** (handler `10_mejor_que_promedio`, `animation:false`,
+    sin título interno ni flecha/markPoint; un solo scrub `__render(g,h)`: g = crecimiento, h = remarcado).
+    **Transición gráfico→texto (pedido del usuario):** con el gráfico desplegado y seguir scrolleando, se **REMARCA
+    la barra de "manejar"** (h: color pleno + glow, las demás se atenúan); luego el gráfico se **desvanece** y queda
+    **SOLO esa barra**, una barra-hero HTML (`.e10__herobar`, 93% con tick del 50%) que **SUBE a la parte de arriba**
+    (translateY); **debajo** aparece el texto del 93% (`.e10__herotext`). Scrubeado en `tick()` por
+    `sectionProgress(#e10)` (`enter=(sp-0.06)/0.40`, `hi=(sp-0.56)/0.10`, `iso=(sp-0.66)/0.14`, `txt=(sp-0.80)/0.14`;
+    refs `e10Pin/e10Lead/e10LeadIn/e10ChartWrap/e10ChartEl/e10Scrim/e10HeroBar/e10HeroText`). Fallbacks: mobile
+    `@max-width:760` apila (título arriba, gráfico abajo); `prefers-reduced-motion` apila todo estático con barras
+    llenas (`__render(1,0)`) y muestra `.e10__herotext` (oculta la barra-hero, redundante). La fuente sale en el slot
+    `[data-src-for]` dentro de `.e10__herotext`.
   - **Bate y pelota (#12) — HECHA:** `scrolly--stage e6--bate`, sin cuadro; las barras crecen → flecha a la más
     elegida → marca roja en la trampa → ✓ en $0,05 (`__setBate`, scrubeado por `sectionProgress(#e6)`).
   - **Moneda +$50/−$50 (E7, #13) — HECHA:** `scrolly--stage e7--coin`, SIN cuadro/tarjeta (se sacó el texto
