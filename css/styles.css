@@ -979,11 +979,17 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 /* Texto final: sin caja, grande, blanco, a la izquierda a media altura.
    Aparece recién cuando la imagen llegó a su tamaño mínimo (scrub en JS). */
 #e3 .step__card--final {
-  position: sticky; top: 34vh;
+  position: sticky; top: 30vh;
   max-width: 30rem;
   opacity: 0;
   transform: none;
   transition: none;
+  /* panel esmerilado: el texto grande se LEE aunque la ilusión (enorme, a la
+     derecha) pase por debajo — sin esto el blanco se pierde sobre los círculos */
+  background: rgba(6, 8, 11, 0.78);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius);
+  padding: 1.6rem 1.8rem;
 }
 @media (prefers-reduced-motion: reduce) {
   #e3 .step__card--final { opacity: 1; }

@@ -35,8 +35,10 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
 - **E2 (pato/conejo con pista):** la figura es MÁS GRANDE (`.e2-figwrap` 60vh→`min(78vh,92%)`), tanto girando como quieta.
 - **E3 (snakes), pantalla final:** la ilusión queda **full a la DERECHA y más grande** (`.viz__media--snakes`
   `place-items:center end` + padding-right; `.snakes max-height` 84→94vh). El texto final quedó **unificado en un
-  solo tamaño y más grande** (lede y muted comparten `clamp(1.6rem…2.5rem)`); se arregló el HTML roto del paso
-  final (el "Y, sin embargo, gira." era un text node suelto → ahora vive dentro de un `<p class="lede muted">`).
+  solo tamaño y más grande** (lede y muted comparten `clamp(1.6rem…2.5rem)`) y va sobre un **panel esmerilado**
+  (fondo oscuro + blur en `.step__card--final`): sin eso el blanco se perdía sobre los círculos de la ilusión.
+  Se arregló el HTML roto del paso final (el "Y, sin embargo, gira." era un text node suelto → ahora vive dentro
+  de un `<p class="lede muted">`).
 - **E4 capa 1 (onda FM 67/33, el gráfico de después del audio):** ahora ocupa **toda la banda INFERIOR de punta a
   punta** (`.fmwave` full-width anclada abajo) y el **texto va ARRIBA centrado** (sticky top 9vh). La capa 0 no
   cambió. En mobile la onda vuelve al centro (texto en banda inferior, como antes).
