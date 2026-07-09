@@ -753,11 +753,16 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 #e8 .viz__layer[data-layer="0"] { padding-bottom: 2vh; }
 #e8 .e8-intro .step__card { display: none; }   /* el intro vive en el statement */
 #e8 .statement--framing { max-width: min(90vw, 76rem); }
-#e8 .statement__eyebrow { font-size: 0.85rem; }
+/* El p global tiene max-width 34rem → el eyebrow y el título quedaban en una
+   caja angosta PEGADA A LA IZQUIERDA del planteo (76rem). Sin tope y con
+   margin auto quedan CENTRADOS de verdad. */
+#e8 .statement__eyebrow { font-size: 0.85rem; max-width: none; margin-inline: auto; }
 #e8 .framing-head {
   font-size: clamp(2.4rem, 1.4rem + 3.6vw, 4.6rem);
   margin-bottom: clamp(1.6rem, 4vh, 3rem);
+  max-width: none; margin-inline: auto;
 }
+#e8 .plan-cards { align-items: stretch; }   /* tarjetas de igual altura → botones parejos */
 #e8 .plan-cards { gap: clamp(1.2rem, 2.6vw, 2.6rem); max-width: 68rem; }
 #e8 .plan-card {
   display: flex; flex-direction: column;
@@ -834,7 +839,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 #e4 .step[data-layer="1"] .step__card { position: sticky; top: 9vh; text-align: center; max-width: 46rem; }
 #e4 .viz__layer[data-layer="1"] { padding-left: 0; }
 #e4 .viz__layer[data-layer="1"] .viz__chart { place-items: end center; padding-bottom: 9vh; }
-#e4 .viz__layer[data-layer="1"] .fmwave { max-width: none; width: 100%; max-height: 48vh; padding: 0 2vw; }
+#e4 .viz__layer[data-layer="1"] .fmwave { max-width: none; width: 100%; max-height: 56vh; padding: 0 2vw; }
 /* SIN transición entre capas en E4 (pedido del usuario): el paso de la onda al
    gráfico de barras es un corte seco manejado por el scroll, no un crossfade
    (el fade dejaba un hueco en el que el scroll "no hacía nada"). */
@@ -863,6 +868,10 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   /* mobile: la onda vuelve al centro (el texto va en la banda de abajo) */
   #e4 .viz__layer[data-layer="1"] .viz__chart { place-items: center; padding-bottom: 0; }
   #e4 .viz__layer[data-layer="1"] .fmwave { max-height: 40vh; }
+  /* el título de punta a punta no entra en una línea en mobile → vuelve a wrap */
+  .fmwave__title { white-space: normal; font-size: clamp(1.5rem, 6vw, 2.2rem); }
+  .wave { width: 86vw; height: 140px; gap: 7px; }
+  .audio__play { width: 96px; height: 96px; }
   .pista-cap { position: static; width: auto; margin-top: 1rem; }
   .viz__chart--pista { display: flex; flex-direction: column; }
 }
@@ -1094,7 +1103,13 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 /* G2 (contexto): mismas barras que G1 que se vuelcan con el scroll. Un rótulo
    de estado arriba cambia de "sin pista" a "con la pista" al cruzar la mitad. */
 .duo-morph { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.8rem; width: 100%; height: 100%; }
-#e2 .duo-morph .duo { height: min(48vh, 460px); }
+/* G2 bastante MÁS GRANDE que el duo base: barras más altas y anchas, %/rótulos
+   más grandes → ocupa bien la columna derecha (antes quedaba mucho negro). */
+#e2 .duo-morph .duo { height: min(62vh, 620px); gap: clamp(2.4rem, 5vw, 5rem); }
+#e2 .duo-morph .duo__track { width: clamp(150px, 17vw, 260px); }
+#e2 .duo-morph .duo__pct { font-size: clamp(2rem, 1.4rem + 2vw, 3.2rem); }
+#e2 .duo-morph .duo__name { font-size: 0.95rem; }
+#e2 .duo-morph__state { font-size: 1rem; }
 .duo-morph__state {
   font-family: var(--font-mono); font-size: 0.8rem;
   letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-dim);
@@ -1181,10 +1196,12 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 #e2.cues-on .annot { transform: translate(-50%, -50%); }
 
 /* ----------------------------- Onda de audio (E4) ----------------------------- */
-.audio-stage { display: flex; flex-direction: column; align-items: center; gap: 2.2rem; }
-.wave { display: flex; align-items: center; justify-content: center; gap: 7px; height: 140px; width: min(34vw, 460px); }
+/* Símbolo del audio GRANDE: ocupa toda la mitad derecha (onda ancha y alta +
+   botón de play más grande). */
+.audio-stage { display: flex; flex-direction: column; align-items: center; gap: 2.8rem; }
+.wave { display: flex; align-items: center; justify-content: center; gap: 11px; height: clamp(190px, 30vh, 300px); width: min(48vw, 720px); }
 .wave span {
-  width: 5px; height: 14%;
+  width: 7px; height: 14%;
   background: var(--ink-dim); border-radius: 3px; opacity: 0.7;
   animation: wave 1.15s var(--ease) infinite;
   animation-delay: calc(var(--i, 0) * -0.11s);
@@ -1194,9 +1211,9 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 
 .audio { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
 .audio__play {
-  width: 92px; height: 92px; border-radius: 50%;
+  width: 140px; height: 140px; border-radius: 50%;
   border: 1px solid var(--accent); background: var(--accent-soft);
-  color: var(--ink); font-size: 1.6rem; cursor: pointer;
+  color: var(--ink); font-size: 2.1rem; cursor: pointer;
   display: grid; place-items: center;
   transition: transform 0.15s var(--ease), background-color 0.3s var(--ease), color 0.3s var(--ease);
 }
@@ -1207,8 +1224,9 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 /* Onda FM (gráfico del audio): se estira con el scroll · dial 67/33.
    Achicada (tope de ancho/alto, centrada) para que no domine la pantalla. */
 .fmwave { display: flex; flex-direction: column; gap: 0.7rem; width: 100%; max-width: 880px; height: 100%; max-height: 60vh; padding: 0 0.4rem; }
-.fmwave__title { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2.1rem); color: var(--ink); margin: 0; text-align: center; }
-.fmwave__sub { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.04em; color: var(--ink-dim); margin: 0 0 0.3rem; text-align: center; }
+/* Título de PUNTA A PUNTA: una sola línea gigante que cruza toda la pantalla */
+.fmwave__title { font-family: var(--font-display); font-weight: 600; font-size: clamp(2.2rem, 6.3vw, 6rem); line-height: 1.05; white-space: nowrap; color: var(--ink); margin: 0; text-align: center; max-width: none; }
+.fmwave__sub { font-family: var(--font-mono); font-size: clamp(0.8rem, 1vw, 1rem); letter-spacing: 0.06em; color: var(--ink-dim); margin: 0 0 0.3rem; text-align: center; max-width: none; }
 .fmwave__canvas { flex: 1; width: 100%; min-height: 0; }
 /* Dial con MÁS contraste: cada estación con su color pleno y número grande y nítido. */
 .fmdial { display: flex; gap: 10px; width: 100%; }

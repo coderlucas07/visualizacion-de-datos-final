@@ -30,6 +30,12 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
 - **E4:** la onda FM subió un poco (padding-bottom 2.5→9vh, mismo tamaño) y las capas de E4 cambian por **corte
   seco** (`#e4 .viz__layer { transition:none }`): se sacó el crossfade hacia el gráfico de barras (dejaba un hueco
   en el que el scroll "no hacía nada").
+- **Pulido visual (pedido del usuario):** **G2** (contexto, E2) bastante más grande (`#e2 .duo-morph .duo`
+  62vh, tracks 17vw, % y rótulos más grandes) · **símbolo del audio** (E4 capa 0) más grande (onda 30vh ×
+  min(48vw,720px), play 140px) · **título de la onda FM** de punta a punta (una línea `6.3vw`, nowrap; en
+  mobile vuelve a wrap) · **E8**: el eyebrow y el título del planteo estaban PEGADOS A LA IZQUIERDA por el
+  `p{max-width:34rem}` global → `max-width:none; margin-inline:auto` (centrados de verdad) y `align-items:
+  stretch` en `.plan-cards` (botones parejos).
 - **Copy de la auditoría narrativa (3 fixes, de la teórica M13):** E13 paso 2 suma muted *"la gente más educada
   tiene más chances de creer en terapias alternativas…"* (puente brecha→confianza, callback a Dunning-Kruger) ·
   E13 paso 3 suma muted *"«La duda es nuestro producto», escribió una tabacalera en 1969…"* (paga las promesas
