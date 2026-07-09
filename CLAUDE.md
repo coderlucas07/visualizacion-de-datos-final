@@ -30,6 +30,17 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
 - **E4:** la onda FM subió un poco (padding-bottom 2.5→9vh, mismo tamaño) y las capas de E4 cambian por **corte
   seco** (`#e4 .viz__layer { transition:none }`): se sacó el crossfade hacia el gráfico de barras (dejaba un hueco
   en el que el scroll "no hacía nada").
+- **E4 capa 1, reordenada:** el TÍTULO gigante ("El mismo audio, dos estaciones") va ARRIBA, **estático** (vive
+  en el gráfico pinneado, `.fmwave` ocupa 100% de alto con la onda anclada abajo vía `margin-top:auto` en el
+  canvas); el TEXTO del paso **sube con el scroll y frena a media altura** (sticky top 34vh), entre el título y
+  la onda, sin chocar con ninguno.
+- **G8 (framing/enfermedad) ahora es ESCENA CON SCROLL** (pedido del usuario; patrón E13): el gráfico se arma
+  con `container.__setG8(p)` scrubeado en `tick()` por `(sectionProgress(#e8)−0.36)/0.6` (refs `e8Sec/g8El`).
+  Momentos: (1) crece la barra de «vidas» y GRITA el **72%** seguro (glow, la otra columna atenuada) mientras el
+  texto habla de lo seguro; (2) crece «muertes» y grita el desplome al **22%** (+ el 78% arriesgado saturado);
+  (3) **flecha punteada blanca que CAE del 72 al 22** con rótulo "−50 pts". Los 2 pasos de texto viejos pasaron
+  a **3 pasos** que acompañan cada momento. `animation:false` (todo lo maneja el scrub); reduced-motion →
+  `__setG8(1)` (todo visible, sin resaltados).
 - **Pulido visual (pedido del usuario):** **G2** (contexto, E2) bastante más grande (`#e2 .duo-morph .duo`
   62vh, tracks 17vw, % y rótulos más grandes) · **símbolo del audio** (E4 capa 0) más grande (onda 30vh ×
   min(48vw,720px), play 140px) · **título de la onda FM** de punta a punta (una línea `6.3vw`, nowrap; en

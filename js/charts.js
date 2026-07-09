@@ -598,28 +598,29 @@ export const CHARTS = {
     container.__setG7(opts.reduced ? 1 : 0);
   },
 
-  /* ---------- G8 · Encuadre / framing (E8) — el VUELCO ----------
+  /* ---------- G8 · Encuadre / framing (E8) — el VUELCO, escena con scroll ----------
      Es el MISMO plan seguro en los dos casos; lo único que cambia es si se
-     cuenta en "vidas salvadas" o en "muertes". El % que lo elige se desploma de
-     72% a 22%. Dos barras (verde = vidas / rojo = muertes) lo dejan a la vista. */
+     cuenta en "vidas salvadas" o en "muertes". Coreografía (container.__setG8(p),
+     scrubeado por sectionProgress(#e8) en tick()):
+       (1) crece la barra de «vidas» y se RESALTA el 72% que elige lo seguro;
+       (2) crece la de «muertes» y se resalta el desplome al 22% (el 78% que
+           arriesga se satura en el tono profundo);
+       (3) una flecha punteada cae del 72 al 22 con el rótulo "−50 pts". */
   '08_framing_enfermedad'(container, data, opts) {
     const rows = rowsToObjects(data['08_framing_enfermedad']);
     const accent = accentOf(container);
     const gain = cssVar(container, '--gain', GAIN);   // tonalidad clara (plan seguro)
     const loss = cssVar(container, '--loss', LOSS);   // tonalidad profunda (plan arriesgado)
     const find = (f, o) => rows.find((r) => r.encuadre.includes(f) && r.opcion === o) || { porcentaje: 0, descripcion: '' };
-    // Dos barras (vidas / muertes); cada una se PARTE 100% entre plan seguro y
-    // arriesgado. Mismo plan, mismos números: solo cambia la palabra → el % que
-    // elige lo seguro se desploma de 72 a 22.
     const items = [
       { label: 'Contado en\n«vidas salvadas»', seguro: find('vidas', 'Segura').porcentaje, descS: find('vidas', 'Segura').descripcion, descR: find('vidas', 'Riesgosa').descripcion },
       { label: 'Contado en\n«muertes»', seguro: find('muertes', 'Segura').porcentaje, descS: find('muertes', 'Segura').descripcion, descR: find('muertes', 'Riesgosa').descripcion },
     ];
-    const lbl = (p) => (p.value >= 8 ? p.value + '%' : '');
+    const drop = items[0].seguro - items[1].seguro;   // 50 pts
     // Desktop: barras a la derecha, texto en columna izquierda. Mobile: full width + texto en banda inferior.
     const narrow = container.clientWidth < 640;
     const option = {
-      ...baseOption(accent),
+      ...baseOption(accent), animation: false,
       title: titleBlock('El mismo plan, decisión opuesta', '% que elige el plan SEGURO vs. el arriesgado · según cómo se cuenta'),
       grid: narrow
         ? { left: 8, right: 16, top: 92, bottom: '42%', containLabel: true }
@@ -634,19 +635,66 @@ export const CHARTS = {
       series: [
         {
           name: 'Plan seguro', type: 'bar', stack: 'f', barWidth: '52%', itemStyle: { color: gain },
-          data: items.map((i) => ({ value: i.seguro, itemStyle: { color: gain, borderRadius: [6, 6, 0, 0] } })),
-          label: { show: true, position: 'inside', color: '#0A0D10', fontFamily: DISPLAY, fontSize: 26, fontWeight: 700, formatter: lbl },
-          animationDuration: 1100, animationEasing: 'cubicOut',
+          data: items.map(() => 0),
+          label: { show: true, position: 'inside', color: '#0A0D10', fontFamily: DISPLAY, fontWeight: 700 },
         },
         {
           name: 'Plan arriesgado', type: 'bar', stack: 'f', barWidth: '52%', itemStyle: { color: hexA(loss, 0.55) },
-          data: items.map((i) => ({ value: 100 - i.seguro, itemStyle: { color: hexA(loss, 0.55) } })),
-          label: { show: true, position: 'inside', color: INK, fontFamily: DISPLAY, fontSize: 18, fontWeight: 600, formatter: lbl },
-          animationDuration: 1100, animationEasing: 'cubicOut',
+          data: items.map(() => 0),
+          label: { show: true, position: 'inside', color: INK, fontFamily: DISPLAY, fontWeight: 600 },
         },
       ],
     };
-    mountChart(container, option, opts);
+    const chart = mountChart(container, option, opts);
+
+    let lastKey = '';
+    container.__setG8 = (p) => {
+      p = Math.max(0, Math.min(1, p));
+      const s1 = Math.min(1, p / 0.2);                          // crece «vidas»
+      const s2 = Math.max(0, Math.min(1, (p - 0.34) / 0.22));   // crece «muertes»
+      const s3 = Math.max(0, Math.min(1, (p - 0.74) / 0.18));   // la caída (flecha −50)
+      const hiVidas = p > 0.06 && p < 0.42;    // el texto habla de lo SEGURO → grita el 72%
+      const hiMuertes = p >= 0.46 && p < 0.8;  // el texto habla de MUERTES → grita el 22% (y el 78%)
+      const grow = [s1, s2];
+      const key = [Math.round(s1 * 100), Math.round(s2 * 100), Math.round(s3 * 100), hiVidas, hiMuertes].join(':');
+      if (key === lastKey) return; lastKey = key;
+      const lbl = (pm) => (pm.value >= 8 ? pm.value + '%' : '');
+      const segData = items.map((it, i) => {
+        const hi = (i === 0 && hiVidas) || (i === 1 && hiMuertes);
+        const dim = (hiVidas && i === 1) || (hiMuertes && i === 0);
+        const st = { color: gain, borderRadius: [6, 6, 0, 0], opacity: dim ? 0.3 : 1 };
+        if (hi) { st.shadowBlur = 28; st.shadowColor = hexA(gain, 0.85); }
+        return { value: Math.round(it.seguro * grow[i]), itemStyle: st, label: { formatter: lbl, fontSize: hi ? 34 : 22 } };
+      });
+      const riskData = items.map((it, i) => {
+        const hi = i === 1 && hiMuertes;   // en «muertes», el 78% que arriesga también grita
+        const dim = (hiVidas && i === 1) || (hiMuertes && i === 0);
+        const st = { color: hexA(loss, hi ? 0.9 : 0.55), opacity: dim ? 0.3 : 1 };
+        if (hi) { st.shadowBlur = 22; st.shadowColor = hexA(loss, 0.7); }
+        return { value: Math.round((100 - it.seguro) * grow[i]), itemStyle: st, label: { formatter: lbl, fontSize: hi ? 24 : 18 } };
+      });
+      chart.setOption({ series: [
+        {
+          data: segData,
+          // la CAÍDA: flecha punteada del 72% (vidas) al 22% (muertes)
+          markLine: {
+            silent: true, symbol: ['none', 'arrow'], symbolSize: 11, animation: false,
+            lineStyle: { color: '#fff', type: 'dashed', width: 2, opacity: 0.9 * s3 },
+            label: {
+              show: s3 > 0.35, position: 'middle', formatter: `−${drop} pts`,
+              color: '#fff', fontFamily: DISPLAY, fontWeight: 700, fontSize: 20,
+              backgroundColor: 'rgba(10,13,16,0.85)', padding: [4, 8], borderRadius: 6,
+            },
+            data: s3 > 0.02 ? [[
+              { coord: [items[0].label, items[0].seguro] },
+              { coord: [items[1].label, items[0].seguro - (items[0].seguro - items[1].seguro) * s3] },
+            ]] : [],
+          },
+        },
+        { data: riskData },
+      ] }, false, true);
+    };
+    container.__setG8(opts.reduced ? 1 : 0);
   },
 
   /* ---------- G9 · Dunning-Kruger (E9) — se DIBUJA con el scroll ----------
