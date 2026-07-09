@@ -616,7 +616,6 @@ export const CHARTS = {
       { label: 'Contado en\n«vidas salvadas»', seguro: find('vidas', 'Segura').porcentaje, descS: find('vidas', 'Segura').descripcion, descR: find('vidas', 'Riesgosa').descripcion },
       { label: 'Contado en\n«muertes»', seguro: find('muertes', 'Segura').porcentaje, descS: find('muertes', 'Segura').descripcion, descR: find('muertes', 'Riesgosa').descripcion },
     ];
-    const drop = items[0].seguro - items[1].seguro;   // 50 pts
     // Desktop: barras a la derecha, texto en columna izquierda. Mobile: full width + texto en banda inferior.
     const narrow = container.clientWidth < 640;
     const option = {
@@ -650,13 +649,12 @@ export const CHARTS = {
     let lastKey = '';
     container.__setG8 = (p) => {
       p = Math.max(0, Math.min(1, p));
-      const s1 = Math.min(1, p / 0.2);                          // crece «vidas»
-      const s2 = Math.max(0, Math.min(1, (p - 0.34) / 0.22));   // crece «muertes»
-      const s3 = Math.max(0, Math.min(1, (p - 0.74) / 0.18));   // la caída (flecha −50)
-      const hiVidas = p > 0.06 && p < 0.42;    // el texto habla de lo SEGURO → grita el 72%
-      const hiMuertes = p >= 0.46 && p < 0.8;  // el texto habla de MUERTES → grita el 22% (y el 78%)
+      const s1 = Math.min(1, p / 0.22);                         // crece «vidas»
+      const s2 = Math.max(0, Math.min(1, (p - 0.5) / 0.25));    // crece «muertes»
+      const hiVidas = p > 0.06 && p < 0.5;      // el texto habla de lo SEGURO → grita el 72%
+      const hiMuertes = p >= 0.56 && p < 0.97;  // el texto habla de MUERTES → grita el 22% (y el 78%)
       const grow = [s1, s2];
-      const key = [Math.round(s1 * 100), Math.round(s2 * 100), Math.round(s3 * 100), hiVidas, hiMuertes].join(':');
+      const key = [Math.round(s1 * 100), Math.round(s2 * 100), hiVidas, hiMuertes].join(':');
       if (key === lastKey) return; lastKey = key;
       const lbl = (pm) => (pm.value >= 8 ? pm.value + '%' : '');
       const segData = items.map((it, i) => {
@@ -673,26 +671,7 @@ export const CHARTS = {
         if (hi) { st.shadowBlur = 22; st.shadowColor = hexA(loss, 0.7); }
         return { value: Math.round((100 - it.seguro) * grow[i]), itemStyle: st, label: { formatter: lbl, fontSize: hi ? 24 : 18 } };
       });
-      chart.setOption({ series: [
-        {
-          data: segData,
-          // la CAÍDA: flecha punteada del 72% (vidas) al 22% (muertes)
-          markLine: {
-            silent: true, symbol: ['none', 'arrow'], symbolSize: 11, animation: false,
-            lineStyle: { color: '#fff', type: 'dashed', width: 2, opacity: 0.9 * s3 },
-            label: {
-              show: s3 > 0.35, position: 'middle', formatter: `−${drop} pts`,
-              color: '#fff', fontFamily: DISPLAY, fontWeight: 700, fontSize: 20,
-              backgroundColor: 'rgba(10,13,16,0.85)', padding: [4, 8], borderRadius: 6,
-            },
-            data: s3 > 0.02 ? [[
-              { coord: [items[0].label, items[0].seguro] },
-              { coord: [items[1].label, items[0].seguro - (items[0].seguro - items[1].seguro) * s3] },
-            ]] : [],
-          },
-        },
-        { data: riskData },
-      ] }, false, true);
+      chart.setOption({ series: [{ data: segData }, { data: riskData }] }, false, true);
     };
     container.__setG8(opts.reduced ? 1 : 0);
   },

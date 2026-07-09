@@ -977,10 +977,10 @@ function tick() {
   }
 
   // E8 (framing): el gráfico se ARMA con el scroll — crece «vidas» (se resalta el
-  // 72% seguro), después «muertes» (se resalta el desplome al 22%) y al final la
-  // flecha de la caída (−50 pts). El primer ~36% de la sección es el planteo.
+  // 72% seguro) y después «muertes» (se resalta el desplome al 22%). El primer
+  // ~48% de la sección es el planteo (intro con los planes).
   if (!REDUCED && g8El && g8El.__setG8 && e8Sec) {
-    g8El.__setG8(clamp((sectionProgress(e8Sec) - 0.36) / 0.6));
+    g8El.__setG8(clamp((sectionProgress(e8Sec) - 0.48) / 0.5));
   }
 
   // E9 (Dunning-Kruger): la línea avanza de "Peores" a "Mejores" a medida que
