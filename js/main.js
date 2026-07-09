@@ -37,7 +37,7 @@ let fmEl = null, e4FmStep = null;
 let e5Sec = null, gorilaStatEl = null;
 let e7Sec = null, e7ChartEl = null, e7CoinEl = null, e7CoinStep = null;
 let e7ChartStep = null, e7CapEl = null, e7BoxEl = null;
-let e8Sec = null, g8El = null;
+let e8Sec = null, g8El = null, e8Steps = null;
 let e9Sec = null, dkEl = null;
 let e10Sec = null, e10ChartEl = null, e10Pin = null, e10Lead = null, e10LeadIn = null, e10ChartWrap = null, e10After = null;
 let e10Scrim = null, e10HeroBar = null, e10HeroText = null;
@@ -739,6 +739,7 @@ function cacheScrubRefs() {
   e7BoxEl = document.getElementById('e7Box');
   e8Sec = document.getElementById('e8');
   g8El = document.querySelector('#e8 [data-chart="08_framing_enfermedad"]');
+  e8Steps = [...document.querySelectorAll('#e8 .scrolly__steps .step[data-layer="1"]')];
   e9Sec = document.getElementById('e9');
   dkEl = document.querySelector('#e9 [data-chart="09_dunning_kruger"]');
   e10Sec = document.getElementById('e10');
@@ -976,11 +977,11 @@ function tick() {
     if (e7BoxEl) e7BoxEl.classList.toggle('show', p > 0.9);
   }
 
-  // E8 (framing): el gráfico se ARMA con el scroll — crece «vidas» (se resalta el
-  // 72% seguro) y después «muertes» (se resalta el desplome al 22%). El primer
-  // ~48% de la sección es el planteo (intro con los planes).
-  if (!REDUCED && g8El && g8El.__setG8 && e8Sec) {
-    g8El.__setG8(clamp((sectionProgress(e8Sec) - 0.48) / 0.5));
+  // E8 (framing): las barras están siempre completas; el RESALTADO sigue al
+  // TEXTO activo — 1er paso resalta el 72% («vidas»), 2º paso el 22% («muertes»).
+  if (g8El && g8El.__setG8Highlight && e8Steps) {
+    const idx = e8Steps.findIndex((s) => s.classList.contains('is-active'));
+    g8El.__setG8Highlight(idx === 0 ? 'vidas' : idx === 1 ? 'muertes' : null);
   }
 
   // E9 (Dunning-Kruger): la línea avanza de "Peores" a "Mejores" a medida que

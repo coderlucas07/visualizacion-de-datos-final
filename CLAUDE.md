@@ -34,13 +34,14 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   en el gráfico pinneado, `.fmwave` ocupa 100% de alto con la onda anclada abajo vía `margin-top:auto` en el
   canvas); el TEXTO del paso **sube con el scroll y frena a media altura** (sticky top 34vh), entre el título y
   la onda, sin chocar con ninguno.
-- **G8 (framing/enfermedad) ahora es ESCENA CON SCROLL** (pedido del usuario; patrón E13): el gráfico se arma
-  con `container.__setG8(p)` scrubeado en `tick()` por `(sectionProgress(#e8)−0.48)/0.5` (refs `e8Sec/g8El`).
-  DOS momentos: (1) crece la barra de «vidas» y GRITA el **72%** seguro (glow, la otra columna atenuada) mientras
-  el texto habla de lo seguro; (2) crece «muertes» y grita el desplome al **22%** (+ el 78% arriesgado saturado).
-  Se probó un 3er momento con flecha "−50 pts" y **se SACÓ** (pedido del usuario: no sumaba); la tesis "El dato
-  no cambió. Cambió el marco." cierra el muted del paso de muertes. `animation:false` (todo lo maneja el scrub);
-  reduced-motion → `__setG8(1)` (todo visible, sin resaltados). NO volver a agregar la flecha de la caída.
+- **G8 (framing/enfermedad): RESALTADO por paso, SIN scrub** (iterado con el usuario): las barras están
+  **siempre completas** (no crecen con el scroll); lo único que sigue al scroll es el **resaltado**, atado al
+  TEXTO activo — 1er paso: GRITA el **72%** seguro de «vidas» (glow, la otra columna se atenúa) · 2º paso: grita
+  el desplome al **22%** (+ el 78% arriesgado saturado). `container.__setG8Highlight('vidas'|'muertes'|null)`;
+  `tick()` lo llama leyendo qué `.step[data-layer="1"]` de #e8 tiene `.is-active` (ref `e8Steps`). Transición
+  suave vía `animationDurationUpdate:400` (entrada sin animación: el chart se pre-inicializa oculto). Antes se
+  probaron: barras que crecen con scrub y un 3er momento con flecha "−50 pts" → **ambos SACADOS a pedido del
+  usuario** (no volver a meterlos). La tesis "El dato no cambió. Cambió el marco." cierra el paso de muertes.
 - **Pulido visual (pedido del usuario):** **G2** (contexto, E2) bastante más grande (`#e2 .duo-morph .duo`
   62vh, tracks 17vw, % y rótulos más grandes) · **símbolo del audio** (E4 capa 0) más grande (onda 30vh ×
   min(48vw,720px), play 140px) · **título de la onda FM** de punta a punta (una línea `6.3vw`, nowrap; en

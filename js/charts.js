@@ -598,14 +598,13 @@ export const CHARTS = {
     container.__setG7(opts.reduced ? 1 : 0);
   },
 
-  /* ---------- G8 · Encuadre / framing (E8) — el VUELCO, escena con scroll ----------
+  /* ---------- G8 · Encuadre / framing (E8) — el VUELCO, resaltado por paso ----------
      Es el MISMO plan seguro en los dos casos; lo único que cambia es si se
-     cuenta en "vidas salvadas" o en "muertes". Coreografía (container.__setG8(p),
-     scrubeado por sectionProgress(#e8) en tick()):
-       (1) crece la barra de «vidas» y se RESALTA el 72% que elige lo seguro;
-       (2) crece la de «muertes» y se resalta el desplome al 22% (el 78% que
-           arriesga se satura en el tono profundo);
-       (3) una flecha punteada cae del 72 al 22 con el rótulo "−50 pts". */
+     cuenta en "vidas salvadas" o en "muertes". Las barras están SIEMPRE completas
+     (no se scrubean); lo que sigue al TEXTO activo es el RESALTADO
+     (container.__setG8Highlight('vidas'|'muertes'|null), lo llama tick()):
+       · texto de lo seguro → grita el 72% (glow, la otra columna se atenúa);
+       · texto de muertes → grita el desplome al 22% (+ el 78% saturado). */
   '08_framing_enfermedad'(container, data, opts) {
     const rows = rowsToObjects(data['08_framing_enfermedad']);
     const accent = accentOf(container);
@@ -619,7 +618,10 @@ export const CHARTS = {
     // Desktop: barras a la derecha, texto en columna izquierda. Mobile: full width + texto en banda inferior.
     const narrow = container.clientWidth < 640;
     const option = {
-      ...baseOption(accent), animation: false,
+      ...baseOption(accent),
+      // sin animación de entrada (el chart se pre-inicializa oculto), pero el
+      // cambio de resaltado transiciona suave
+      animation: true, animationDuration: 0, animationDurationUpdate: 400, animationEasingUpdate: 'cubicOut',
       title: titleBlock('El mismo plan, decisión opuesta', '% que elige el plan SEGURO vs. el arriesgado · según cómo se cuenta'),
       grid: narrow
         ? { left: 8, right: 16, top: 92, bottom: '42%', containLabel: true }
@@ -634,46 +636,40 @@ export const CHARTS = {
       series: [
         {
           name: 'Plan seguro', type: 'bar', stack: 'f', barWidth: '52%', itemStyle: { color: gain },
-          data: items.map(() => 0),
-          label: { show: true, position: 'inside', color: '#0A0D10', fontFamily: DISPLAY, fontWeight: 700 },
+          data: items.map((i) => ({ value: i.seguro, itemStyle: { color: gain, borderRadius: [6, 6, 0, 0] } })),
+          label: { show: true, position: 'inside', color: '#0A0D10', fontFamily: DISPLAY, fontWeight: 700, fontSize: 22, formatter: '{c}%' },
         },
         {
           name: 'Plan arriesgado', type: 'bar', stack: 'f', barWidth: '52%', itemStyle: { color: hexA(loss, 0.55) },
-          data: items.map(() => 0),
-          label: { show: true, position: 'inside', color: INK, fontFamily: DISPLAY, fontWeight: 600 },
+          data: items.map((i) => ({ value: 100 - i.seguro, itemStyle: { color: hexA(loss, 0.55) } })),
+          label: { show: true, position: 'inside', color: INK, fontFamily: DISPLAY, fontWeight: 600, fontSize: 18, formatter: '{c}%' },
         },
       ],
     };
     const chart = mountChart(container, option, opts);
 
-    let lastKey = '';
-    container.__setG8 = (p) => {
-      p = Math.max(0, Math.min(1, p));
-      const s1 = Math.min(1, p / 0.22);                         // crece «vidas»
-      const s2 = Math.max(0, Math.min(1, (p - 0.5) / 0.25));    // crece «muertes»
-      const hiVidas = p > 0.06 && p < 0.5;      // el texto habla de lo SEGURO → grita el 72%
-      const hiMuertes = p >= 0.56 && p < 0.97;  // el texto habla de MUERTES → grita el 22% (y el 78%)
-      const grow = [s1, s2];
-      const key = [Math.round(s1 * 100), Math.round(s2 * 100), hiVidas, hiMuertes].join(':');
-      if (key === lastKey) return; lastKey = key;
-      const lbl = (pm) => (pm.value >= 8 ? pm.value + '%' : '');
+    // Resaltado que sigue al paso de texto activo (no hay scrub de barras).
+    let lastHi = 'init';
+    container.__setG8Highlight = (which) => {
+      if (which === lastHi) return; lastHi = which;
+      const hiV = which === 'vidas', hiM = which === 'muertes';
       const segData = items.map((it, i) => {
-        const hi = (i === 0 && hiVidas) || (i === 1 && hiMuertes);
-        const dim = (hiVidas && i === 1) || (hiMuertes && i === 0);
+        const hi = (i === 0 && hiV) || (i === 1 && hiM);
+        const dim = (hiV && i === 1) || (hiM && i === 0);
         const st = { color: gain, borderRadius: [6, 6, 0, 0], opacity: dim ? 0.3 : 1 };
         if (hi) { st.shadowBlur = 28; st.shadowColor = hexA(gain, 0.85); }
-        return { value: Math.round(it.seguro * grow[i]), itemStyle: st, label: { formatter: lbl, fontSize: hi ? 34 : 22 } };
+        return { value: it.seguro, itemStyle: st, label: { fontSize: hi ? 34 : 22 } };
       });
       const riskData = items.map((it, i) => {
-        const hi = i === 1 && hiMuertes;   // en «muertes», el 78% que arriesga también grita
-        const dim = (hiVidas && i === 1) || (hiMuertes && i === 0);
+        const hi = i === 1 && hiM;   // en «muertes», el 78% que arriesga también grita
+        const dim = (hiV && i === 1) || (hiM && i === 0);
         const st = { color: hexA(loss, hi ? 0.9 : 0.55), opacity: dim ? 0.3 : 1 };
         if (hi) { st.shadowBlur = 22; st.shadowColor = hexA(loss, 0.7); }
-        return { value: Math.round((100 - it.seguro) * grow[i]), itemStyle: st, label: { formatter: lbl, fontSize: hi ? 24 : 18 } };
+        return { value: 100 - it.seguro, itemStyle: st, label: { fontSize: hi ? 24 : 18 } };
       });
       chart.setOption({ series: [{ data: segData }, { data: riskData }] }, false, true);
     };
-    container.__setG8(opts.reduced ? 1 : 0);
+    container.__setG8Highlight(null);
   },
 
   /* ---------- G9 · Dunning-Kruger (E9) — se DIBUJA con el scroll ----------
