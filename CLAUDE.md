@@ -14,6 +14,47 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   código pero no este archivo, el contexto del resto queda desactualizado → siempre van juntos.
 - Si algo de acá ya no es cierto, corregilo (no agregues notas sueltas que se contradigan).
 
+## ⚡ ACTUALIZACIÓN jul-2026 (11ª vuelta b — REORDEN de Sesgos + conectores) — MANDA sobre todo lo de abajo
+- **NUEVO ORDEN de Sesgos (pedido del usuario):** portal3 → ¿qué es un sesgo? → pausa3 → fantasmas → E12 (caras +
+  paranormal) → **pausa4 (conector nuevo)** → **E13 (brecha ciencia↔público)** → **E10 (mejor que el promedio,
+  CIERRA el módulo)** → cierre. Menú actualizado. `pausa4` sumado a `SESGOS` en `setupModuleColors`.
+- **Lógica narrativa del nuevo arco** (respaldada por la teórica, Módulo 13): inventamos presencias → la ciencia
+  tiene la explicación de cada una, pero tenerla no alcanza (brecha) → ¿por qué la evidencia pierde? porque cada
+  uno cree que el sesgo es de los demás (egocéntrico / bias blind spot; en la teórica el "mejor que el promedio"
+  vive en *Explotando los sesgos → Cold Reading 1 – Sesgo Egocéntrico*) → cierre Adelson ("saberlo no apaga la ilusión").
+- **Conectores escritos:** `#pausa4` (interlude): *"Cada fantasma tiene su explicación. / Creerla es otra
+  historia."* · E13 paso 1 lede ahora abre con "Y no solo sobre fantasmas…" · E10 lede reescrito como puente:
+  *"¿Por qué le ganamos a la evidencia? Porque cada uno cree que el sesgo es de los demás…"* · el remate del 93%
+  suma *"…Y si acabás de pensar «yo sí manejo bien», así se siente un sesgo desde adentro."* (engancha con Adelson:
+  vivir una ilusión sabiendo la verdad). NO volver a mover E10 antes de E13.
+- **E4:** la onda FM subió un poco (padding-bottom 2.5→9vh, mismo tamaño) y las capas de E4 cambian por **corte
+  seco** (`#e4 .viz__layer { transition:none }`): se sacó el crossfade hacia el gráfico de barras (dejaba un hueco
+  en el que el scroll "no hacía nada").
+
+## ⚡ ACTUALIZACIÓN jul-2026 (11ª vuelta — ajustes de feedback del usuario) — MANDA sobre todo lo de abajo
+- **E2 (pato/conejo con pista):** la figura es MÁS GRANDE (`.e2-figwrap` 60vh→`min(78vh,92%)`), tanto girando como quieta.
+- **E3 (snakes), pantalla final:** la ilusión queda **full a la DERECHA y más grande** (`.viz__media--snakes`
+  `place-items:center end` + padding-right; `.snakes max-height` 84→94vh). El texto final quedó **unificado en un
+  solo tamaño y más grande** (lede y muted comparten `clamp(1.6rem…2.5rem)`); se arregló el HTML roto del paso
+  final (el "Y, sin embargo, gira." era un text node suelto → ahora vive dentro de un `<p class="lede muted">`).
+- **E4 capa 1 (onda FM 67/33, el gráfico de después del audio):** ahora ocupa **toda la banda INFERIOR de punta a
+  punta** (`.fmwave` full-width anclada abajo) y el **texto va ARRIBA centrado** (sticky top 9vh). La capa 0 no
+  cambió. En mobile la onda vuelve al centro (texto en banda inferior, como antes).
+- **G4b (85/15):** la barra de **15% ("Sin contexto") va en GRIS**. 🐛 Se corrigió el mismo bug de regex del
+  pato/conejo: `/Con/i` matcheaba "Sin CONtexto" → las dos barras salían en acento. Ahora `/^con/i`.
+- **Gorila:** la consigna es más grande (`.gorila__line` clamp 2.1–4.2rem; sub y kicker también suben).
+- **G6 (bate):** mientras la flecha señala la más elegida (1er texto), la barra de $0,10 va en **naranja PLENO**;
+  desde el 2º texto vuelve al **neutro** (igual que las últimas dos) para no sacarle el resalte a la correcta
+  ($0,05, que se marca en el 3er texto). Ya no se pinta con el color loss.
+- **G7 (aversión +50/−50):** se SACÓ la cita "Modelo: Teoría Prospectiva…" (se removió la entrada de `SOURCES`;
+  quedaba superpuesta al gráfico). La caja de abajo ("Se llama aversión…") **subió** (bottom 6→10vh) y es **más
+  grande** (texto clamp 1.2–1.55rem, max-width 50rem).
+- **E8 (enfermedad/framing):** se SACÓ el recuadro de texto flotante (el paso 0 quedó como `.e8-intro` con card
+  oculta, patrón E6); los botones **Plan A / Plan B viven abajo de CADA plan-card**. Todo el planteo se agrandó
+  a casi pantalla completa (`.statement--framing` min(90vw,76rem); framing-head y plan-card__txt más grandes);
+  en ≤700px los planes se apilan. El auto-avance ya funcionaba (los botones del statement caen en el branch
+  "botones en el statement" de `setupInteractions`).
+
 ## ⚡ ACTUALIZACIÓN jun-2026 (10ª vuelta — REDISEÑO PREMIUM multi-pasada, EN CURSO) — MANDA sobre todo lo de abajo
 - **Objetivo (brief del usuario):** subir el sitio a nivel editorial (The Pudding/Reuters/Guardian): romper la
   monotonía "fondo oscuro + gráfico + tarjeta translúcida", variar la gramática de escenas (hero / prueba dividida /

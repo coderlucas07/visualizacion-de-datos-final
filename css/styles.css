@@ -486,7 +486,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   transition: opacity 0.7s var(--ease);
 }
 .gorila__kicker {
-  font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500;
+  font-family: var(--font-mono); font-size: 0.85rem; font-weight: 500;
   letter-spacing: 0.32em; text-transform: uppercase; color: var(--ink-dim);
   display: flex; align-items: center; justify-content: center; gap: 1.1rem;
   white-space: nowrap; margin: 0 0 1.1rem;
@@ -497,13 +497,13 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 }
 .gorila__line {
   font-family: var(--font-display); font-weight: 500;
-  font-size: clamp(1.6rem, 1.1rem + 2.6vw, 3.2rem);
+  font-size: clamp(2.1rem, 1.3rem + 3.4vw, 4.2rem);
   line-height: 1.08; color: #fff; margin: 0;
   text-shadow: 0 2px 44px rgba(4, 6, 8, 0.8);
 }
 .gorila__sub {
   font-family: var(--font-display); font-style: italic;
-  font-size: clamp(1rem, 0.92rem + 0.5vw, 1.4rem);
+  font-size: clamp(1.25rem, 1rem + 0.9vw, 1.8rem);
   color: var(--ink-dim); margin: 0.85rem auto 0; max-width: 32ch;
 }
 /* Cuando el video se fija y arranca, la consigna se va por completo. */
@@ -747,10 +747,29 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   .thirds__info { display: none; }
 }
 
-/* E8/E7: el planteo (layer 0) queda CENTRADO pero en la mitad superior, para
-   no chocar con el panel de la tarea/botones que flota abajo. (E6 pasó a dos
-   columnas, así que ya no necesita ese hueco.) */
-#e8 .viz__layer[data-layer="0"] { padding-bottom: 8vh; }
+/* E8: el planteo (layer 0) es protagonista a PANTALLA (casi) COMPLETA: sin
+   recuadro de texto flotante; los botones Plan A / Plan B van abajo de cada
+   plan. (El hueco inferior para el panel viejo ya no hace falta.) */
+#e8 .viz__layer[data-layer="0"] { padding-bottom: 2vh; }
+#e8 .e8-intro .step__card { display: none; }   /* el intro vive en el statement */
+#e8 .statement--framing { max-width: min(90vw, 76rem); }
+#e8 .statement__eyebrow { font-size: 0.85rem; }
+#e8 .framing-head {
+  font-size: clamp(2.4rem, 1.4rem + 3.6vw, 4.6rem);
+  margin-bottom: clamp(1.6rem, 4vh, 3rem);
+}
+#e8 .plan-cards { gap: clamp(1.2rem, 2.6vw, 2.6rem); max-width: 68rem; }
+#e8 .plan-card {
+  display: flex; flex-direction: column;
+  padding: clamp(1.8rem, 4.5vh, 3.2rem) clamp(1.4rem, 2.6vw, 2.6rem);
+}
+#e8 .plan-card__tag { font-size: 0.85rem; margin-bottom: 0.9rem; }
+#e8 .plan-card__txt { font-size: clamp(1.35rem, 1.05rem + 1.2vw, 2rem); line-height: 1.4; }
+#e8 .plan-card .choices { margin-top: auto; padding-top: 1.6rem; justify-content: center; pointer-events: auto; }
+#e8 .plan-card .choice { font-size: 1.3rem; font-style: normal; font-weight: 600; padding: 0.95rem 2.4rem; }
+@media (max-width: 700px) {
+  #e8 .plan-cards { grid-template-columns: 1fr; }
+}
 
 /* el panel a la derecha (para gráficos con info a la izquierda, ej. E10) */
 .scrolly--stage.stage--right .step { justify-content: flex-end; }
@@ -802,17 +821,24 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   transition: opacity 0.5s var(--ease);
 }
 .e4--split .step.is-active .step__card { opacity: 1; transform: none; }
-/* pasos 0 y 1: el TEXTO queda FIJO (sticky) mientras scrolleás —no sube ni baja—;
-   el scroll solo avanza la escena (paso 0) o estira la onda (paso 1). */
+/* paso 0: el TEXTO queda FIJO (sticky) en la columna izquierda mientras scrolleás;
+   el visual se corre a la mitad derecha. */
 #e4 .step[data-layer="0"] { min-height: 150vh; }
+#e4 .step[data-layer="0"] { align-items: flex-start; justify-content: flex-start; padding: 0 var(--pad-x); }
+#e4 .step[data-layer="0"] .step__card { position: sticky; top: 34vh; }
+#e4 .viz__layer[data-layer="0"] { place-items: center; padding-left: 42%; }
+/* paso 1 (onda FM 67/33): el TEXTO va ARRIBA (centrado, sticky) y el GRÁFICO ocupa
+   toda la banda INFERIOR, de punta a punta de la pantalla. */
 #e4 .step[data-layer="1"] { min-height: 210vh; }   /* recorrido para estirar la onda FM */
-#e4 .step[data-layer="0"],
-#e4 .step[data-layer="1"] { align-items: flex-start; justify-content: flex-start; padding: 0 var(--pad-x); }
-#e4 .step[data-layer="0"] .step__card,
-#e4 .step[data-layer="1"] .step__card { position: sticky; top: 34vh; }
-/* y el visual de esos pasos se corre a la mitad derecha (deja libre la columna de texto) */
-#e4 .viz__layer[data-layer="0"],
-#e4 .viz__layer[data-layer="1"] { place-items: center; padding-left: 42%; }
+#e4 .step[data-layer="1"] { align-items: flex-start; justify-content: center; padding: 0 var(--pad-x); }
+#e4 .step[data-layer="1"] .step__card { position: sticky; top: 9vh; text-align: center; max-width: 46rem; }
+#e4 .viz__layer[data-layer="1"] { padding-left: 0; }
+#e4 .viz__layer[data-layer="1"] .viz__chart { place-items: end center; padding-bottom: 9vh; }
+#e4 .viz__layer[data-layer="1"] .fmwave { max-width: none; width: 100%; max-height: 48vh; padding: 0 2vw; }
+/* SIN transición entre capas en E4 (pedido del usuario): el paso de la onda al
+   gráfico de barras es un corte seco manejado por el scroll, no un crossfade
+   (el fade dejaba un hueco en el que el scroll "no hacía nada"). */
+#e4 .viz__layer { transition: none; }
 /* paso 2: el gráfico ocupa todo el ancho y el texto va dentro (.pista-cap) */
 #e4 .step[data-layer="2"] .step__card { display: none; }
 .viz__chart--pista { position: relative; }
@@ -834,6 +860,9 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   #e4 .step[data-layer="1"] { align-items: flex-end; justify-content: center; padding: 0 var(--pad-x) 6vh; }
   #e4 .step[data-layer="0"] .step__card,
   #e4 .step[data-layer="1"] .step__card { position: static; }
+  /* mobile: la onda vuelve al centro (el texto va en la banda de abajo) */
+  #e4 .viz__layer[data-layer="1"] .viz__chart { place-items: center; padding-bottom: 0; }
+  #e4 .viz__layer[data-layer="1"] .fmwave { max-height: 40vh; }
   .pista-cap { position: static; width: auto; margin-top: 1rem; }
   .viz__chart--pista { display: flex; flex-direction: column; }
 }
@@ -928,26 +957,30 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 #e3 .step--center h2 { font-size: clamp(2.6rem, 1.4rem + 4.4vw, 5.4rem); line-height: 1.05; letter-spacing: -0.01em; }
 #e3 .step--center .lede { font-size: clamp(1.2rem, 1rem + 0.9vw, 1.7rem); }
 
+/* La ilusión queda FULL a la DERECHA en la pantalla final (el texto va a la
+   izquierda) y más grande: ocupa casi todo el alto. Durante el deszoom el
+   zoom alto igual llena la pantalla. */
 .viz__media--snakes {
   width: 100%; height: 100%;
   margin: 0;
-  display: grid; place-items: center;
+  display: grid; place-items: center end;
+  padding-right: clamp(0.5rem, 1.5vw, 1.5rem);
 }
 /* width/height auto: la caja del <img> coincide con la imagen real, así
    el transform-origin en % apunta de verdad al centro de un círculo. */
 .snakes {
   width: auto; height: auto;
-  max-width: 95%; max-height: 84vh;
+  max-width: 96%; max-height: 94vh;
   transform: scale(var(--snake-zoom, 1));
-  transform-origin: 50% 50%;  /* centrado: al entrar (zoom alto) llena parejo, sin negro a un lado */
+  transform-origin: 50% 50%;  /* al entrar (zoom alto) llena parejo, sin negro a un lado */
   will-change: transform;
 }
 
 /* Texto final: sin caja, grande, blanco, a la izquierda a media altura.
    Aparece recién cuando la imagen llegó a su tamaño mínimo (scrub en JS). */
 #e3 .step__card--final {
-  position: sticky; top: 38vh;
-  max-width: 26rem;
+  position: sticky; top: 34vh;
+  max-width: 30rem;
   opacity: 0;
   transform: none;
   transition: none;
@@ -955,13 +988,14 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 @media (prefers-reduced-motion: reduce) {
   #e3 .step__card--final { opacity: 1; }
 }
+/* Todo el texto final al MISMO tamaño (y más grande) */
 #e3 .step__card--final .lede {
-  font-size: clamp(1.35rem, 1.1rem + 1.4vw, 2rem);
-  line-height: 1.35;
+  font-size: clamp(1.6rem, 1.2rem + 1.8vw, 2.5rem);
+  line-height: 1.3;
   color: #fff;
 }
 #e3 .step__card--final .lede strong { color: #fff; }
-#e3 .step__card--final .muted { color: rgba(255, 255, 255, 0.82); font-size: clamp(1.05rem, 1rem + 0.4vw, 1.25rem); }
+#e3 .step__card--final .muted { color: rgba(255, 255, 255, 0.82); }
 #e3 .step__card--final .chart-src { color: rgba(255, 255, 255, 0.6); }
 
 /* ===================================================================== */
@@ -1098,7 +1132,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 /* E2 — la figura gira con el scroll. Los PUNTOS marcan la anatomía (coords en
    % de la imagen) y giran con ella; los RÓTULOS viven en el wrapper (no rotan)
    y se ubican FUERA del recuadro de la figura para no taparla. */
-.e2-figwrap { position: relative; width: min(60vh, 78%); }
+.e2-figwrap { position: relative; width: min(78vh, 92%); }
 /* Canvas de la transición: líneas celestes que viajan y forman la figura */
 .e2-lines { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
 @media (prefers-reduced-motion: reduce) { .e2-lines { display: none; } }
@@ -1338,17 +1372,17 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .aversion-cap.show-a .aversion-cap__a { opacity: 1; }
 .aversion-cap.show-b .aversion-cap__b { opacity: 1; }
 .aversion-box {
-  position: absolute; left: 50%; bottom: 6vh; transform: translateX(-50%) translateY(18px);
-  width: 100%; max-width: 44rem;
+  position: absolute; left: 50%; bottom: 10vh; transform: translateX(-50%) translateY(18px);
+  width: 100%; max-width: 50rem;
   background: rgba(10, 13, 16, 0.96); border: 1px solid var(--line); border-radius: var(--radius);
   backdrop-filter: blur(6px);
-  padding: 1.2rem 1.6rem; opacity: 0;
+  padding: 1.4rem 1.8rem; opacity: 0;
   transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
 }
 .aversion-box.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .aversion-box p {
   margin: 0; color: var(--ink-dim); line-height: 1.55;
-  font-size: clamp(1rem, 0.95rem + 0.4vw, 1.22rem);
+  font-size: clamp(1.2rem, 1.05rem + 0.7vw, 1.55rem);
 }
 .aversion-box strong { color: var(--ink); }
 @media (prefers-reduced-motion: reduce) {

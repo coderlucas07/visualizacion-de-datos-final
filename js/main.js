@@ -91,7 +91,7 @@ async function loadData() {
    hereda el celeste global #8FD8FF (el mismo azul del título de portada). */
 function setupModuleColors() {
   const DECISION = ['portal2', 'pausa2', 'e6', 'e7', 'e8', 'e9'];                 // Decisión (naranja cálido)
-  const SESGOS = ['portal3', 'sesgos-intro', 'pausa3', 'fantasmas', 'e12', 'e10', 'e13', 'cierre'];
+  const SESGOS = ['portal3', 'sesgos-intro', 'pausa3', 'fantasmas', 'e12', 'pausa4', 'e13', 'e10', 'cierre'];
   const mods = { '#F7943D': DECISION, '#E11D48': SESGOS };
   const soft = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`; };
   for (const [hex, ids] of Object.entries(mods)) {

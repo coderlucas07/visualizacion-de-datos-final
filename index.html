@@ -54,8 +54,8 @@
         <div class="menu__scenes">
           <a class="menu__scene" href="#fantasmas">Fantasmas</a>
           <a class="menu__scene" href="#e12">Caras y fantasmas</a>
-          <a class="menu__scene" href="#e10">Mejor que el promedio</a>
           <a class="menu__scene" href="#e13">La brecha</a>
+          <a class="menu__scene" href="#e10">Mejor que el promedio</a>
         </div>
       </li>
       <li class="menu__item">
@@ -269,7 +269,7 @@
         <div class="step step--tall" data-layer="1">
           <div class="step__card step__card--final">
             <p class="lede">Esta imagen está <strong>completamente quieta</strong>.</p>
-            <p class="muted">Ni un solo píxel se mueve.</p> Y, sin embargo, gira.</p>
+            <p class="lede muted">Ni un solo píxel se mueve.<br />Y, sin embargo, gira.</p>
             <p class="chart-src chart-src--static">Fuente: Kitaoka (2003), “Rotating Snakes”.</p>
           </div>
         </div>
@@ -554,10 +554,16 @@
                 <div class="plan-card">
                   <span class="plan-card__tag">Plan A</span>
                   <p class="plan-card__txt">Se salvan <strong>200 personas</strong>, seguro.</p>
+                  <div class="choices">
+                    <button class="choice" data-choice="A" aria-pressed="false"><span>Plan A</span></button>
+                  </div>
                 </div>
                 <div class="plan-card">
                   <span class="plan-card__tag">Plan B</span>
                   <p class="plan-card__txt">Una moneda: <strong>1 de cada 3 veces</strong> se salvan las 600; las otras <strong>2 de 3</strong>, no se salva nadie.</p>
+                  <div class="choices">
+                    <button class="choice" data-choice="B" aria-pressed="false"><span>Plan B</span></button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -568,17 +574,10 @@
         </div>
       </div>
       <div class="scrolly__steps">
-        <div class="step is-active" data-layer="0">
-          <div class="step__card">
-            <p class="kicker">Quinta prueba</p>
-            <h3>Tu tarea: elegir un plan.</h3>
-            <p class="lede">Leé los dos planes de al lado y elegí el que te parezca mejor:</p>
-            <div class="choices" role="group" aria-label="¿Qué plan elegís?">
-              <button class="choice" data-choice="A" aria-pressed="false"><span>Plan A</span></button>
-              <button class="choice" data-choice="B" aria-pressed="false"><span>Plan B</span></button>
-            </div>
-          </div>
-        </div>
+        <!-- intro: SIN recuadro de texto (pedido del usuario); los botones Plan A /
+             Plan B viven abajo de cada plan, dentro del statement (capa 0). Este
+             paso solo mantiene activa la capa 0 mientras leés/elegís. -->
+        <div class="step is-active e8-intro" data-layer="0"><div class="step__card"></div></div>
         <div class="step" data-layer="1">
           <div class="step__card">
             <p class="kicker">Acá está el truco</p>
@@ -758,43 +757,11 @@
       </div>
     </section>
 
-    <!-- ====================== E10 · Mejor que el promedio · PANTALLA COMPLETA ====================== -->
-    <!-- Coreografía propia con el scroll (scrub en tick(), refs e10*):
-         (1) arranca con el título centrado sobre negro; (2) al scrollear, el título se
-         va a la izquierda y se achica mientras el gráfico entra desde la derecha y las
-         barras se estiran hasta el tope; (3) al llegar, aparece la conclusión (el 93%)
-         donde estaba el título. Sin cuadros de texto. -->
-    <section id="e10" aria-labelledby="e10-h">
-      <div class="e10__pin">
-        <div class="e10__chart" id="e10ChartWrap">
-          <div class="viz__chart"><div class="chart" data-chart="10_mejor_que_promedio" role="img" aria-label="En todos los dominios, mucho más de la mitad se cree por encima del promedio."></div></div>
-        </div>
-        <div class="e10__lead" id="e10Lead">
-          <div class="e10__lead-in">
-            <h2 id="e10-h">La mayoría se cree mejor<br />que la mayoría.</h2>
-            <p class="lede">No mide habilidad real: mide <strong>exceso de confianza</strong>. Si todos se comparan con el mismo grupo, <strong>no todos pueden estar arriba</strong>.</p>
-          </div>
-        </div>
-        <div class="e10__after" id="e10After">
-          <div class="e10__scrim" id="e10Scrim"></div>
-          <!-- queda SOLO la barra de "manejar" (remarcada); sube arriba y debajo aparece el texto -->
-          <div class="e10__herobar" id="e10HeroBar">
-            <div class="e10__herobar-head">
-              <span class="e10__herobar-cat">Manejar mejor que el promedio</span>
-              <span class="e10__herobar-val">93%</span>
-            </div>
-            <div class="e10__herobar-track">
-              <div class="e10__herobar-fill"></div>
-              <span class="e10__herobar-tick"><i>50%</i></span>
-            </div>
-          </div>
-          <div class="e10__herotext" id="e10HeroText">
-            <p class="e10__big">El <strong>93%</strong> dice manejar mejor que el promedio.</p>
-            <p class="muted">Pero el gráfico no demuestra que manejemos mejor. Demuestra que nos <strong>evaluamos con demasiada confianza</strong>.</p>
-            <p class="chart-src chart-src--static" data-src-for="10_mejor_que_promedio"></p>
-          </div>
-        </div>
-      </div>
+    <!-- ====================== PAUSA IV · conector fantasmas → ciencia ======================
+         Puente del bloque paranormal (fantasmas/caras: todo tiene explicación) a la
+         brecha ciencia↔público (tener la explicación no alcanza para que se crea). -->
+    <section class="interlude" id="pausa4" aria-label="Cada fantasma tiene su explicación. Creerla es otra historia.">
+      <p class="interlude__line" data-reveal>Cada fantasma tiene su explicación.<br /><em>Creerla es otra historia.</em></p>
     </section>
 
     <!-- ====================== E13 · La brecha con la ciencia · 3 ETAPAS ====================== -->
@@ -814,7 +781,7 @@
           <div class="step__card">
             <p class="kicker">La brecha con la ciencia</p>
             <h2 id="e13-h">La ciencia sí<br />tiene respuestas.</h2>
-            <p class="lede">En estos temas el consenso científico es <strong>altísimo</strong>: no son opiniones sueltas, son décadas de evidencia acumulada.</p>
+            <p class="lede">Y no solo sobre fantasmas. En estos temas el consenso científico es <strong>altísimo</strong>: décadas de evidencia acumulada.</p>
           </div>
         </div>
         <div class="step brechastep brechastep--right" data-layer="0">
@@ -828,6 +795,45 @@
             <h2>Esa distancia<br />no es casual.</h2>
             <p class="lede">A veces no gana la evidencia. Gana lo que ya creemos, lo que nos da miedo o lo que se repite <strong>más fuerte</strong>.</p>
             <p class="chart-src chart-src--static" data-src-for="13_brecha_consenso"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== E10 · Mejor que el promedio · PANTALLA COMPLETA ====================== -->
+    <!-- Coreografía propia con el scroll (scrub en tick(), refs e10*):
+         (1) arranca con el título centrado sobre negro; (2) al scrollear, el título se
+         va a la izquierda y se achica mientras el gráfico entra desde la derecha y las
+         barras se estiran hasta el tope; (3) al llegar, aparece la conclusión (el 93%)
+         donde estaba el título. Sin cuadros de texto. -->
+    <section id="e10" aria-labelledby="e10-h">
+      <div class="e10__pin">
+        <div class="e10__chart" id="e10ChartWrap">
+          <div class="viz__chart"><div class="chart" data-chart="10_mejor_que_promedio" role="img" aria-label="En todos los dominios, mucho más de la mitad se cree por encima del promedio."></div></div>
+        </div>
+        <div class="e10__lead" id="e10Lead">
+          <div class="e10__lead-in">
+            <h2 id="e10-h">La mayoría se cree mejor<br />que la mayoría.</h2>
+            <p class="lede">¿Por qué le ganamos a la evidencia? Porque cada uno cree que el sesgo es <strong>de los demás</strong>. Pero si todos se comparan con el mismo grupo, <strong>no todos pueden estar arriba</strong>.</p>
+          </div>
+        </div>
+        <div class="e10__after" id="e10After">
+          <div class="e10__scrim" id="e10Scrim"></div>
+          <!-- queda SOLO la barra de "manejar" (remarcada); sube arriba y debajo aparece el texto -->
+          <div class="e10__herobar" id="e10HeroBar">
+            <div class="e10__herobar-head">
+              <span class="e10__herobar-cat">Manejar mejor que el promedio</span>
+              <span class="e10__herobar-val">93%</span>
+            </div>
+            <div class="e10__herobar-track">
+              <div class="e10__herobar-fill"></div>
+              <span class="e10__herobar-tick"><i>50%</i></span>
+            </div>
+          </div>
+          <div class="e10__herotext" id="e10HeroText">
+            <p class="e10__big">El <strong>93%</strong> dice manejar mejor que el promedio.</p>
+            <p class="muted">El gráfico no demuestra que manejemos mejor: demuestra que nos <strong>evaluamos con demasiada confianza</strong>. Y si acabás de pensar «yo sí manejo bien», así se siente un sesgo <strong>desde adentro</strong>.</p>
+            <p class="chart-src chart-src--static" data-src-for="10_mejor_que_promedio"></p>
           </div>
         </div>
       </div>

@@ -43,7 +43,8 @@ const SOURCES = {
   '05_cierre_percepcion': 'Dataset: Ceguera atencional — Simons & Chabris (1999), “gorilas invisibles”.',
   '05_confianza_precision': 'Dataset: Confianza vs. Acierto UTDT-2024 (n=1.120 respuestas).',
   '06_bate_pelota': 'Dataset: Cognitive Reflection Test (n=3.428) · Frederick (2005).',
-  '07_aversion_perdidas': 'Modelo: Teoría Prospectiva (Kahneman & Tversky, 1979) · perder pesa ≈ el doble que ganar lo mismo.',
+  /* 07_aversion_perdidas: SIN cita en pantalla (pedido del usuario: se sacó el
+     "Modelo: Teoría Prospectiva…" que quedaba superpuesto al gráfico). */
   '08_framing_enfermedad': 'Dataset: Problema de la Enfermedad Asiática (n=307) · Tversky & Kahneman (1981).',
   '09_dunning_kruger': 'Dataset: Habilidad Real vs. Autopercepción (n=84) · Kruger & Dunning (1999).',
   '10_mejor_que_promedio': 'Dataset: Encuesta “Mejor que el Promedio” · Svenson (1981) · Cross (1977).',
@@ -360,7 +361,9 @@ export const CHARTS = {
       tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong>: ${p.value}%<br>${items[p.dataIndex].nota}` },
       series: [{
         type: 'bar', barWidth: '46%',
-        data: items.map((i) => ({ value: i.value, itemStyle: { color: /Con/i.test(i.label) ? accent : hexA(accent, 0.32), borderRadius: [0, 8, 8, 0] } })),
+        // OJO: /Con/i matchea también "Sin CONtexto" → hay que anclar al inicio.
+        // La barra CON pista va en acento; la SIN pista (15%) va en GRIS.
+        data: items.map((i) => ({ value: i.value, itemStyle: { color: /^con/i.test(i.label) ? accent : 'rgba(148,161,172,0.55)', borderRadius: [0, 8, 8, 0] } })),
         label: { show: true, position: 'right', color: INK, fontFamily: DISPLAY, fontSize: 20, fontWeight: 600, formatter: '{c}%' },
         animationDuration: 1000, animationEasing: 'cubicOut', animationDelay: (i) => i * 150,
       }],
@@ -483,8 +486,10 @@ export const CHARTS = {
         const isMost = r.respuesta === mostResp, isCorrect = r.respuesta === correct;
         let color = neutral;
         if (correctOn && isCorrect) color = accent;
-        else if (wrongOn && isMost) color = hexA(loss, 0.85);
-        else if (isMost && pointOn) color = hexA(accent, 0.55);
+        // Mientras la flecha señala la más elegida (1er texto), esa barra va en
+        // NARANJA pleno; a partir del 2º texto vuelve al color neutro de las
+        // últimas dos, para no sacarle el resalte a la correcta ($0,05).
+        else if (isMost && pointOn && !wrongOn) color = accent;
         return {
           value: Math.round(r.porcentaje * grow),
           itemStyle: { color, borderRadius: [0, 8, 8, 0] },
