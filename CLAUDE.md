@@ -30,6 +30,11 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
 - **E4:** la onda FM subió un poco (padding-bottom 2.5→9vh, mismo tamaño) y las capas de E4 cambian por **corte
   seco** (`#e4 .viz__layer { transition:none }`): se sacó el crossfade hacia el gráfico de barras (dejaba un hueco
   en el que el scroll "no hacía nada").
+- **Copy de la auditoría narrativa (3 fixes, de la teórica M13):** E13 paso 2 suma muted *"la gente más educada
+  tiene más chances de creer en terapias alternativas…"* (puente brecha→confianza, callback a Dunning-Kruger) ·
+  E13 paso 3 suma muted *"«La duda es nuestro producto», escribió una tabacalera en 1969…"* (paga las promesas
+  de "otros lo saben y lo usan" de E9/portal3/sesgos-intro — Mercaderes de la duda) · el epígrafe final de E12 se
+  acortó a una línea (repetía la 1ª línea de pausa4).
 
 ## ⚡ ACTUALIZACIÓN jul-2026 (11ª vuelta — ajustes de feedback del usuario) — MANDA sobre todo lo de abajo
 - **E2 (pato/conejo con pista):** la figura es MÁS GRANDE (`.e2-figwrap` 60vh→`min(78vh,92%)`), tanto girando como quieta.
