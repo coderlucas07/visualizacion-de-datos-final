@@ -1,0 +1,19 @@
+# Archivos del repo que NO hace falta servir en el sitio publicado.
+# OJO: rutas ancladas con "/" a la raíz — sin eso un patrón como 840_560.jpg
+# también excluiría assets/840_560.jpg, que el sitio SÍ usa.
+/*.pdf
+/*.xlsx
+/serve.py
+/CLAUDE.md
+/README.md
+/prompt_claude_code.md
+/propuesta_v2_storytelling.md
+/package-lock.json
+/espiral_referencia.jpg
+/aversion_referencia.jpeg
+/bate y pelota.jpeg
+/WhatsApp Image*.jpeg
+/rotsnake-grayscale_custom-*.gif
+/840_560.jpg
+/Checker_shadow_illusion.svg
+/data/datos_visualizaciones.xlsx
