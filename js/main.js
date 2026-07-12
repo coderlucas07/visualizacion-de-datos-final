@@ -996,7 +996,7 @@ function tick() {
   // mientras el gráfico ENTRA desde la derecha y las barras se ESTIRAN hasta el tope;
   // (3) con el gráfico desplegado, se REMARCA la barra de "manejar" (hi); (4) el gráfico
   // se desvanece y queda SOLO esa barra, que SUBE a la parte de arriba (iso); (5) debajo
-  // aparece el texto del 93% (txt).
+  // aparece el texto del 95% (txt).
   if (!REDUCED && e10Sec && e10Pin) {
     const sp = sectionProgress(e10Sec);
     const enter = easeOut(clamp((sp - 0.06) / 0.40));   // título→izq · gráfico entra · barras crecen (full @0.46)

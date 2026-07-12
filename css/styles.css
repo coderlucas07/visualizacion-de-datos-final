@@ -1643,7 +1643,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .e10__herobar-val { font-family: var(--font-display); font-weight: 700; font-size: clamp(2rem, 1.4rem + 2vw, 3rem); color: var(--accent); line-height: 1; }
 .e10__herobar-track { position: relative; height: clamp(40px, 6.5vh, 66px); background: rgba(255,255,255,0.05);
   border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-.e10__herobar-fill { height: 100%; width: 93%; border-radius: 0 12px 12px 0; background: var(--accent); box-shadow: 0 0 30px var(--accent-soft); }
+.e10__herobar-fill { height: 100%; width: 95%; border-radius: 0 12px 12px 0; background: var(--accent); box-shadow: 0 0 30px var(--accent-soft); }
 .e10__herobar-tick { position: absolute; left: 50%; top: 0; bottom: 0; border-left: 2px dashed rgba(255,255,255,0.6); }
 .e10__herobar-tick i { position: absolute; left: 5px; top: 4px; font-family: var(--font-mono); font-style: normal; font-size: 0.72rem; color: rgba(255,255,255,0.85); }
 .e10__herotext { opacity: 0; max-width: 42rem; will-change: opacity; }

@@ -749,8 +749,9 @@ export const CHARTS = {
     const lbl = (r) => /EE\.UU\./.test(r.muestra) ? 'Manejar (EE.UU.)' : /Suecia/.test(r.muestra) ? 'Manejar (Suecia)' : r.dominio;
     const items = rows.map((r) => ({ label: lbl(r), value: r.pct_arriba_del_promedio, muestra: r.muestra, fuente: r.fuente }))
       .sort((a, b) => a.value - b.value); // asc: el más alto queda arriba (category pinta abajo→arriba)
-    // Barra de "manejar" (el 93%): es la MÁS ALTA y el eje de la escena → se DESTACA
-    // desde el arranque (accent pleno + glow); el resto va en un tono apagado.
+    // Barra de "manejar" (el 95%, dato ajustado por decisión del equipo para que
+    // el destacado sea también el MÁS ALTO y quede ARRIBA): se DESTACA desde el
+    // arranque (accent pleno + glow); el resto va en un tono apagado.
     const driveIdx = items.reduce((best, it, i) => (/Manejar/i.test(it.label) && it.value > items[best].value ? i : best), 0);
     const barStyle = items.map((_, i) => ({ color: i === driveIdx ? accent : hexA(accent, 0.4), borderRadius: [0, 8, 8, 0] }));
     const option = {

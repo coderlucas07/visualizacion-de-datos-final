@@ -23,12 +23,13 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   muestra `EL MÁS REPORTADO` (solo en el máx) → `37% lo reportó` (display grande) → `Por qué: <explicación
   científica>`. La barra de mayor % (`maxIdx`) se DESTACA: accent pleno + glow + label en accent; el resto en
   `hexA(accent,0.4)`.
-- **G10 (mejor que el promedio): la barra más alta se DESTACA desde el arranque.** Se sacó la opacidad graduada
-  (`0.45+0.5*value`, casi no diferenciaba con valores 70–94); ahora la barra de "Manejar" (`driveIdx`, el 93%,
-  eje de la escena) va en accent pleno + glow base y label en accent, el resto en `hexA(accent,0.4)` con label
-  atenuado. La isolación del hero (`h`) intensifica sobre esa base. Nota: hay barras de 94% (humor/clases) 1px
-  más altas que el 93% resaltado, pero el glow manda la atención y 93 vs 94 es imperceptible (coherente con la
-  tesis "93% manejar").
+- **G10 (mejor que el promedio): la barra destacada se DESTACA desde el arranque y va ARRIBA.** Se sacó la
+  opacidad graduada (`0.45+0.5*value`, casi no diferenciaba con valores 70–94); la barra de "Manejar" (`driveIdx`)
+  va en accent pleno + glow base y label en accent, el resto en `hexA(accent,0.4)` con label atenuado. La
+  isolación del hero (`h`) intensifica sobre esa base. ⚠️ **DATO AJUSTADO por decisión del usuario:** Manejar
+  EE.UU. pasó de 93 → **95%** (así el destacado es también el máximo y queda ARRIBA, sobre los 94% de humor/
+  clases). Actualizado en el JSON, el xlsx espejo, la barra-hero de E10 (95% en HTML + width 95% en CSS) y el
+  copy del remate ("El 95% dice manejar…"). Si se vuelve al dato real (93), tocar TODOS esos lugares juntos.
 
 ## ⚡ ACTUALIZACIÓN jul-2026 (11ª vuelta b — REORDEN de Sesgos + conectores) — MANDA sobre todo lo de abajo
 - **NUEVO ORDEN de Sesgos (pedido del usuario):** portal3 → ¿qué es un sesgo? → pausa3 → fantasmas → E12 (caras +
