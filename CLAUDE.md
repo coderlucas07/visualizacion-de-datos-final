@@ -14,6 +14,22 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   código pero no este archivo, el contexto del resto queda desactualizado → siempre van juntos.
 - Si algo de acá ya no es cierto, corregilo (no agregues notas sueltas que se contradigan).
 
+## ⚡ ACTUALIZACIÓN jul-2026 (12ª vuelta — pulido Sesgos: E12/G12/G10) — MANDA sobre todo lo de abajo
+- **E12 (caras, scroll horizontal): MENOS negro entre imágenes.** Los paneles de las caras dejaron de ser
+  `flex:0 0 100vw` (una pantalla cada uno) → `flex:0 0 auto` (se achican al contenido) + gap chico
+  (`padding:0 clamp(1.2rem,2.5vw,3rem)`); las imágenes más grandes (`max-height 64→72vh`, `max-width 82→60vw`).
+  El track se recorre por `scrollWidth` en `tick()`, así que la matemática del scroll se ajusta sola (no tocar).
+- **G12 (paranormal): tooltip nuevo + barra top destacada.** El tooltip YA NO repite el ítem (está en el eje Y):
+  muestra `EL MÁS REPORTADO` (solo en el máx) → `37% lo reportó` (display grande) → `Por qué: <explicación
+  científica>`. La barra de mayor % (`maxIdx`) se DESTACA: accent pleno + glow + label en accent; el resto en
+  `hexA(accent,0.4)`.
+- **G10 (mejor que el promedio): la barra más alta se DESTACA desde el arranque.** Se sacó la opacidad graduada
+  (`0.45+0.5*value`, casi no diferenciaba con valores 70–94); ahora la barra de "Manejar" (`driveIdx`, el 93%,
+  eje de la escena) va en accent pleno + glow base y label en accent, el resto en `hexA(accent,0.4)` con label
+  atenuado. La isolación del hero (`h`) intensifica sobre esa base. Nota: hay barras de 94% (humor/clases) 1px
+  más altas que el 93% resaltado, pero el glow manda la atención y 93 vs 94 es imperceptible (coherente con la
+  tesis "93% manejar").
+
 ## ⚡ ACTUALIZACIÓN jul-2026 (11ª vuelta b — REORDEN de Sesgos + conectores) — MANDA sobre todo lo de abajo
 - **NUEVO ORDEN de Sesgos (pedido del usuario):** portal3 → ¿qué es un sesgo? → pausa3 → fantasmas → E12 (caras +
   paranormal) → **pausa4 (conector nuevo)** → **E13 (brecha ciencia↔público)** → **E10 (mejor que el promedio,

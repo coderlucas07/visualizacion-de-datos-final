@@ -904,9 +904,12 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.14em;
   text-transform: uppercase; color: var(--accent); margin-top: 1.8rem;
 }
-.hpanel--face { gap: 1.4rem; }
+/* Los paneles de las caras se ACHICAN al contenido (no 100vw cada uno) y quedan
+   pegados con un gap chico → mucho menos negro entre imagen e imagen. El track
+   se recorre por scrollWidth, así que la matemática del scroll se ajusta sola. */
+.hpanel--face { flex: 0 0 auto; gap: 1.4rem; padding: 0 clamp(1.2rem, 2.5vw, 3rem); }
 .hpanel--face img {
-  max-height: 64vh; max-width: 82vw; width: auto; border-radius: var(--radius);
+  max-height: 72vh; max-width: 60vw; width: auto; border-radius: var(--radius);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
 }
 .hpanel--face figcaption {

@@ -749,9 +749,10 @@ export const CHARTS = {
     const lbl = (r) => /EE\.UU\./.test(r.muestra) ? 'Manejar (EE.UU.)' : /Suecia/.test(r.muestra) ? 'Manejar (Suecia)' : r.dominio;
     const items = rows.map((r) => ({ label: lbl(r), value: r.pct_arriba_del_promedio, muestra: r.muestra, fuente: r.fuente }))
       .sort((a, b) => a.value - b.value); // asc: el más alto queda arriba (category pinta abajo→arriba)
-    const barStyle = items.map((i) => ({ color: hexA(accent, 0.45 + 0.5 * (i.value / 100)), borderRadius: [0, 8, 8, 0] }));
-    // Barra de "manejar" (el 93%): es la que se REMARCA antes de quedar sola.
+    // Barra de "manejar" (el 93%): es la MÁS ALTA y el eje de la escena → se DESTACA
+    // desde el arranque (accent pleno + glow); el resto va en un tono apagado.
     const driveIdx = items.reduce((best, it, i) => (/Manejar/i.test(it.label) && it.value > items[best].value ? i : best), 0);
+    const barStyle = items.map((_, i) => ({ color: i === driveIdx ? accent : hexA(accent, 0.4), borderRadius: [0, 8, 8, 0] }));
     const option = {
       ...baseOption(accent),
       title: { show: false },     // el titular es el texto del HTML (lead), no compite
@@ -762,7 +763,7 @@ export const CHARTS = {
       series: [{
         type: 'bar', barWidth: '60%', animation: false,
         data: items.map((i, idx) => ({ value: 0, itemStyle: barStyle[idx] })),
-        label: { show: true, position: 'right', color: INK, fontFamily: DISPLAY, fontSize: 17, fontWeight: 600, formatter: (pm) => pm.value >= 1 ? Math.round(pm.value) + '%' : '' },
+        label: { show: true, position: 'right', color: INK_DIM, fontFamily: DISPLAY, fontSize: 17, fontWeight: 600, formatter: (pm) => pm.value >= 1 ? Math.round(pm.value) + '%' : '' },
         markLine: { silent: true, symbol: 'none', lineStyle: { color: INK_DIM, type: 'dashed', width: 1.5 }, label: { show: true, formatter: '50%', position: 'end', color: INK_DIM, fontFamily: DISPLAY }, data: [{ xAxis: 50 }] },
       }],
     };
@@ -778,11 +779,12 @@ export const CHARTS = {
       chart.setOption({ series: [{ data: items.map((it, idx) => {
         const value = +(it.value * g).toFixed(1);
         if (idx === driveIdx) {
-          const st = { ...barStyle[idx] };
-          if (h > 0) { st.color = accent; st.shadowBlur = 22 * h; st.shadowColor = hexA(accent, 0.7); st.borderColor = accent; st.borderWidth = 2 * h; }
-          return { value, itemStyle: st };
+          // destacada SIEMPRE (accent + glow base); h intensifica el glow/borde
+          const st = { color: accent, borderRadius: [0, 8, 8, 0], shadowBlur: 12 + 18 * h, shadowColor: hexA(accent, 0.5 + 0.2 * h) };
+          if (h > 0) { st.borderColor = accent; st.borderWidth = 2 * h; }
+          return { value, itemStyle: st, label: { color: accent, fontSize: 20 } };
         }
-        return { value, itemStyle: { ...barStyle[idx], opacity: 1 - 0.62 * h } };
+        return { value, itemStyle: { ...barStyle[idx], opacity: 1 - 0.55 * h }, label: { color: INK_DIM } };
       }) }] });
     };
     container.__render(opts.reduced ? 1 : 0, 0);
@@ -833,17 +835,29 @@ export const CHARTS = {
     const rows = rowsToObjects(data['12_pareidolia_paranormal']);
     const accent = accentOf(container);
     const ordered = rows.slice().sort((a, b) => a.pct_si - b.pct_si);
+    const maxV = Math.max(...ordered.map((r) => r.pct_si));
+    const maxIdx = ordered.findIndex((r) => r.pct_si === maxV);   // el más reportado (se destaca)
+    // El ítem ya está en el eje Y: el tooltip NO lo repite. Muestra el % grande y
+    // la explicación científica (el "por qué"), que es el dato nuevo.
+    const tip = (p) => {
+      const r = ordered[p.dataIndex];
+      const top = p.dataIndex === maxIdx ? `<div style="font-family:${MONO};font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:${accent};margin-bottom:4px">El más reportado</div>` : '';
+      return `${top}<div style="font-family:${DISPLAY};font-weight:700;font-size:22px;color:${INK};line-height:1">${p.value}%<span style="font-family:${FONT};font-weight:400;font-size:13px;color:${INK_DIM}"> lo reportó</span></div><div style="margin-top:8px;font-size:13px"><span style="color:${accent}">Por qué:</span> ${r.explicacion_cientifica}</div>`;
+    };
     const option = {
       ...baseOption(accent),
       title: titleBlock('Cuántos vivieron algo “paranormal”', 'Experiencias reportadas · cada una tiene explicación científica'),
       grid: { left: 16, right: 48, top: 96, bottom: 24, containLabel: true },
       xAxis: valAxis({ max: 50, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 14 } }),
       yAxis: catAxis({ data: ordered.map((r) => r.experiencia), axisLabel: { color: INK, fontSize: 15, width: 250, overflow: 'break' } }),
-      tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong>: ${p.value}%<br><span style="color:${accent}">Explicación:</span> ${ordered[p.dataIndex].explicacion_cientifica}` },
+      tooltip: { ...baseOption(accent).tooltip, formatter: tip },
       series: [{
         type: 'bar', barWidth: '56%',
-        data: ordered.map((r) => ({ value: r.pct_si, itemStyle: { color: accent, borderRadius: [0, 8, 8, 0] } })),
-        label: { show: true, position: 'right', color: INK, fontFamily: DISPLAY, fontSize: 15, fontWeight: 600, formatter: '{c}%' },
+        // El más reportado se DESTACA: accent pleno + glow; el resto, tono apagado.
+        data: ordered.map((r, i) => (i === maxIdx
+          ? { value: r.pct_si, itemStyle: { color: accent, borderRadius: [0, 8, 8, 0], shadowBlur: 20, shadowColor: hexA(accent, 0.55) }, label: { color: accent, fontSize: 19 } }
+          : { value: r.pct_si, itemStyle: { color: hexA(accent, 0.4), borderRadius: [0, 8, 8, 0] } })),
+        label: { show: true, position: 'right', color: INK_DIM, fontFamily: DISPLAY, fontSize: 15, fontWeight: 600, formatter: '{c}%' },
         animationDuration: 1100, animationEasing: 'cubicOut', animationDelay: (i) => i * 120,
       }],
     };
