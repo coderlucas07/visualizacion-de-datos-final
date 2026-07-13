@@ -236,19 +236,21 @@ body.at-top .menu-btn { opacity: 0; pointer-events: none; }
 .cover__kicker::before, .cover__kicker::after {
   content: ''; height: 1px; width: clamp(2.5rem, 8vw, 7rem); background: var(--line);
 }
+/* Título de portada: GRANDE y centrado, sin kicker (se sacó el
+   "Visualización de datos · UTDT"; la materia vive en el pie). */
 .cover__title { margin: 0; font-family: var(--font-hero); text-transform: uppercase; }
 .cover__title .t1 {
   display: block;
   font-weight: 500;
-  font-size: clamp(0.85rem, 0.62rem + 1.2vw, 1.4rem);
+  font-size: clamp(1.1rem, 0.75rem + 1.7vw, 2rem);
   letter-spacing: 0.3em;
   color: var(--ink-dim);
-  margin-bottom: 1.1rem;
+  margin-bottom: 1.3rem;
 }
 .cover__title .t2 {
   display: block;
   font-weight: 800;
-  font-size: clamp(1.9rem, 0.95rem + 4.3vw, 4.6rem);
+  font-size: clamp(2.4rem, 1.1rem + 5.8vw, 6.2rem);
   letter-spacing: 0.02em;
   color: var(--accent);
   text-shadow: 0 0 38px rgba(143, 216, 255, 0.4), 0 0 120px rgba(143, 216, 255, 0.18);
