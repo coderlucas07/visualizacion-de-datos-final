@@ -106,8 +106,8 @@ code { font-family: var(--font-mono); font-size: 0.88em; background: rgba(228,23
 /* MENÚ DE MÓDULOS (arriba a la izquierda)                               */
 /* ===================================================================== */
 /* Al inicio de la portada no hay NADA en pantalla: solo el video */
-body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none; }
-.menu-btn, .progress { transition: opacity 0.5s var(--ease); }
+body.at-top .menu-btn { opacity: 0; pointer-events: none; }
+.menu-btn { transition: opacity 0.5s var(--ease); }
 
 .menu-btn {
   position: fixed; top: 1.1rem; left: 1.2rem; z-index: 130;
@@ -616,12 +616,10 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 .scrolly--stage .scrolly__steps { width: 100%; margin-top: -100vh; position: relative; z-index: 2; pointer-events: none; }
 .scrolly--stage .viz__layer { padding: 0; }
 .scrolly--stage .viz__chart { max-width: none; width: 100%; height: 100vh; }
-/* degradado inferior para que el panel se lea sobre el gráfico */
-.scrolly--stage .scrolly__graphic::after {
-  content: ''; position: absolute; inset: auto 0 0 0; height: 42vh; z-index: 1;
-  background: linear-gradient(to top, rgba(10,13,16,0.92), rgba(10,13,16,0));
-  pointer-events: none;
-}
+/* SIN degradado inferior (pedido del usuario): oscurecía el 42% de abajo de la
+   pantalla y los gráficos se veían más apagados hacia abajo. Las tarjetas de
+   texto ya tienen fondo propio (scrim + blur), así que se leen igual. */
+.scrolly--stage .scrolly__graphic::after { display: none; }
 .scrolly--stage .step { min-height: 100vh; display: flex; align-items: flex-end; justify-content: flex-start; padding: 0 var(--pad-x) 7vh; }
 .scrolly--stage .step__card {
   pointer-events: auto;
@@ -708,14 +706,14 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
   border-radius: var(--radius);
   padding: clamp(1.5rem, 4vh, 3rem) 1.2rem;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 12%, transparent), color-mix(in srgb, var(--accent) 3%, transparent));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 11%, transparent), color-mix(in srgb, var(--accent) 7%, transparent));
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: clamp(1rem, 2.5vh, 2rem);
   transition: border-color 0.25s var(--ease), background 0.25s var(--ease);
 }
 .thirds__cell:hover, .thirds__cell:focus-visible {
   border-color: var(--accent); outline: none;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 18%, transparent), color-mix(in srgb, var(--accent) 5%, transparent));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 17%, transparent), color-mix(in srgb, var(--accent) 11%, transparent));
 }
 .thirds__ico { width: clamp(52px, 6vw, 96px); height: clamp(52px, 6vw, 96px); color: var(--accent); }
 .thirds__pct { font-family: var(--font-display); font-weight: 700; font-size: clamp(3.2rem, 2rem + 5vw, 7rem); color: var(--ink); line-height: 0.95; }
@@ -740,6 +738,80 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   transform: translateY(101%); transition: transform 0.32s var(--ease);
 }
 .thirds__cell:hover .thirds__tip, .thirds__cell:focus-visible .thirds__tip { transform: translateY(0); }
+
+/* ===== FX por sentido (hover): cada carta te hace VIVIR lo que reporta =====
+   La capa .thirds__fx vive detrás del contenido; el tooltip queda arriba. */
+.thirds__fx { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; border-radius: inherit; }
+/* el contenido queda ARRIBA del fx; ojo con NO pisar el position:absolute del tip */
+.thirds__cell > *:not(.thirds__fx):not(.thirds__tip):not(.thirds__info) { position: relative; z-index: 1; }
+.thirds__cell .thirds__tip { z-index: 2; }
+
+/* VISUAL — la luz FALLA (parpadeo de foco viejo) y una SOMBRA cruza la carta:
+   ves moverse algo que no está. */
+.t-visual:hover, .t-visual:focus-visible { animation: cellflicker 2.8s steps(1, end) infinite; }
+@keyframes cellflicker {
+  0%, 100% { filter: brightness(1); }
+  6%  { filter: brightness(0.45); }
+  8%  { filter: brightness(1); }
+  10% { filter: brightness(0.3); }
+  12% { filter: brightness(1.15); }
+  14% { filter: brightness(1); }
+  52% { filter: brightness(0.7); }
+  55% { filter: brightness(1); }
+}
+.t-visual .thirds__fx::before {
+  content: ''; position: absolute; top: -12%; bottom: -12%; left: -40%; width: 34%;
+  background: radial-gradient(46% 38% at 50% 34%, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.6) 52%, transparent 74%);
+  filter: blur(13px); opacity: 0;
+}
+.t-visual:hover .thirds__fx::before, .t-visual:focus-visible .thirds__fx::before { animation: shadowpass 2.8s ease-in-out infinite; }
+@keyframes shadowpass {
+  0%, 8% { transform: translateX(0); opacity: 0; }
+  16% { opacity: 0.95; }
+  58% { transform: translateX(400%); opacity: 0.85; }
+  70%, 100% { transform: translateX(460%); opacity: 0; }
+}
+
+/* SONORO — ondas que se EXPANDEN desde el parlante y el % LATE al ritmo:
+   el sonido que nadie más escucha. */
+.t-sonoro .thirds__fx::before,
+.t-sonoro .thirds__fx::after {
+  content: ''; position: absolute; left: 50%; top: 30%;
+  width: 74px; height: 74px; margin: -37px 0 0 -37px;
+  border: 2px solid var(--accent); border-radius: 50%;
+  opacity: 0; transform: scale(0.35);
+}
+.t-sonoro:hover .thirds__fx::before, .t-sonoro:focus-visible .thirds__fx::before { animation: soundring 1.7s ease-out infinite; }
+.t-sonoro:hover .thirds__fx::after, .t-sonoro:focus-visible .thirds__fx::after { animation: soundring 1.7s ease-out 0.85s infinite; }
+@keyframes soundring {
+  0% { opacity: 0.9; transform: scale(0.35); }
+  100% { opacity: 0; transform: scale(5); }
+}
+.t-sonoro:hover .thirds__pct, .t-sonoro:focus-visible .thirds__pct { animation: soundthump 0.85s ease-in-out infinite; }
+@keyframes soundthump { 0%, 100% { transform: scale(1); } 45% { transform: scale(1.07); } }
+
+/* SENSORIAL — la carta TIRITA (escalofrío) y una bruma pálida BAJA por ella:
+   el frío que se siente sin causa. */
+.t-sensorial:hover, .t-sensorial:focus-visible { animation: shiver 0.4s linear infinite; }
+@keyframes shiver {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(1.4px, -1px) rotate(0.14deg); }
+  50% { transform: translate(-1.3px, 1px) rotate(-0.18deg); }
+  75% { transform: translate(1px, 1.3px) rotate(0.1deg); }
+}
+.t-sensorial .thirds__fx::before {
+  content: ''; position: absolute; left: -15%; right: -15%; top: -50%; height: 48%;
+  background: linear-gradient(to bottom, rgba(228, 234, 239, 0.30), rgba(228, 234, 239, 0.08) 62%, transparent);
+  filter: blur(11px); opacity: 0;
+}
+.t-sensorial:hover .thirds__fx::before, .t-sensorial:focus-visible .thirds__fx::before { animation: coldmist 2.8s ease-in-out infinite; }
+@keyframes coldmist {
+  0% { transform: translateY(0); opacity: 0; }
+  22% { opacity: 1; }
+  72% { transform: translateY(250%); opacity: 0.55; }
+  100% { transform: translateY(300%); opacity: 0; }
+}
+
 @media (max-width: 700px) { .thirds__grid { grid-template-columns: 1fr; } }
 /* sin hover (touch/reduced): el ejemplo queda visible abajo, no escondido */
 @media (hover: none) {
@@ -887,7 +959,7 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
 #e9 .step__card { max-width: 42rem; text-align: center; }
 /* el panel arriba (para gráficos con el dato abajo) */
 .scrolly--stage.stage--top .step { align-items: flex-start; padding: 13vh var(--pad-x) 0; }
-.scrolly--stage.stage--top .scrolly__graphic::after { inset: 0 0 auto 0; background: linear-gradient(to bottom, rgba(10,13,16,0.92), rgba(10,13,16,0)); }
+.scrolly--stage.stage--top .scrolly__graphic::after { display: none; }   /* sin scrim (uniformidad) */
 
 /* ===== SCROLL HORIZONTAL (E12 · caras) =====
    El track se recorre de costado con el scroll vertical (transform en tick()).
@@ -1786,10 +1858,6 @@ body.at-top .menu-btn, body.at-top .progress { opacity: 0; pointer-events: none;
   letter-spacing: 0.16em; text-transform: uppercase;
   color: var(--ink-dim); margin: 0 auto; max-width: none; line-height: 1.7;
 }
-
-/* ----------------------------- Progreso de lectura ----------------------------- */
-.progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 100; background: rgba(228,234,239,0.06); }
-.progress__bar { display: block; height: 100%; width: 100%; background: var(--accent); transform: scaleX(0); transform-origin: 0 50%; transition: transform 0.1s linear; will-change: transform; }
 
 /* ----------------------------- Aviso de error de datos ----------------------------- */
 .data-error { position: fixed; inset: auto 1rem 1rem 1rem; z-index: 200; background: #101A22; border: 1px solid var(--accent); border-radius: var(--radius); padding: 1rem 1.25rem; max-width: 40rem; margin-inline: auto; }

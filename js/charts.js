@@ -33,27 +33,28 @@ const FONT = 'Hanken Grotesk, system-ui, sans-serif';
 const DISPLAY = 'Spectral, Georgia, serif';
 const MONO = 'IBM Plex Mono, ui-monospace, monospace';
 
-/* ---------- Fuente de cada gráfico (pedido: todo gráfico cita su dataset) ---------- */
+/* ---------- Fuente de cada gráfico (solo el NOMBRE de la fuente: sin "UTDT",
+   sin tamaños de muestra "n=", sin referencias a la cátedra/módulos) ---------- */
 const SOURCES = {
-  '01_pato_conejo': 'Dataset: Percepción Biestable UTDT-2024 (n=412) · figura de Jastrow (1899).',
-  '02_contexto_cambio': 'Dataset: Priming Contextual UTDT-2024 (n=412) · efecto de la pista previa.',
-  '03_ilusiones_movimiento_waffle': 'Dataset: Encuesta de Movimiento Ilusorio (n=1.000) · “Rotating Snakes”, Kitaoka (2003).',
-  '04_ilusion_auditiva': 'Dataset: Relevamiento de Audio Ambiguo (n=600) · estímulo “bici / alquiler”.',
-  '04b_auditiva_con_pista': 'Dataset: Audio Ambiguo con texto-pista (n=600) · el rótulo previo sesga lo que se oye.',
-  '05_cierre_percepcion': 'Dataset: Ceguera atencional — Simons & Chabris (1999), “gorilas invisibles”.',
-  '05_confianza_precision': 'Dataset: Confianza vs. Acierto UTDT-2024 (n=1.120 respuestas).',
-  '06_bate_pelota': 'Dataset: Cognitive Reflection Test (n=3.428) · Frederick (2005).',
+  '01_pato_conejo': 'Fuente: Jastrow (1899).',
+  '02_contexto_cambio': 'Fuente: Jastrow (1899).',
+  '03_ilusiones_movimiento_waffle': 'Fuente: “Rotating Snakes”, Kitaoka (2003).',
+  '04_ilusion_auditiva': 'Fuente: audio ambiguo “bici / alquiler”.',
+  '04b_auditiva_con_pista': 'Fuente: audio ambiguo con texto-pista.',
+  '05_cierre_percepcion': 'Fuente: Simons & Chabris (1999).',
+  '05_confianza_precision': 'Fuente: encuesta de confianza vs. acierto.',
+  '06_bate_pelota': 'Fuente: Frederick (2005).',
   /* 07_aversion_perdidas: SIN cita en pantalla (pedido del usuario: se sacó el
      "Modelo: Teoría Prospectiva…" que quedaba superpuesto al gráfico). */
-  '08_framing_enfermedad': 'Dataset: Problema de la Enfermedad Asiática (n=307) · Tversky & Kahneman (1981).',
-  '09_dunning_kruger': 'Dataset: Habilidad Real vs. Autopercepción (n=84) · Kruger & Dunning (1999).',
-  '10_mejor_que_promedio': 'Dataset: Encuesta “Mejor que el Promedio” · Svenson (1981) · Cross (1977).',
-  '11_efecto_forer': 'Dataset: Validación de Perfiles Genéricos (n=39) · Forer (1948).',
-  '11b_texto_barnum': 'Dataset: Técnicas de Lectura en Frío (efecto Barnum) · Forer (1948).',
-  '12_pareidolia_paranormal': 'Dataset: Encuesta de Experiencias Paranormales (YouGov, 2021, n=1.000).',
-  '13_brecha_consenso': 'Dataset: Brecha Ciencia–Público · Pew Research (2015) + Pulsar UBA (Argentina, 2023).',
-  '14_fantasmas_embudo': 'Dataset: Creencia y experiencias paranormales · Módulo 13 (cátedra) + Ipsos Global Advisor (2018).',
-  '14b_fantasmas_reportes': 'Dataset: Tipos de reporte “paranormal” · Módulo 13 — Sesgos (cátedra).',
+  '08_framing_enfermedad': 'Fuente: Tversky & Kahneman (1981).',
+  '09_dunning_kruger': 'Fuente: Kruger & Dunning (1999).',
+  '10_mejor_que_promedio': 'Fuente: Svenson (1981) · Cross (1977).',
+  '11_efecto_forer': 'Fuente: Forer (1948).',
+  '11b_texto_barnum': 'Fuente: Forer (1948).',
+  '12_pareidolia_paranormal': 'Fuente: YouGov (2021).',
+  '13_brecha_consenso': 'Fuente: Pew Research (2015) · Pulsar UBA (2023).',
+  '14_fantasmas_embudo': 'Fuente: Ipsos Global Advisor (2018).',
+  '14b_fantasmas_reportes': 'Fuente: encuestas de experiencias paranormales.',
 };
 
 /* Inserta la cita: usa el slot [data-src-for] de la sección si existe;
@@ -760,7 +761,14 @@ export const CHARTS = {
       grid: { left: 12, right: 92, top: '12%', bottom: '11%', containLabel: true },
       xAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 14 } }),
       yAxis: catAxis({ data: items.map((i) => i.label), axisLabel: { fontSize: 15 } }),
-      tooltip: { ...baseOption(accent).tooltip, formatter: (p) => `<strong>${p.name}</strong> — ${items[p.dataIndex].value}%<br>${items[p.dataIndex].muestra} · ${items[p.dataIndex].fuente}` },
+      // Tooltip de IMPACTO: el % gigante + la cuenta imposible (arriba del promedio
+      // solo entra la mitad → el resto se está engañando, sí o sí).
+      tooltip: { ...baseOption(accent).tooltip, formatter: (p) => {
+        const v = items[p.dataIndex].value;
+        return `<div style="font-family:${DISPLAY};font-weight:700;font-size:30px;line-height:1;color:${accent};margin-bottom:4px">${v}%</div>`
+          + `<div>se cree arriba del promedio</div>`
+          + `<div style="margin-top:7px;font-size:12.5px;color:${INK_DIM};line-height:1.5">Arriba de la mitad solo entran 50 de cada 100.<br>Los otros <b style="color:${INK}">${v - 50}</b> se están engañando.</div>`;
+      } },
       series: [{
         type: 'bar', barWidth: '60%', animation: false,
         data: items.map((i, idx) => ({ value: 0, itemStyle: barStyle[idx] })),
@@ -898,9 +906,22 @@ export const CHARTS = {
         : { data: ['Ciencia', 'Público'], right: '5%', top: 30, textStyle: { color: INK_DIM, fontSize: 14, fontFamily: FONT }, icon: 'roundRect' },
       xAxis: catAxis({ data: cats, axisLabel: { color: INK, fontSize: 15, interval: 0, lineHeight: 16 } }),
       yAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 14 } }),
+      // Tooltip con MINI-BARRAS: la distancia ciencia↔público se VE (dos barritas
+      // a escala) y se remata en humano ("de cada 100 personas, X no lo creen").
       tooltip: {
         ...baseOption(accent).tooltip, trigger: 'axis', axisPointer: { type: 'shadow' },
-        formatter: (ps) => { const it = items[ps[0].dataIndex]; return `<strong>${it.tema}</strong><br>Ciencia: ${it.ciencia}% · Público: ${it.publico}%<br><span style="color:${accent}">Brecha:</span> ${it.brecha} pp`; },
+        formatter: (ps) => {
+          const it = items[ps[0].dataIndex];
+          const bar = (label, v, color) =>
+            `<div style="display:flex;justify-content:space-between;gap:14px;font-size:12px;color:${INK_DIM};margin:7px 0 3px">`
+            + `<span>${label}</span><b style="color:${INK}">${v}%</b></div>`
+            + `<div style="width:210px;height:7px;border-radius:4px;background:rgba(228,234,239,0.12)">`
+            + `<div style="width:${v}%;height:100%;border-radius:4px;background:${color}"></div></div>`;
+          return `<strong>${it.tema}</strong>`
+            + bar('Ciencia', it.ciencia, accent)
+            + bar('Público', it.publico, hexA(accent, 0.45))
+            + `<div style="margin-top:9px;font-size:12.5px;color:${INK_DIM};line-height:1.5">De cada 100 personas, <b style="color:${INK}">${100 - it.publico}</b> todavía no lo creen.</div>`;
+        },
       },
       series: [
         { name: 'Ciencia', type: 'bar', barWidth: '32%', data: items.map(() => 0), itemStyle: { color: accent, borderRadius: [4, 4, 0, 0] }, label: { show: false, position: 'top', color: INK, fontFamily: DISPLAY, fontSize: 15, formatter: '{c}%' },
@@ -996,7 +1017,8 @@ export const CHARTS = {
       <p class="thirds__head">¿Qué forma toma ese <strong>“algo”</strong>?</p>
       <div class="thirds__grid">
         ${rows.map((r) => `
-          <div class="thirds__cell" tabindex="0" aria-label="${r.tipo}: ${r.pct}%. ${r.ejemplos}">
+          <div class="thirds__cell t-${r.tipo.toLowerCase()}" tabindex="0" aria-label="${r.tipo}: ${r.pct}%. ${r.ejemplos}">
+            <span class="thirds__fx" aria-hidden="true"></span>
             <span class="thirds__info" aria-hidden="true">i</span>
             <svg class="thirds__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ico[r.tipo] || ''}</svg>
             <span class="thirds__pct">${r.pct}%</span>

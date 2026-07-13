@@ -14,6 +14,29 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   código pero no este archivo, el contexto del resto queda desactualizado → siempre van juntos.
 - Si algo de acá ya no es cierto, corregilo (no agregues notas sueltas que se contradigan).
 
+## ⚡ ACTUALIZACIÓN jul-2026 (13ª vuelta — fuentes limpias, FX de tercios, tooltips, sin scrim ni progreso) — MANDA sobre todo lo de abajo
+- **FUENTES de todos los gráficos LIMPIAS (pedido del usuario):** `SOURCES` (charts.js) ahora dice solo
+  "Fuente: <nombre real>" — se sacaron "UTDT", los tamaños de muestra "(n=…)" y toda referencia a la
+  cátedra/módulos. NO volver a agregarlos. (La cita estática de E3 en el HTML ya estaba bien.)
+- **TERCIOS (¿Qué forma toma ese "algo"?): FX ilustrativos por carta al hover** — cada carta te hace VIVIR lo
+  que reporta: **Visual** = la luz de la carta PARPADEA como foco viejo + una SOMBRA borrosa la cruza
+  (`cellflicker`/`shadowpass`) · **Sonoro** = ondas que se EXPANDEN desde el parlante + el % LATE
+  (`soundring`/`soundthump`) · **Sensorial** = la carta TIRITA (escalofrío) + una bruma pálida BAJA
+  (`shiver`/`coldmist`). El handler agrega clase `t-visual/t-sonoro/t-sensorial` + un `<span class="thirds__fx">`
+  (los FX viven ahí, detrás del contenido). ⚠️ La regla de z-index excluye `.thirds__tip/.thirds__info`
+  (`:not()`): si se les pone `position:relative` se rompe el tooltip que sube. Gradiente de las cartas APLANADO
+  (11→7%, hover 17→11%) para que no se "apaguen" hacia abajo.
+- **Tooltips con IMPACTO (sin cátedra/módulos):** **G13** (ciencia-público) = tema + MINI-BARRAS a escala
+  (Ciencia/Público) + remate humano "De cada 100 personas, X todavía no lo creen" (se sacó "Brecha: X pp") ·
+  **G10** (mejor que el promedio) = % gigante + "Arriba de la mitad solo entran 50 de cada 100. Los otros X se
+  están engañando." (se sacó "muestra · fuente", que mostraba "Módulo 13 (cátedra)").
+- **SIN scrim inferior en las escenas stage** (pedido del usuario: los gráficos se veían más oscuros hacia
+  abajo): `.scrolly--stage .scrolly__graphic::after { display:none }` (ídem `stage--top`). Las tarjetas
+  flotantes se leen igual porque tienen fondo propio. Si un texto suelto no se lee, darle fondo AL TEXTO,
+  no volver a oscurecer el gráfico.
+- **SIN barra de progreso de lectura** (pedido del usuario): se eliminó `.progress/#progressBar` del HTML,
+  el CSS y el JS (tick ya no calcula el progreso de lectura).
+
 ## ⚡ ACTUALIZACIÓN jul-2026 (12ª vuelta — pulido Sesgos: E12/G12/G10) — MANDA sobre todo lo de abajo
 - **E12 (caras, scroll horizontal): MENOS negro entre imágenes.** Los paneles de las caras dejaron de ser
   `flex:0 0 100vw` (una pantalla cada uno) → `flex:0 0 auto` (se achican al contenido) + gap chico

@@ -50,7 +50,6 @@ let cierreSec = null, proofZoom = null, proofSqA = null, proofSqB = null;
 let proofLblA = null, proofLblB = null, cierreImg = null;
 
 const state = { first: null, e2rotate: true, e1answered: false };
-const progressBar = document.getElementById('progressBar');
 
 async function init() {
   setupModuleColors();
@@ -822,11 +821,6 @@ function setupScroll() {
 }
 
 function tick() {
-  // Progreso de lectura
-  const sh = document.documentElement.scrollHeight - window.innerHeight;
-  const read = sh > 0 ? clamp(window.scrollY / sh) : 0;
-  if (progressBar) progressBar.style.transform = `scaleX(${read.toFixed(4)})`;
-
   // Arriba de todo no se muestra ningún chrome: el video va solo
   document.body.classList.toggle('at-top', window.scrollY < 40);
 
