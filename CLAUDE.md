@@ -30,7 +30,12 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
 - **Tooltips con MINI-GRÁFICO de personitas (10 puntos = 10 personas):** **G8 (Plan A/B)** = "«Se salvan 200»
   suena a ganancia… / «Mueren 400» suena a pérdida…" + 10 puntos (gain/loss) + "X de cada 10 se aferran a lo
   seguro" + remate *"Y el resultado era idéntico: mismas vidas, mismas muertes. Solo cambió la palabra."* ·
-  **G12 (paranormal)** = suma la fila de 10 puntos + "≈ X de cada 10 personas" entre el % y el "Por qué".
+  **G12 (paranormal)** = fila de 10 puntos + *"En una mesa de 10 amigos, X tienen una historia así."*
+- **Fórmulas de los tooltips VARIADAS (pedido del usuario: no repetir "de cada 100 personas"):** el "de cada 10"
+  vive SOLO en G8; **G13** remata con *"En un aula de 30 personas, X todavía dudan."* y **G10** con
+  *"Matemáticamente imposible: arriba de la mitad solo entra la mitad. Al menos el X% se está mintiendo."*
+- **G10 SIN la línea punteada del 50%** (pedido del usuario): se sacó el markLine; el 50 vive abajo en el eje
+  con los demás (`interval:25` → 0/25/50/75/100).
 
 ## ⚡ ACTUALIZACIÓN jul-2026 (13ª vuelta — fuentes limpias, FX de tercios, tooltips, sin scrim ni progreso) — MANDA sobre todo lo de abajo
 - **FUENTES de todos los gráficos LIMPIAS (pedido del usuario):** `SOURCES` (charts.js) ahora dice solo

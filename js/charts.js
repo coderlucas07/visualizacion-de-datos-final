@@ -777,21 +777,22 @@ export const CHARTS = {
       ...baseOption(accent),
       title: { show: false },     // el titular es el texto del HTML (lead), no compite
       grid: { left: 12, right: 92, top: '12%', bottom: '11%', containLabel: true },
-      xAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 14 } }),
+      // SIN la línea punteada del 50% (pedido del usuario): el 50 vive ABAJO,
+      // en el eje, junto a los demás valores (interval 25 → 0/25/50/75/100).
+      xAxis: valAxis({ max: 100, interval: 25, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 14 } }),
       yAxis: catAxis({ data: items.map((i) => i.label), axisLabel: { fontSize: 15 } }),
       // Tooltip de IMPACTO: el % gigante + la cuenta imposible (arriba del promedio
-      // solo entra la mitad → el resto se está engañando, sí o sí).
+      // solo entra la mitad → el resto se está mintiendo, sí o sí).
       tooltip: { ...baseOption(accent).tooltip, formatter: (p) => {
         const v = items[p.dataIndex].value;
         return `<div style="font-family:${DISPLAY};font-weight:700;font-size:30px;line-height:1;color:${accent};margin-bottom:4px">${v}%</div>`
           + `<div>se cree arriba del promedio</div>`
-          + `<div style="margin-top:7px;font-size:12.5px;color:${INK_DIM};line-height:1.5">Arriba de la mitad solo entran 50 de cada 100.<br>Los otros <b style="color:${INK}">${v - 50}</b> se están engañando.</div>`;
+          + `<div style="margin-top:7px;font-size:12.5px;color:${INK_DIM};line-height:1.5"><b style="color:${INK}">Matemáticamente imposible:</b> arriba de la mitad solo entra la mitad. Al menos el <b style="color:${INK}">${v - 50}%</b> se está mintiendo.</div>`;
       } },
       series: [{
         type: 'bar', barWidth: '60%', animation: false,
         data: items.map((i, idx) => ({ value: 0, itemStyle: barStyle[idx] })),
         label: { show: true, position: 'right', color: INK_DIM, fontFamily: DISPLAY, fontSize: 17, fontWeight: 600, formatter: (pm) => pm.value >= 1 ? Math.round(pm.value) + '%' : '' },
-        markLine: { silent: true, symbol: 'none', lineStyle: { color: INK_DIM, type: 'dashed', width: 1.5 }, label: { show: true, formatter: '50%', position: 'end', color: INK_DIM, fontFamily: DISPLAY }, data: [{ xAxis: 50 }] },
       }],
     };
     const chart = mountChart(container, option, opts);
@@ -875,7 +876,7 @@ export const CHARTS = {
         `<span style="display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:4px;background:${k < n ? accent : 'rgba(228,234,239,0.16)'}"></span>`).join('');
       return `${top}<div style="font-family:${DISPLAY};font-weight:700;font-size:22px;color:${INK};line-height:1">${p.value}%<span style="font-family:${FONT};font-weight:400;font-size:13px;color:${INK_DIM}"> lo reportó</span></div>`
         + `<div style="margin:9px 0 2px;line-height:1">${dots}</div>`
-        + `<div style="font-size:11.5px;color:${INK_DIM}">≈ ${n} de cada 10 personas</div>`
+        + `<div style="font-size:11.5px;color:${INK_DIM}">En una mesa de 10 amigos, ${n} tienen una historia así.</div>`
         + `<div style="margin-top:8px;font-size:13px"><span style="color:${accent}">Por qué:</span> ${r.explicacion_cientifica}</div>`;
     };
     const option = {
@@ -942,10 +943,11 @@ export const CHARTS = {
             + `<span>${label}</span><b style="color:${INK}">${v}%</b></div>`
             + `<div style="width:210px;height:7px;border-radius:4px;background:rgba(228,234,239,0.12)">`
             + `<div style="width:${v}%;height:100%;border-radius:4px;background:${color}"></div></div>`;
+          const dudan = Math.round((100 - it.publico) * 0.3);
           return `<strong>${it.tema}</strong>`
             + bar('Ciencia', it.ciencia, accent)
             + bar('Público', it.publico, hexA(accent, 0.45))
-            + `<div style="margin-top:9px;font-size:12.5px;color:${INK_DIM};line-height:1.5">De cada 100 personas, <b style="color:${INK}">${100 - it.publico}</b> todavía no lo creen.</div>`;
+            + `<div style="margin-top:9px;font-size:12.5px;color:${INK_DIM};line-height:1.5">En un aula de 30 personas, <b style="color:${INK}">${dudan}</b> todavía dudan.</div>`;
         },
       },
       series: [
