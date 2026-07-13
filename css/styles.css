@@ -928,18 +928,25 @@ body.at-top .menu-btn { opacity: 0; pointer-events: none; }
    INFERIOR de punta a punta, y el TEXTO del paso SUBE con el scroll por el medio. */
 #e4 .step[data-layer="1"] { min-height: 210vh; }   /* recorrido para estirar la onda FM */
 #e4 .step[data-layer="1"] { align-items: flex-start; justify-content: center; padding: 0 var(--pad-x); }
-/* el texto SUBE con el scroll y FRENA a media altura (sticky): queda entre el
-   título estático de arriba y la onda de abajo, sin chocar con ninguno */
-#e4 .step[data-layer="1"] .step__card { position: sticky; top: 34vh; text-align: center; max-width: 46rem; }
+/* el texto SUBE con el scroll y FRENA más arriba (sticky), centrado entre el
+   título estático y la onda de abajo (sin el subtítulo hay más aire) */
+#e4 .step[data-layer="1"] .step__card { position: sticky; top: 26vh; text-align: center; max-width: 46rem; }
 #e4 .viz__layer[data-layer="1"] { padding-left: 0; }
 #e4 .viz__layer[data-layer="1"] .viz__chart { place-items: stretch; padding-bottom: 0; }
 #e4 .viz__layer[data-layer="1"] .fmwave { max-width: none; width: 100%; max-height: none; height: 100%; padding: 8vh 2vw 5vh; }
 #e4 .viz__layer[data-layer="1"] .fmwave__canvas { flex: 0 0 32vh; margin-top: auto; }
-/* SIN transición entre capas en E4 (pedido del usuario): el paso de la onda al
-   gráfico de barras es un corte seco manejado por el scroll, no un crossfade
-   (el fade dejaba un hueco en el que el scroll "no hacía nada"). */
-#e4 .viz__layer { transition: none; }
-/* paso 2: el gráfico ocupa todo el ancho y el texto va dentro (.pista-cap) */
+/* Transición SUAVE entre capas de E4 (onda → barras): CROSSFADE de verdad.
+   El bug de siempre era que la capa saliente se ocultaba INSTANTÁNEO (la
+   visibility no transicionaba) → flash negro o corte seco. Acá la saliente
+   sigue visible mientras se funde (visibility demorada) y la entrante
+   aparece encima: el scroll fluye de un gráfico al otro sin salto. */
+#e4 .viz__layer { transition: opacity 0.7s var(--ease), visibility 0s 0.7s; }
+#e4 .viz__layer.is-active { transition: opacity 0.7s var(--ease), visibility 0s 0s; }
+/* paso 2: el gráfico ocupa todo el ancho y el texto va dentro (.pista-cap).
+   Con recorrido propio (160vh): así el crossfade desde la onda pasa BIEN
+   adentro de la zona pinneada y las barras quedan un rato en pantalla antes
+   de que la escena se libere (sin ese salto brusco al final). */
+#e4 .step[data-layer="2"] { min-height: 160vh; }
 #e4 .step[data-layer="2"] .step__card { display: none; }
 .viz__chart--pista { position: relative; }
 .pista-cap {

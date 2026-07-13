@@ -36,6 +36,13 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   *"Matemáticamente imposible: arriba de la mitad solo entra la mitad. Al menos el X% se está mintiendo."*
 - **G10 SIN la línea punteada del 50%** (pedido del usuario): se sacó el markLine; el 50 vive abajo en el eje
   con los demás (`interval:25` → 0/25/50/75/100).
+- **E4: onda sin subtítulo + transición SUAVE onda→barras (iterado con el usuario):** se sacó el
+  `.fmwave__sub` ("Una sola señal…") y el texto del paso frena más arriba (sticky top 34→26vh). La transición
+  entre capas de E4 volvió a ser un **crossfade DE VERDAD**: la clave es demorar la visibility de la capa
+  saliente (`#e4 .viz__layer { transition: opacity .7s, visibility 0s .7s }` + `.is-active { visibility 0s 0s }`)
+  — sin eso la saliente se oculta instantáneo y se ve flash negro/corte (ese era el bug de las dos quejas
+  anteriores). Además el paso de las barras (`#e4 .step[data-layer="2"]`) mide **160vh**: el fade cae bien
+  adentro de la zona pinneada y las barras quedan un rato en pantalla antes de que la escena se libere.
 
 ## ⚡ ACTUALIZACIÓN jul-2026 (13ª vuelta — fuentes limpias, FX de tercios, tooltips, sin scrim ni progreso) — MANDA sobre todo lo de abajo
 - **FUENTES de todos los gráficos LIMPIAS (pedido del usuario):** `SOURCES` (charts.js) ahora dice solo

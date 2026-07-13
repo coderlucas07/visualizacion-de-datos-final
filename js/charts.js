@@ -296,7 +296,6 @@ export const CHARTS = {
     container.classList.add('fmwave');
     container.innerHTML = `
       <p class="fmwave__title">El mismo audio, dos estaciones</p>
-      <p class="fmwave__sub">Una sola señal; cada cerebro la sintoniza distinto</p>
       <canvas class="fmwave__canvas"></canvas>
       <div class="fmdial">
         <div class="fmdial__seg fmdial__seg--bici" style="flex:${pBici}"><span>Bicicleta</span><b>${pBici}%</b></div>
