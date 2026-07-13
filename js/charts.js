@@ -36,25 +36,25 @@ const MONO = 'IBM Plex Mono, ui-monospace, monospace';
 /* ---------- Fuente de cada gráfico (solo el NOMBRE de la fuente: sin "UTDT",
    sin tamaños de muestra "n=", sin referencias a la cátedra/módulos) ---------- */
 const SOURCES = {
-  '01_pato_conejo': 'Fuente: Jastrow (1899).',
-  '02_contexto_cambio': 'Fuente: Jastrow (1899).',
-  '03_ilusiones_movimiento_waffle': 'Fuente: “Rotating Snakes”, Kitaoka (2003).',
-  '04_ilusion_auditiva': 'Fuente: audio ambiguo “bici / alquiler”.',
-  '04b_auditiva_con_pista': 'Fuente: audio ambiguo con texto-pista.',
-  '05_cierre_percepcion': 'Fuente: Simons & Chabris (1999).',
-  '05_confianza_precision': 'Fuente: encuesta de confianza vs. acierto.',
-  '06_bate_pelota': 'Fuente: Frederick (2005).',
+  '01_pato_conejo': 'Dataset: Jastrow (1899).',
+  '02_contexto_cambio': 'Dataset: Jastrow (1899).',
+  '03_ilusiones_movimiento_waffle': 'Dataset: “Rotating Snakes”, Kitaoka (2003).',
+  '04_ilusion_auditiva': 'Dataset: audio ambiguo “bici / alquiler”.',
+  '04b_auditiva_con_pista': 'Dataset: audio ambiguo con texto-pista.',
+  '05_cierre_percepcion': 'Dataset: Simons & Chabris (1999).',
+  '05_confianza_precision': 'Dataset: encuesta de confianza vs. acierto.',
+  '06_bate_pelota': 'Dataset: Frederick (2005).',
   /* 07_aversion_perdidas: SIN cita en pantalla (pedido del usuario: se sacó el
      "Modelo: Teoría Prospectiva…" que quedaba superpuesto al gráfico). */
-  '08_framing_enfermedad': 'Fuente: Tversky & Kahneman (1981).',
-  '09_dunning_kruger': 'Fuente: Kruger & Dunning (1999).',
-  '10_mejor_que_promedio': 'Fuente: Svenson (1981) · Cross (1977).',
-  '11_efecto_forer': 'Fuente: Forer (1948).',
-  '11b_texto_barnum': 'Fuente: Forer (1948).',
-  '12_pareidolia_paranormal': 'Fuente: YouGov (2021).',
-  '13_brecha_consenso': 'Fuente: Pew Research (2015) · Pulsar UBA (2023).',
-  '14_fantasmas_embudo': 'Fuente: Ipsos Global Advisor (2018).',
-  '14b_fantasmas_reportes': 'Fuente: encuestas de experiencias paranormales.',
+  '08_framing_enfermedad': 'Dataset: Tversky & Kahneman (1981).',
+  '09_dunning_kruger': 'Dataset: Kruger & Dunning (1999).',
+  '10_mejor_que_promedio': 'Dataset: Svenson (1981) · Cross (1977).',
+  '11_efecto_forer': 'Dataset: Forer (1948).',
+  '11b_texto_barnum': 'Dataset: Forer (1948).',
+  '12_pareidolia_paranormal': 'Dataset: YouGov (2021).',
+  '13_brecha_consenso': 'Dataset: Pew Research (2015) · Pulsar UBA (2023).',
+  '14_fantasmas_embudo': 'Dataset: Ipsos Global Advisor (2018).',
+  '14b_fantasmas_reportes': 'Dataset: encuestas de experiencias paranormales.',
 };
 
 /* Inserta la cita: usa el slot [data-src-for] de la sección si existe;
@@ -629,9 +629,27 @@ export const CHARTS = {
         : { left: '46%', right: '8%', top: 100, bottom: 40, containLabel: true },
       xAxis: catAxis({ data: items.map((i) => i.label), axisLabel: { color: INK, fontSize: 15, lineHeight: 17, interval: 0 } }),
       yAxis: valAxis({ max: 100, axisLabel: { formatter: '{value}%', color: INK_DIM, fontSize: 14 } }),
+      // Tooltip con PERSONITAS: 10 puntos = 10 personas (cuántas se aferran a lo
+      // seguro según la palabra) + el remate: el resultado era IDÉNTICO.
       tooltip: {
         ...baseOption(accent).tooltip, trigger: 'axis', axisPointer: { type: 'shadow' },
-        formatter: (ps) => { const it = items[ps[0].dataIndex]; return `<strong>Plan seguro · ${it.seguro}%</strong> — ${it.descS}<br><strong>Plan arriesgado · ${100 - it.seguro}%</strong> — ${it.descR}`; },
+        formatter: (ps) => {
+          const i = ps[0].dataIndex;
+          const it = items[i];
+          const n = Math.round(it.seguro / 10);   // de cada 10, eligen lo seguro
+          const dots = Array.from({ length: 10 }, (_, k) =>
+            `<span style="display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:4px;background:${k < n ? gain : hexA(loss, 0.65)}"></span>`).join('');
+          const head = i === 0
+            ? '«Se salvan 200» <span style="font-weight:400;color:' + INK_DIM + '">suena a ganancia…</span>'
+            : '«Mueren 400» <span style="font-weight:400;color:' + INK_DIM + '">suena a pérdida…</span>';
+          const read = i === 0
+            ? `<b style="color:${INK}">${n} de cada 10</b> se aferran a lo seguro`
+            : `solo <b style="color:${INK}">${n} de cada 10</b> siguen eligiendo lo seguro`;
+          return `<strong>${head}</strong>`
+            + `<div style="margin:10px 0 6px;line-height:1">${dots}</div>`
+            + `<div style="font-size:13px;color:${INK_DIM}">${read}</div>`
+            + `<div style="margin-top:9px;padding-top:8px;border-top:1px solid rgba(228,234,239,0.14);font-size:12.5px;color:${INK_DIM};line-height:1.5">Y el resultado era <b style="color:${INK}">idéntico</b>: mismas vidas, mismas muertes.<br>Solo cambió la palabra.</div>`;
+        },
       },
       legend: { data: ['Plan seguro', 'Plan arriesgado'], top: 70, textStyle: { color: INK_DIM, fontSize: 14, fontFamily: FONT }, icon: 'roundRect' },
       series: [
@@ -851,7 +869,14 @@ export const CHARTS = {
     const tip = (p) => {
       const r = ordered[p.dataIndex];
       const top = p.dataIndex === maxIdx ? `<div style="font-family:${MONO};font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:${accent};margin-bottom:4px">El más reportado</div>` : '';
-      return `${top}<div style="font-family:${DISPLAY};font-weight:700;font-size:22px;color:${INK};line-height:1">${p.value}%<span style="font-family:${FONT};font-weight:400;font-size:13px;color:${INK_DIM}"> lo reportó</span></div><div style="margin-top:8px;font-size:13px"><span style="color:${accent}">Por qué:</span> ${r.explicacion_cientifica}</div>`;
+      // mini-gráfico: 10 personas, las que lo vivieron en acento
+      const n = Math.round(p.value / 10);
+      const dots = Array.from({ length: 10 }, (_, k) =>
+        `<span style="display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:4px;background:${k < n ? accent : 'rgba(228,234,239,0.16)'}"></span>`).join('');
+      return `${top}<div style="font-family:${DISPLAY};font-weight:700;font-size:22px;color:${INK};line-height:1">${p.value}%<span style="font-family:${FONT};font-weight:400;font-size:13px;color:${INK_DIM}"> lo reportó</span></div>`
+        + `<div style="margin:9px 0 2px;line-height:1">${dots}</div>`
+        + `<div style="font-size:11.5px;color:${INK_DIM}">≈ ${n} de cada 10 personas</div>`
+        + `<div style="margin-top:8px;font-size:13px"><span style="color:${accent}">Por qué:</span> ${r.explicacion_cientifica}</div>`;
     };
     const option = {
       ...baseOption(accent),
@@ -1012,18 +1037,32 @@ export const CHARTS = {
       Sonoro: '<path d="M3 10v4h4l5 5V5L7 10H3Z"/><path d="M16 9a4 4 0 0 1 0 6"/>',
       Sensorial: '<path d="M8 13V5a2 2 0 0 1 4 0v6m0-1a2 2 0 0 1 4 0v3m0-1a2 2 0 0 1 4 0v4a6 6 0 0 1-6 6h-2a6 6 0 0 1-5-3l-3-5a2 2 0 0 1 3-2l1 1"/>',
     };
+    // Frase-golpe del dorso de cada carta (el flip revela la experiencia).
+    const punch = {
+      Visual: 'Algo se movió<br />en el borde de tu vista.',
+      Sonoro: 'Tres golpes.<br />Nadie en casa.',
+      Sensorial: 'El aire, de golpe,<br />helado.',
+    };
     container.classList.add('thirds');
     container.innerHTML = `
       <p class="thirds__head">¿Qué forma toma ese <strong>“algo”</strong>?</p>
       <div class="thirds__grid">
         ${rows.map((r) => `
           <div class="thirds__cell t-${r.tipo.toLowerCase()}" tabindex="0" aria-label="${r.tipo}: ${r.pct}%. ${r.ejemplos}">
-            <span class="thirds__fx" aria-hidden="true"></span>
-            <span class="thirds__info" aria-hidden="true">i</span>
-            <svg class="thirds__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ico[r.tipo] || ''}</svg>
-            <span class="thirds__pct">${r.pct}%</span>
-            <strong>${r.tipo}</strong>
-            <p class="thirds__tip">${r.ejemplos}</p>
+            <div class="thirds__flip">
+              <div class="thirds__face thirds__front">
+                <span class="thirds__info" aria-hidden="true">i</span>
+                <svg class="thirds__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ico[r.tipo] || ''}</svg>
+                <span class="thirds__pct">${r.pct}%</span>
+                <strong>${r.tipo}</strong>
+              </div>
+              <div class="thirds__face thirds__back" aria-hidden="true">
+                <span class="thirds__fx"></span>
+                ${r.tipo === 'Sonoro' ? '<span class="thirds__eq"><i></i><i></i><i></i><i></i><i></i></span>' : ''}
+                <p class="thirds__punch">${punch[r.tipo] || ''}</p>
+                <p class="thirds__ej">${r.ejemplos}</p>
+              </div>
+            </div>
           </div>`).join('')}
       </div>`;
   },

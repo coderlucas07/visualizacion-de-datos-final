@@ -14,6 +14,24 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
   código pero no este archivo, el contexto del resto queda desactualizado → siempre van juntos.
 - Si algo de acá ya no es cierto, corregilo (no agregues notas sueltas que se contradigan).
 
+## ⚡ ACTUALIZACIÓN jul-2026 (13ª vuelta b — Dataset, CARTAS QUE GIRAN, tooltips con personitas) — MANDA sobre todo lo de abajo
+- **Fuentes con "Dataset:"** (pedido del usuario, tras limpiar UTDT/n=/cátedra): todas las citas dicen
+  `Dataset: <fuente real>` — se nota que sale de un conjunto de datos sin el ruido técnico. (Incluida la
+  estática de E3 en el HTML.)
+- **TERCIOS: CARTAS que se DAN VUELTA (flip 3D)** — reemplaza al tooltip que subía: al hover (o tap: `:focus`,
+  las celdas tienen tabindex) la carta **gira 180°** (`.thirds__flip` preserve-3d + `.thirds__face` front/back
+  con backface-visibility) y el DORSO es una **escena animada por sentido** + frase-golpe + el ejemplo del dato:
+  **Visual** = dorso que PARPADEA como foco viejo + una sombra borrosa lo cruza · *"Algo se movió en el borde de
+  tu vista."* · **Sonoro** = **ecualizador de 5 barras** bailando + ondas expandiéndose · *"Tres golpes. Nadie en
+  casa."* · **Sensorial** = el texto TIRITA + bruma pálida que baja · *"El aire, de golpe, helado."*
+  ⚠️ El shiver va en `.thirds__punch/.thirds__ej` (NO en `.thirds__back`: pisaría el `rotateY(180deg)` y la cara
+  desaparecería). Reduced-motion: sin flip, las dos caras apiladas. Las animaciones del dorso corren siempre
+  (solo se ven al girar).
+- **Tooltips con MINI-GRÁFICO de personitas (10 puntos = 10 personas):** **G8 (Plan A/B)** = "«Se salvan 200»
+  suena a ganancia… / «Mueren 400» suena a pérdida…" + 10 puntos (gain/loss) + "X de cada 10 se aferran a lo
+  seguro" + remate *"Y el resultado era idéntico: mismas vidas, mismas muertes. Solo cambió la palabra."* ·
+  **G12 (paranormal)** = suma la fila de 10 puntos + "≈ X de cada 10 personas" entre el % y el "Por qué".
+
 ## ⚡ ACTUALIZACIÓN jul-2026 (13ª vuelta — fuentes limpias, FX de tercios, tooltips, sin scrim ni progreso) — MANDA sobre todo lo de abajo
 - **FUENTES de todos los gráficos LIMPIAS (pedido del usuario):** `SOURCES` (charts.js) ahora dice solo
   "Fuente: <nombre real>" — se sacaron "UTDT", los tamaños de muestra "(n=…)" y toda referencia a la

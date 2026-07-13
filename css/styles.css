@@ -701,54 +701,64 @@ body.at-top .menu-btn { opacity: 0; pointer-events: none; }
   display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1rem, 2vw, 2.2rem);
   align-items: stretch; min-height: 0;
 }
+/* ===== CARTAS que se DAN VUELTA (flip 3D al hover / tap) =====
+   El frente muestra el dato (ícono + % + tipo); al pasar el mouse la carta GIRA
+   y el dorso te hace VIVIR el reporte con una escena animada por sentido:
+   Visual = la luz falla y una sombra cruza · Sonoro = un ecualizador "suena" y
+   las ondas se expanden · Sensorial = el texto tirita y baja una bruma helada. */
 .thirds__cell {
-  position: relative; overflow: hidden; cursor: help;
+  position: relative; cursor: pointer;
+  border: 0; padding: 0; background: none;
+  perspective: 1300px; outline: none;
+}
+.thirds__flip {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.75s var(--ease);
+}
+.thirds__cell:hover .thirds__flip,
+.thirds__cell:focus .thirds__flip { transform: rotateY(180deg); }
+.thirds__face {
+  position: absolute; inset: 0; overflow: hidden;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
   border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
   border-radius: var(--radius);
   padding: clamp(1.5rem, 4vh, 3rem) 1.2rem;
   background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 11%, transparent), color-mix(in srgb, var(--accent) 7%, transparent));
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: clamp(1rem, 2.5vh, 2rem);
-  transition: border-color 0.25s var(--ease), background 0.25s var(--ease);
 }
-.thirds__cell:hover, .thirds__cell:focus-visible {
-  border-color: var(--accent); outline: none;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 17%, transparent), color-mix(in srgb, var(--accent) 11%, transparent));
+.thirds__back {
+  transform: rotateY(180deg);
+  border-color: var(--accent);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 9%, #07090C), color-mix(in srgb, var(--accent) 5%, #07090C));
+  gap: clamp(0.9rem, 2vh, 1.5rem);
 }
 .thirds__ico { width: clamp(52px, 6vw, 96px); height: clamp(52px, 6vw, 96px); color: var(--accent); }
 .thirds__pct { font-family: var(--font-display); font-weight: 700; font-size: clamp(3.2rem, 2rem + 5vw, 7rem); color: var(--ink); line-height: 0.95; }
 .thirds__cell strong { font-family: var(--font-mono); font-size: clamp(0.8rem, 0.7rem + 0.4vw, 1.05rem); letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
-/* pista "i" arriba a la derecha: indica que el cuadro tiene más info al pasar el cursor */
+/* pista "i" arriba a la derecha: la carta esconde algo del otro lado */
 .thirds__info {
   position: absolute; top: 0.9rem; right: 0.9rem; width: 1.5rem; height: 1.5rem;
   display: grid; place-items: center; border-radius: 50%;
   border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--line));
   font-family: var(--font-display); font-style: italic; font-size: 0.9rem;
-  color: var(--accent); opacity: 0.7; transition: opacity 0.25s var(--ease), background 0.25s var(--ease);
+  color: var(--accent); opacity: 0.7;
 }
-.thirds__cell:hover .thirds__info, .thirds__cell:focus-visible .thirds__info { opacity: 0; }
-/* tooltip: sube desde abajo del cuadro al pasar el cursor (o con foco de teclado) */
-.thirds__tip {
-  position: absolute; left: 0; right: 0; bottom: 0; margin: 0;
-  padding: clamp(1rem, 2.5vh, 1.6rem) clamp(1rem, 2vw, 1.6rem);
-  background: color-mix(in srgb, var(--accent) 18%, rgba(10, 13, 16, 0.97));
-  border-top: 1px solid color-mix(in srgb, var(--accent) 50%, var(--line));
-  font-family: var(--font-body); font-size: clamp(0.98rem, 0.9rem + 0.4vw, 1.18rem);
-  line-height: 1.5; color: var(--ink); text-align: center;
-  transform: translateY(101%); transition: transform 0.32s var(--ease);
+/* dorso: la frase-golpe + el ejemplo real del dato */
+.thirds__punch {
+  position: relative; z-index: 1; margin: 0; max-width: 16ch;
+  font-family: var(--font-display); font-weight: 600; font-style: italic;
+  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.4rem); line-height: 1.2; color: #fff;
 }
-.thirds__cell:hover .thirds__tip, .thirds__cell:focus-visible .thirds__tip { transform: translateY(0); }
+.thirds__ej {
+  position: relative; z-index: 1; margin: 0; max-width: 26ch;
+  font-size: clamp(0.98rem, 0.9rem + 0.4vw, 1.15rem); line-height: 1.5; color: var(--ink-dim);
+}
+.thirds__fx { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
 
-/* ===== FX por sentido (hover): cada carta te hace VIVIR lo que reporta =====
-   La capa .thirds__fx vive detrás del contenido; el tooltip queda arriba. */
-.thirds__fx { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; border-radius: inherit; }
-/* el contenido queda ARRIBA del fx; ojo con NO pisar el position:absolute del tip */
-.thirds__cell > *:not(.thirds__fx):not(.thirds__tip):not(.thirds__info) { position: relative; z-index: 1; }
-.thirds__cell .thirds__tip { z-index: 2; }
-
-/* VISUAL — la luz FALLA (parpadeo de foco viejo) y una SOMBRA cruza la carta:
-   ves moverse algo que no está. */
-.t-visual:hover, .t-visual:focus-visible { animation: cellflicker 2.8s steps(1, end) infinite; }
+/* --- VISUAL: la luz FALLA (parpadeo de foco viejo) y una SOMBRA cruza el dorso --- */
+.t-visual .thirds__back { animation: cellflicker 2.8s steps(1, end) infinite; }
 @keyframes cellflicker {
   0%, 100% { filter: brightness(1); }
   6%  { filter: brightness(0.45); }
@@ -761,10 +771,10 @@ body.at-top .menu-btn { opacity: 0; pointer-events: none; }
 }
 .t-visual .thirds__fx::before {
   content: ''; position: absolute; top: -12%; bottom: -12%; left: -40%; width: 34%;
-  background: radial-gradient(46% 38% at 50% 34%, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.6) 52%, transparent 74%);
+  background: radial-gradient(46% 38% at 50% 34%, rgba(0, 0, 0, 0.97), rgba(0, 0, 0, 0.65) 52%, transparent 74%);
   filter: blur(13px); opacity: 0;
+  animation: shadowpass 2.8s ease-in-out infinite;
 }
-.t-visual:hover .thirds__fx::before, .t-visual:focus-visible .thirds__fx::before { animation: shadowpass 2.8s ease-in-out infinite; }
 @keyframes shadowpass {
   0%, 8% { transform: translateX(0); opacity: 0; }
   16% { opacity: 0.95; }
@@ -772,27 +782,31 @@ body.at-top .menu-btn { opacity: 0; pointer-events: none; }
   70%, 100% { transform: translateX(460%); opacity: 0; }
 }
 
-/* SONORO — ondas que se EXPANDEN desde el parlante y el % LATE al ritmo:
-   el sonido que nadie más escucha. */
+/* --- SONORO: un ECUALIZADOR baila y las ondas se expanden desde el centro --- */
+.thirds__eq { display: flex; align-items: flex-end; gap: 7px; height: clamp(44px, 7vh, 70px); position: relative; z-index: 1; }
+.thirds__eq i { width: 7px; height: 16%; border-radius: 3px; background: var(--accent); animation: eqdance 0.9s ease-in-out infinite; }
+.thirds__eq i:nth-child(1) { animation-delay: -0.10s; }
+.thirds__eq i:nth-child(2) { animation-delay: -0.35s; }
+.thirds__eq i:nth-child(3) { animation-delay: -0.62s; }
+.thirds__eq i:nth-child(4) { animation-delay: -0.23s; }
+.thirds__eq i:nth-child(5) { animation-delay: -0.49s; }
+@keyframes eqdance { 0%, 100% { height: 14%; } 50% { height: 96%; } }
 .t-sonoro .thirds__fx::before,
 .t-sonoro .thirds__fx::after {
-  content: ''; position: absolute; left: 50%; top: 30%;
+  content: ''; position: absolute; left: 50%; top: 38%;
   width: 74px; height: 74px; margin: -37px 0 0 -37px;
   border: 2px solid var(--accent); border-radius: 50%;
   opacity: 0; transform: scale(0.35);
+  animation: soundring 1.7s ease-out infinite;
 }
-.t-sonoro:hover .thirds__fx::before, .t-sonoro:focus-visible .thirds__fx::before { animation: soundring 1.7s ease-out infinite; }
-.t-sonoro:hover .thirds__fx::after, .t-sonoro:focus-visible .thirds__fx::after { animation: soundring 1.7s ease-out 0.85s infinite; }
+.t-sonoro .thirds__fx::after { animation-delay: 0.85s; }
 @keyframes soundring {
-  0% { opacity: 0.9; transform: scale(0.35); }
+  0% { opacity: 0.8; transform: scale(0.35); }
   100% { opacity: 0; transform: scale(5); }
 }
-.t-sonoro:hover .thirds__pct, .t-sonoro:focus-visible .thirds__pct { animation: soundthump 0.85s ease-in-out infinite; }
-@keyframes soundthump { 0%, 100% { transform: scale(1); } 45% { transform: scale(1.07); } }
 
-/* SENSORIAL — la carta TIRITA (escalofrío) y una bruma pálida BAJA por ella:
-   el frío que se siente sin causa. */
-.t-sensorial:hover, .t-sensorial:focus-visible { animation: shiver 0.4s linear infinite; }
+/* --- SENSORIAL: el texto TIRITA (escalofrío) y una bruma pálida BAJA --- */
+.t-sensorial .thirds__punch, .t-sensorial .thirds__ej { animation: shiver 0.4s linear infinite; }
 @keyframes shiver {
   0%, 100% { transform: translate(0, 0) rotate(0deg); }
   25% { transform: translate(1.4px, -1px) rotate(0.14deg); }
@@ -801,10 +815,10 @@ body.at-top .menu-btn { opacity: 0; pointer-events: none; }
 }
 .t-sensorial .thirds__fx::before {
   content: ''; position: absolute; left: -15%; right: -15%; top: -50%; height: 48%;
-  background: linear-gradient(to bottom, rgba(228, 234, 239, 0.30), rgba(228, 234, 239, 0.08) 62%, transparent);
+  background: linear-gradient(to bottom, rgba(228, 234, 239, 0.32), rgba(228, 234, 239, 0.09) 62%, transparent);
   filter: blur(11px); opacity: 0;
+  animation: coldmist 2.8s ease-in-out infinite;
 }
-.t-sensorial:hover .thirds__fx::before, .t-sensorial:focus-visible .thirds__fx::before { animation: coldmist 2.8s ease-in-out infinite; }
 @keyframes coldmist {
   0% { transform: translateY(0); opacity: 0; }
   22% { opacity: 1; }
@@ -812,10 +826,13 @@ body.at-top .menu-btn { opacity: 0; pointer-events: none; }
   100% { transform: translateY(300%); opacity: 0; }
 }
 
-@media (max-width: 700px) { .thirds__grid { grid-template-columns: 1fr; } }
-/* sin hover (touch/reduced): el ejemplo queda visible abajo, no escondido */
-@media (hover: none) {
-  .thirds__tip { position: static; transform: none; background: transparent; border-top: 0; padding-top: 0.4rem; }
+@media (max-width: 700px) { .thirds__grid { grid-template-columns: 1fr; } .thirds__cell { min-height: 46vh; } }
+/* reduced-motion: sin flip → las dos caras apiladas (el dato + el ejemplo, todo visible) */
+@media (prefers-reduced-motion: reduce) {
+  .thirds__flip { transform: none !important; }
+  .thirds__face { position: static; backface-visibility: visible; }
+  .thirds__back { transform: none; margin-top: 0.6rem; }
+  .thirds__cell { display: flex; flex-direction: column; }
   .thirds__info { display: none; }
 }
 
