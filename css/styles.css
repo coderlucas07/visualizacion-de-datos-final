@@ -1860,29 +1860,40 @@ body.at-top .menu-btn { opacity: 0; pointer-events: none; }
 }
 
 /* ----------------------------- Pie / créditos -----------------------------
-   Colofón sobrio y grande: solo los nombres (protagonistas) y la materia.
-   Centrado, como un crédito de cierre. */
+   Colofón en DOS columnas alineadas: Autores (nombres + materia debajo) a la
+   izquierda · Fuentes de datos a la derecha. Sobrio, tipo crédito de cierre. */
 .pie {
-  padding: clamp(16vh, 22vh, 26vh) var(--pad-x) clamp(11vh, 15vh, 17vh);
+  padding: clamp(14vh, 18vh, 22vh) var(--pad-x) clamp(10vh, 13vh, 15vh);
   border-top: 1px solid var(--line); background: var(--bg-2);
-  text-align: center;
 }
-.pie__inner { max-width: 56rem; margin-inline: auto; }
+.pie__inner {
+  max-width: 72rem; margin-inline: auto;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 3rem clamp(3rem, 8vw, 8rem); align-items: start;
+}
 .pie__k {
   font-family: var(--font-mono); font-size: 0.78rem;
   letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-faint);
-  margin: 0 0 clamp(1.8rem, 4vw, 3rem);
+  margin: 0 0 clamp(1.4rem, 3vw, 2.2rem);
 }
 .pie__authors {
   font-family: var(--font-display); font-weight: 600;
-  font-size: clamp(2.2rem, 1.3rem + 3.6vw, 4.6rem);
-  line-height: 1.16; letter-spacing: -0.015em;
-  color: var(--ink); margin: 0 auto clamp(2.2rem, 4.5vw, 3.4rem); max-width: none;
+  font-size: clamp(1.7rem, 1.1rem + 2.2vw, 3.1rem);
+  line-height: 1.2; letter-spacing: -0.015em;
+  color: var(--ink); margin: 0 0 clamp(1.6rem, 3vw, 2.4rem); max-width: none;
 }
 .pie__course {
-  font-family: var(--font-mono); font-size: clamp(0.82rem, 0.72rem + 0.4vw, 1.05rem);
-  letter-spacing: 0.16em; text-transform: uppercase;
-  color: var(--ink-dim); margin: 0 auto; max-width: none; line-height: 1.7;
+  font-family: var(--font-mono); font-size: clamp(0.78rem, 0.7rem + 0.3vw, 0.95rem);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-dim); margin: 0; max-width: none; line-height: 1.9;
+}
+.pie__sources {
+  font-family: var(--font-mono); font-size: clamp(0.8rem, 0.72rem + 0.3vw, 0.98rem);
+  letter-spacing: 0.04em; color: var(--ink-dim);
+  margin: 0; max-width: none; line-height: 2.1;
+}
+@media (max-width: 700px) {
+  .pie__inner { grid-template-columns: 1fr; gap: 3.4rem; }
 }
 
 /* ----------------------------- Aviso de error de datos ----------------------------- */

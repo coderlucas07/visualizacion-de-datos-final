@@ -305,12 +305,13 @@ en la misma página. **Si cambiás algo que mueve el estado del proyecto, actual
     `proofZoom/proofSqA/proofSqB/proofLblA/proofLblB/cierreImg`). El copy del paso 2 ya no habla de "puente/tira"
     sino de aislar los dos casilleros. Si se recalibran A/B, mover también los `rect` y los `text`
     (centro = A`(546,254)`/B`(506,423)`).
-- **PIE/colofón REDISEÑADO (pedido del usuario): solo nombres + materia, grande y centrado** (tipo crédito de
-  cierre). Se SACÓ todo lo demás: la frase-tesis repetida (`.pie__sign`, ya vive en el cierre), el grid de dos
-  bloques (`.pie__meta`) y sobre todo la **lista de fuentes técnica** (`.pie__src` con el path al JSON y la hoja
-  `_metodologia`) — eso último "gritaba" auto-generado. Ahora: kicker "Lo hicieron" → 3 nombres GRANDES (Spectral,
-  `clamp(2.2rem…4.6rem)`, uno por línea) → una línea mono con "Visualización de Datos · UTDT · 2026". Los estilos
-  viejos `.pie__sign/.pie__meta/.pie__block/.pie__src/.pie__year` se eliminaron del CSS.
+- **PIE/colofón (iterado con el usuario): DOS columnas alineadas** — izquierda kicker "Autores" + 3 nombres
+  (Spectral `clamp(1.7rem…3.1rem)`) + la materia debajo en mono ("Visualización de Datos / Universidad Torcuato
+  Di Tella · 2026"); derecha kicker "Fuentes de datos" + lista mono de las fuentes REALES (Jastrow, Kitaoka,
+  Simons & Chabris, Frederick, Kahneman & Tversky, Svenson·Cross, Kruger & Dunning, YouGov, Pew·Pulsar, Ipsos),
+  una por línea, alineada arriba con los autores (`.pie__inner` grid 1fr/1fr, `align-items:start`; en ≤700px se
+  apila). Antes de esto se probó centrado sin fuentes; NO volver a la lista técnica vieja (path al JSON /
+  `_metodologia`: gritaba auto-generado).
 
 ## ⚡ ACTUALIZACIÓN jun-2026 (9ª vuelta — E13 a 3 etapas + limpieza de cues) — MANDA sobre todo lo de abajo
 - **COPY de SESGOS rehilado para narrativa clara (pedido del usuario):** progresión = qué es un sesgo (no es
